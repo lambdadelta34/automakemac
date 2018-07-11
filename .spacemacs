@@ -357,12 +357,8 @@ you should place your code here."
   ;; delete trailings spaces
   (add-hook 'before-save-hook 'delete-trailing-whitespace)
   ;; path vars for macos
-  (exec-path-from-shell-initialize)
-  (when (and (memq window-system '(mac ns))
-             (use-package exec-path-from-shell
-               :ensure t
-               :config
-               (exec-path-from-shell-initialize))))
+  (when (memq window-system '(mac ns))
+    (exec-path-from-shell-initialize))
   ;; icons
   (setq neo-theme 'icons)
   (setq neo-vc-integration nil)
@@ -371,7 +367,7 @@ you should place your code here."
   (global-git-commit-mode t)
   ;; indent config
   (setq-default indent-tabs-mode nil)
-  (setq-default standard-indent 2)
+  (setq-default tab-width 8)
   (setq-default js-indent-level 2)
  )
 
