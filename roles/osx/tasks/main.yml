@@ -1,0 +1,3 @@
+---
+- name: show hidden files
+  shell: "defaults write com.apple.finder AppleShowAllFiles YES"

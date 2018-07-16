@@ -1,0 +1,35 @@
+---
+- name: set username
+  git_config:
+    name: user.name
+    scope: global
+    value: test
+  listen: "apply config"
+
+- name: set email
+  git_config:
+    name: user.email
+    scope: global
+    value: test@test
+  listen: "apply config"
+
+- name: set co alias
+  git_config:
+    name: alias.co
+    scope: global
+    value: checkout
+  listen: "apply config"
+
+- name: set ci alias
+  git_config:
+    name: alias.ci
+    scope: global
+    value: commit
+  listen: "apply config"
+
+- name: set st alias
+  git_config:
+    name: alias.st
+    scope: global
+    value: status
+  listen: "apply config"

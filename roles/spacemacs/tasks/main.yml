@@ -1,0 +1,11 @@
+---
+- name: install spacemacs
+  git:
+    repo: https://github.com/syl20bnr/spacemacs
+    dest: ~/.emacs.d
+
+- name: link dotspacemacs config
+  file:
+    src: "{{ playbook_dir }}/roles/spacemacs/files/.spacemacs"
+    dest: ~/.spacemacs
+    state: link
