@@ -1,0 +1,12 @@
+---
+- hosts: local
+  roles:
+    - osx
+    - homebrew
+    - iterm2
+    - git
+    - fish
+    - rbenv
+    - ruby
+    - emacs-plus
+    - spacemacs

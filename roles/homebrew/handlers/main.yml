@@ -1,0 +1,8 @@
+---
+- name: install libs
+  homebrew:
+    name: "{{ item }}"
+    state: present
+    with_items:
+      - the_silver_searcher
+      - httpie

@@ -1,0 +1,13 @@
+---
+- name: install rbenv
+  homebrew:
+    name: rbenv
+    state: present
+
+- name: init rbenv
+  shell: rbenv init
+  ignore_errors: yes
+
+- name: rbenv-doctor
+  shell: "curl -fsSL https://github.com/rbenv/rbenv-installer/raw/master/bin/rbenv-doctor | bash"
+  ignore_errors: yes

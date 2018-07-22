@@ -1,0 +1,24 @@
+---
+- name: Install fish
+  homebrew:
+    name: fish
+    state: present
+  notify:
+    - install omf
+
+- name: create config folder
+  shell: "mkdir -p {{ config_path }}"
+  args:
+    creates: "{{ config_path }}"
+
+- name: import config
+  file:
+    src: "{{ playbook_dir }}/roles/fish/files/config.fish"
+    dest: "{{ config_path }}/config.fish"
+    state: link
+
+- name: add to shells
+  shell: echo "/usr/local/bin/fish" | sudo tee -a /etc/shells
+
+- name: make default shell
+  shell: chsh -s /usr/local/bin/fish

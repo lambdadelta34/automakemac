@@ -1,0 +1,8 @@
+---
+- name: install ruby
+  shell: "rbenv install {{ ruby_ver }}"
+  args:
+    creates: "~/.rbenv/versions/{{ ruby_ver }}"
+
+- name: sets global version
+  shell: "rbenv global {{ ruby_ver }}"

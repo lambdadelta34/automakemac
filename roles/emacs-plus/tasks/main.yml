@@ -1,0 +1,10 @@
+---
+- name: tap emacs-plus
+  homebrew_tap:
+    name: d12frosted/emacs-plus
+    state: present
+
+- name: install emacs-plus
+  homebrew:
+    name: emacs-plus
+    state: present

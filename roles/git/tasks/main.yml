@@ -1,0 +1,6 @@
+---
+- name: Install git
+  homebrew:
+    name: git
+    state: present
+  notify: "apply config"
