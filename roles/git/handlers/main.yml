@@ -3,7 +3,7 @@
   git_config:
     name: user.name
     scope: global
-    value: "{{ name }}"
+    value: "{{ git_name }}"
   listen: "apply config"
 
 - name: set email
