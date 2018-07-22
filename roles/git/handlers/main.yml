@@ -3,14 +3,14 @@
   git_config:
     name: user.name
     scope: global
-    value: test
+    value: {{ name }}
   listen: "apply config"
 
 - name: set email
   git_config:
     name: user.email
     scope: global
-    value: test@test
+    value: {{ email }}
   listen: "apply config"
 
 - name: set co alias

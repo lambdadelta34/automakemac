@@ -1,8 +1,7 @@
 develop:
-	ansible-playbook -vvv -i hosts main.yml
+	ansible-playbook -i hosts main.yml -e "git_email=$(git_email) git_name=$(git_name)" -vvv
 	ln -sfn /usr/local/opt/emacs-plus/Emacs.app /Applications
-	fish && omf install lambda && exit
 develop_silent:
-	ansible-playbook -i hosts main.yml
+	ansible-playbook -i hosts main.yml -e "git_email=$(git_email) git_name=$(git_name)"
 check_develop:
-	ansible-playbook -vvv -i hosts main.yml --check
+	ansible-playbook -i hosts main.yml -vvv --check
