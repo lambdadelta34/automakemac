@@ -8,6 +8,10 @@ for ansible:
 
 `sudo pip install ansible`
 
+run makefile:
+
+`make develop git_name=NAME git_email=EMAIL`
+
 ## MANUAL things
 i havn't find any way to install omf themes, so you should run manualy:
 
