@@ -1,0 +1,221 @@
+" set lang
+" let $LANG = 'en'
+set fileencoding=utf-8
+
+call plug#begin('~/.local/share/nvim/plugged')
+Plug 'dracula/vim', { 'as': 'dracula' } " theme
+Plug 'scrooloose/nerdtree' " navigation tree
+" Plug 'Xuyuanp/nerdtree-git-plugin' " git info for nerdtree
+Plug 'vim-airline/vim-airline' " status bar
+Plug 'vim-airline/vim-airline-themes' " status bar themes
+Plug 'tpope/vim-surround' " vim surround
+Plug 'tpope/vim-commentary' " comment code
+Plug 'jiangmiao/auto-pairs' " paired symbols
+Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' } " fuzzy search
+Plug 'junegunn/fzf.vim' " fuzzy for vim
+Plug 'dyng/ctrlsf.vim' " code search and view
+Plug 'terryma/vim-multiple-cursors' " multiple cursors
+Plug 'airblade/vim-rooter' " project root
+Plug 'tpope/vim-fugitive' " git
+
+" autocomplete
+Plug 'ncm2/ncm2' " lib
+Plug 'roxma/nvim-yarp' " remote plugin framework
+Plug 'ncm2/ncm2-path' " path
+Plug 'ncm2/ncm2-tern' " js
+Plug 'ncm2/ncm2-vim' " vimscript
+"""""""""""
+
+" lsp
+Plug 'w0rp/ale' " linter and lsp client
+Plug 'autozimu/LanguageClient-neovim', { 'branch': 'next', 'do': 'bash install.sh' } " lsp client
+Plug 'vim-ruby/vim-ruby', { 'for': 'ruby' } " ruby support
+Plug 'tpope/vim-rails', { 'for': 'ruby' } " rails support
+Plug 'tpope/vim-dispatch', { 'for': 'ruby' } " async support for ruby
+Plug 'tpope/vim-endwise', { 'for': 'ruby' } " block autocomplete
+Plug 'slim-template/vim-slim', { 'for': 'slim' } " slim support
+Plug 'janko-m/vim-test' " vim test support
+Plug 'reasonml-editor/vim-reason-plus' " reason support
+Plug 'pangloss/vim-javascript', { 'for': 'javascript' } " js support
+Plug 'mxw/vim-jsx', { 'for': 'javascript' } " jsx support
+Plug 'elzr/vim-json', { 'for': 'json' } " better json
+Plug 'jparise/vim-graphql' " graphql support
+"""""""""""""""""""
+
+Plug 'ryanoasis/vim-devicons' " icons stuff
+call plug#end()
+
+" settings
+set number
+set cindent
+set tabstop=2
+set softtabstop=2
+set shiftwidth=2
+set expandtab
+set hlsearch
+set incsearch
+set splitright
+set clipboard=unnamed
+set hidden
+set noswapfile
+set encoding=utf-8
+
+let mapleader = "\<Space>"
+
+" mouse mode
+if has('mouse')
+  set mouse=a
+endif
+
+" forbid overriding syntax items on re-sourcing
+if !exists('g:syntax_on')
+	syntax enable
+endif
+
+" theme
+color dracula
+let g:airline_theme='dracula'
+
+" rooter settings
+let g:rooter_patterns = ['Makefile', 'Rakefile', 'mix.exs', '.git/']
+
+" nerdtree settings
+" let g:NERDTreeIndicatorMapCustom = {
+"     \ "Modified"  : "✹",
+"     \ "Staged"    : "✚",
+"     \ "Untracked" : "✭",
+"     \ "Renamed"   : "➜",
+"     \ "Unmerged"  : "═",
+"     \ "Deleted"   : "✖",
+"     \ "Dirty"     : "✗",
+"     \ "Clean"     : "✔︎",
+"     \ 'Ignored'   : '☒',
+"     \ "Unknown"   : "?"
+"     \ }
+
+let NERDTreeAutoDeleteBuffer = 1
+let NERDTreeMinimalUI = 1
+let NERDTreeMapOpenSplit = 'I'
+let NERDTreeMapToggleHidden = 'i'
+" nmap <leader>pt :NERDTreeToggle<CR>
+nmap <Tab> :NERDTreeToggle<CR>
+nmap <leader>pt :NERDTreeFind<CR>
+
+" multicursor
+let g:multi_cursor_select_all_word_key = '<C-a>'
+let g:multi_cursor_select_all_key = 'g<C-a>'
+
+" file manipulations
+nmap <leader>fs :w!<CR>
+nmap <leader>r :e<CR>
+nmap [e ddp
+nmap ]e ddkP
+vmap [e dp
+vmap ]e dkP
+
+" airline conf
+let g:airline#extensions#tabline#enabled = 1
+let g:airline#extensions#tabline#formatter = 'unique_tail'
+let g:airline_enable_fugitive=1
+
+" buffer manipulation
+nmap <leader>bn :bn<CR>
+nmap <leader>bp :bp<CR>
+nmap <leader>bf :bf<CR>
+nmap <leader>bx :%bd \| e#<CR>
+
+nmap <leader>bl :bl<CR>
+nmap <leader>bd :bd!<CR>
+nmap <leader>1 :b1<CR>
+nmap <leader>2 :b2<CR>
+nmap <leader>3 :b3<CR>
+nmap <leader>4 :b4<CR>
+nmap <leader>5 :b5<CR>
+nmap <leader>6 :b6<CR>
+nmap <leader>7 :b7<CR>
+nmap <leader>8 :b8<CR>
+nmap <leader>9 :b9<CR>
+
+" window manipulation
+nmap <leader>wd <C-w>c
+nmap <C-l> <C-w><Right>
+nmap <C-h> <C-w><Left>
+nmap <C-k> <C-w><Up>
+nmap <C-j> <C-w><Down>
+
+" vimrc manipulation
+nmap <leader>fed :e $MYVIMRC<CR>
+nmap <leader>feR :so $MYVIMRC<CR>
+
+" quit nvim
+nmap <leader>qq :q!<CR>
+
+" ctrlsf settings
+nmap <leader>pf <Plug>CtrlSFPrompt
+nmap <leader>* <Plug>CtrlSFCwordPath<CR>
+vmap <leader>* <Plug>CtrlSFCwordPath<CR>
+
+" search settings
+nmap <leader>ff :FZF<CR>
+nmap <leader>/ :Ag!<CR>
+nmap <leader>/w :Ag! <C-R><C-W><CR>
+" let $FZF_DEFAULT_COMMAND = 'ag --ignore assets'
+nmap // :nohlsearch<CR>
+
+" Ag search only content not filenames
+command! -bang -nargs=* Ag
+  \ call fzf#vim#ag(<q-args>,
+  \                 '--ignore assets --ignore node_modules',
+  \                 <bang>0 ? fzf#vim#with_preview({'options': '--delimiter : --nth 4..'}, 'up:60%')
+  \                         : fzf#vim#with_preview({'options': '--delimeter : --nth 4..'}, 'right:50%:hidden', '?'),
+  \                 <bang>0)
+
+" dev icons config
+let g:WebDevIconsOS = 'Darwin'
+
+" tests
+" let test#strategy = "dispatch"
+" let g:test#preserve_screen = 1
+nmap <leader>gtt :A<CR>
+nmap <leader>rtn :TestNearest<CR>
+nmap <leader>rtf :TestFile<CR>
+nmap <leader>rts :TestSuite<CR>
+nmap <leader>rtl :TestLast<CR>
+
+" enable ncm2 for all buffers
+autocmd BufEnter * call ncm2#enable_for_buffer()
+set completeopt=noinsert,menuone,noselect
+let g:ncm2#popup_limit = 10
+" imap <expr> <CR> (pumvisible() ? "\<c-y>\<cr>" : "\<CR>")
+imap <expr> <C-j> pumvisible() ? "\<C-n>" : "\<C-j>"
+imap <expr> <C-k> pumvisible() ? "\<C-p>" : "\<C-k>"
+
+" lsp and lang settings
+let g:LanguageClient_autoStart = 1
+let g:LanguageClient_serverCommands = {
+    \ 'ruby': ['solargraph', 'stdio'],
+    \ 'reason': ['ocaml-language-server', '--stdio'],
+    \ 'ocaml': ['ocaml-language-server', '--stdio'],
+    \ 'javascript': ['javascript-typescript-stdio'],
+    \ 'javascript.jsx': ['javascript-typescript-stdio'],
+    \}
+nmap <leader>K :call LanguageClient#textDocument_hover()<CR>
+nmap <leader>gd :call LanguageClient#textDocument_definition()<CR>
+
+" ale settings
+let g:ale_fix_on_save = 1
+let g:ale_linters = {
+  \ 'javascrtipt': ['eslint'],
+  \ 'ruby': ['rubocop'],
+  \}
+let g:ale_fixers = {
+  \ '*': ['remove_trailing_lines'],
+  \ 'javascript': ['eslint'],
+  \ 'ruby': ['rubocop'],
+  \ 'reason': ['refmt'],
+  \}
+
+" git shortcuts
+nmap <leader>gb :Gblame<CR>
+nmap <leader>gs :Gstatus<CR>
+nmap <leader>gd :Gdiff<CR>

@@ -6,3 +6,5 @@
     with_items:
       - the_silver_searcher
       - httpie
+      - stack
+      - yarn
