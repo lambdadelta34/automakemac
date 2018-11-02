@@ -213,7 +213,7 @@ let g:LanguageClient_serverCommands = {
     \ 'javascript.jsx': ['javascript-typescript-stdio'],
     \}
 nmap <leader>K :call LanguageClient#textDocument_hover()<CR>
-nmap <leader>gd :call LanguageClient#textDocument_definition()<CR>
+nmap <leader>gdd :call LanguageClient#textDocument_definition()<CR>
 
 " ale settings
 let g:ale_fix_on_save = 1
