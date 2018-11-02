@@ -23,6 +23,7 @@ Plug 'ncm2/ncm2' " lib
 Plug 'roxma/nvim-yarp' " remote plugin framework
 Plug 'ncm2/ncm2-path' " path
 Plug 'ncm2/ncm2-tern' " js
+Plug 'ncm2/ncm2-tmux' " tmux
 Plug 'ncm2/ncm2-vim' " vimscript
 """""""""""
 
@@ -58,7 +59,12 @@ set splitright
 set clipboard=unnamed
 set hidden
 set noswapfile
+set nobackup
+set nowritebackup
+set nowb
 set encoding=utf-8
+set lazyredraw
+set ttyfast
 
 let mapleader = "\<Space>"
 
@@ -75,6 +81,13 @@ endif
 " theme
 color dracula
 let g:airline_theme='dracula'
+
+" persistent undo
+if has('persistent_undo')
+  silent !mkdir ~/.vim/backups > /dev/null 2>&1
+  set undodir=~/.vim/backups
+  set undofile
+endif
 
 " rooter settings
 let g:rooter_patterns = ['Makefile', 'Rakefile', 'mix.exs', '.git/']
