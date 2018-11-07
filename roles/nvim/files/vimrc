@@ -17,6 +17,8 @@ Plug 'dyng/ctrlsf.vim' " code search and view
 Plug 'terryma/vim-multiple-cursors' " multiple cursors
 Plug 'airblade/vim-rooter' " project root
 Plug 'tpope/vim-fugitive' " git
+Plug 'airblade/vim-gitgutter' " git st in files
+Plug 'tpope/vim-repeat' " better .
 Plug 'wellle/targets.vim' " new text objects
 
 " autocomplete
@@ -67,6 +69,7 @@ set nowb
 set encoding=utf-8
 set lazyredraw
 set ttyfast
+set updatetime=100
 
 let mapleader = "\<Space>"
 
@@ -168,7 +171,11 @@ nmap <leader>qq :q!<CR>
 " ctrlsf settings
 nmap <leader>pf <Plug>CtrlSFPrompt
 nmap <leader>* <Plug>CtrlSFCwordPath<CR>
-vmap <leader>* <Plug>CtrlSFCwordPath<CR>
+vmap <leader>* <Plug>CtrlSFVwordExec<CR>
+
+" git gutter keys
+nmap ]h <Plug>GitGutterNextHunk
+nmap [h <Plug>GitGutterPrevHunk
 
 " search settings
 nmap <leader>ff :FZF<CR>
@@ -234,3 +241,4 @@ let g:ale_fixers = {
 nmap <leader>gb :Gblame<CR>
 nmap <leader>gs :Gstatus<CR>
 nmap <leader>gd :Gdiff<CR>
+nmap <leader>gp :Gpull<CR>
