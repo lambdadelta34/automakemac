@@ -17,6 +17,7 @@ Plug 'dyng/ctrlsf.vim' " code search and view
 Plug 'terryma/vim-multiple-cursors' " multiple cursors
 Plug 'airblade/vim-rooter' " project root
 Plug 'tpope/vim-fugitive' " git
+Plug 'wellle/targets.vim' " new text objects
 
 " autocomplete
 Plug 'ncm2/ncm2' " lib
@@ -41,6 +42,7 @@ Plug 'pangloss/vim-javascript', { 'for': 'javascript' } " js support
 Plug 'mxw/vim-jsx', { 'for': 'javascript' } " jsx support
 Plug 'elzr/vim-json', { 'for': 'json' } " better json
 Plug 'jparise/vim-graphql' " graphql support
+Plug 'moll/vim-node', { 'for': 'javascript' } " node support
 """""""""""""""""""
 
 Plug 'ryanoasis/vim-devicons' " icons stuff
