@@ -8,3 +8,14 @@
   homebrew:
     name: emacs-plus
     state: present
+
+- name: link dotemacs config
+  file:
+    src: "{{ playbook_dir }}/roles/emacs-plus/files/init.el"
+    dest: ~/.emacs.d/
+    state: link
+
+- name: install dracula-theme
+  git:
+    repo: https://github.com/dracula/emacs.git
+    dest: ~/.emacs.d/themes
