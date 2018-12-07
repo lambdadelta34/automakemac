@@ -55,10 +55,10 @@
 	doom-dracula-brighter-modeline t)
   (load-theme 'doom-dracula t)
   :config
-  (doom-themes-neotree-config)
+  (doom-themes-neotree-config))
   ;; (set-face-background 'region "red"))
-  (doom-themes-set-faces 'doom-dracula
-    (region :foreground "red")))
+  ; (doom-themes-set-faces 'doom-dracula
+  ;   (region :foreground "red")))
 (tool-bar-mode -1)
 (scroll-bar-mode -1)
 (menu-bar-mode -1)
