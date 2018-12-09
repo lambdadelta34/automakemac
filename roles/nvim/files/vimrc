@@ -45,6 +45,7 @@ Plug 'mxw/vim-jsx', { 'for': 'javascript' } " jsx support
 Plug 'elzr/vim-json', { 'for': 'json' } " better json
 Plug 'jparise/vim-graphql' " graphql support
 Plug 'moll/vim-node', { 'for': 'javascript' } " node support
+Plug 'neovimhaskell/haskell-vim', { 'for': 'haskell' }
 """""""""""""""""""
 
 Plug 'ryanoasis/vim-devicons' " icons stuff
@@ -70,6 +71,7 @@ set encoding=utf-8
 set lazyredraw
 set ttyfast
 set updatetime=500
+filetype plugin indent on
 
 let mapleader = "\<Space>"
 
@@ -93,6 +95,18 @@ if has('persistent_undo')
   set undodir=~/.vim/backups
   set undofile
 endif
+
+" Align 'then' two spaces after 'if'
+let g:haskell_indent_if = 2
+let g:haskell_indent_before_where = 2
+let g:haskell_enable_quantification = 1   " to enable highlighting of `forall`
+let g:haskell_enable_recursivedo = 1      " to enable highlighting of `mdo` and `rec`
+let g:haskell_enable_arrowsyntax = 1      " to enable highlighting of `proc`
+let g:haskell_enable_pattern_synonyms = 1 " to enable highlighting of `pattern`
+let g:haskell_enable_typeroles = 1        " to enable highlighting of type roles
+let g:haskell_enable_static_pointers = 1  " to enable highlighting of `static`
+let g:haskell_backpack = 1                " to enable highlighting of backpack keywords
+let g:haskell_classic_highlighting = 1
 
 " rooter settings
 let g:rooter_patterns = ['Makefile', 'Rakefile', 'mix.exs', '.git/']
@@ -236,11 +250,11 @@ nmap <leader>ls :call LanguageClient#textDocument_documentSymbol()<CR>
 
 " ale settings
 let g:ale_fix_on_save = 1
-" let g:ale_linters = {
-"   \ 'javascrtipt': ['eslint'],
-"   \ 'ruby': ['rubocop'],
-"   \ 'haskell': ['hie'],
-"   \}
+let g:ale_linters = {
+  \ 'javascrtipt': ['eslint'],
+  \ 'ruby': ['rubocop'],
+  \ 'haskell': ['hlint'],
+  \}
 hi link ALEError Error
 hi Warning term=underline cterm=underline ctermfg=Yellow gui=undercurl guisp=Gold
 hi link ALEWarning Warning
@@ -250,6 +264,7 @@ let g:ale_fixers = {
   \ 'javascript': ['eslint'],
   \ 'ruby': ['rubocop'],
   \ 'reason': ['refmt'],
+  \ 'haskell': ['hlint'],
   \}
 
 " git shortcuts

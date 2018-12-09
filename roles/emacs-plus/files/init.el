@@ -4,7 +4,7 @@
 ;   (add-to-list 'load-path "~/.emacs.d/elpa")
 ;   (require 'use-package))
 
-;; lazy load packages
+; lazy load packages
 (setq package-enable-at-startup nil)
 ;; add packages repo
 (add-to-list 'package-archives
@@ -29,8 +29,12 @@
 (turn-on-font-lock)
 ;; Ask "y" or "n" instead of "yes" or "no". Yes, laziness is great.
 (fset 'yes-or-no-p 'y-or-n-p)
+;; enable clipboard copy/paste
+(setq select-enable-clipboard t)
 ;; Highlight corresponding parentheses when cursor is on one
 (show-paren-mode t)
+;; autorefresh buffers
+(global-auto-revert-mode 1)
 ;; Highlight tabulations
 (setq-default highlight-tabs t)
 ;; Show trailing white spaces
@@ -47,15 +51,19 @@
 ;; set theme
 ;; (add-to-list 'custom-theme-load-path "~/.emacs.d/themes/dracula")
 ;; (load-theme 'dracula t)
-(use-package doom-themes
-  :ensure t
-  :init
-  (setq doom-neotree-file-icons t
-	doom-dracula-brighter-comments t
-	doom-dracula-brighter-modeline t)
-  (load-theme 'doom-dracula t)
-  :config
-  (doom-themes-neotree-config))
+(use-package dracula-theme
+    :ensure t
+    :config
+    (load-theme 'dracula t))
+;; (use-package doom-themes
+;;   :ensure t
+;;   :init
+;;   (setq doom-neotree-file-icons t
+;; 	doom-dracula-brighter-comments t
+;; 	doom-dracula-brighter-modeline t)
+;;   (load-theme 'doom-dracula t)
+;;   :config
+;;   (doom-themes-neotree-config))
   ;; (set-face-background 'region "red"))
   ; (doom-themes-set-faces 'doom-dracula
   ;   (region :foreground "red")))
@@ -151,34 +159,38 @@
 ;; evil mode stuff
 (use-package evil
   :ensure t
+  :preface
+  (defun copy-to-clipboard ()
+      (interactive)
+      (if (display-graphic-p)
+          (progn
+            (call-interactively 'clipboard-kill-ring-save)
+            )
+        (if (region-active-p)
+            (progn
+              (shell-command-on-region (region-beginning) (region-end) "pbcopy")
+              (deactivate-mark)))))
+
   :init
-  ;; (setq evil-insert-state-cursor '("red" bar)) ;; TODO: make cursor changing in terminal
   (setq-default evil-shift-width 2)
-  (setq evil-motion-state-modes nil
-        evil-disable-insert-state-bindings t)
+  (setq evil-motion-state-modes nil)
   :general
   (:states 'normal
     "C-k" 'evil-window-up
     "C-j" 'evil-window-down
     "C-h" 'evil-window-left
     "C-l" 'evil-window-right)
+  (:states 'visual
+    "y" 'copy-to-clipboard)
   (:states 'normal
     :prefix "SPC"
     "wn" 'evil-window-split
     "w/" 'evil-window-vsplit)
   :config
-  (evil-mode 1))
-  ;; (add-hook 'evil-insert-state-entry-hook (lambda () (setq-default cursor-type 'bar)))
-  ;; (add-hook 'evil-insert-state-exit-hook (lambda () (setq-default cursor-type 'box))))
-
-;; (use-package evil-terminal-cursor-changer
-;;   :ensure t
-;;   :unless window-system
-;;   :init
-;;   (setq evil-insert-state-cursor 'bar
-;;         evil-replace-state-cursor 'bar)
-;;   :config
-;;   (etcc-on))
+  (evil-mode 1)
+  (unless (display-graphic-p)
+      (add-hook 'evil-insert-state-entry-hook (lambda () (send-string-to-terminal "\033[5 q"))) ;; set cursor to bar
+      (add-hook 'evil-normal-state-entry-hook (lambda () (send-string-to-terminal "\033[0 q"))))) ;; set cursor to block
 
 (use-package evil-surround
   :ensure t
