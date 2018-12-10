@@ -22,7 +22,7 @@
 (add-to-list 'default-frame-alist '(width . 200))
 (add-to-list 'default-frame-alist '(height . 55))
 ;; force use of spaces
-(setq indent-tabs-mode nil)
+(setq-default indent-tabs-mode nil)
 ;; enable line numbers
 (global-display-line-numbers-mode)
 ;; same as syntax on in Vim
@@ -172,7 +172,7 @@
               (deactivate-mark)))))
 
   :init
-  (setq-default evil-shift-width 2)
+  ;; (setq-default evil-shift-width 2)
   (setq evil-motion-state-modes nil)
   :general
   (:states 'normal
