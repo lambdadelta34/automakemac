@@ -33,6 +33,8 @@
 (setq select-enable-clipboard t)
 ;; Highlight corresponding parentheses when cursor is on one
 (show-paren-mode t)
+;; tab widht
+;; (setq-default tab-width 2)
 ;; autorefresh buffers
 (global-auto-revert-mode 1)
 ;; Highlight tabulations
@@ -172,7 +174,6 @@
               (deactivate-mark)))))
 
   :init
-  ;; (setq-default evil-shift-width 2)
   (setq evil-motion-state-modes nil)
   :general
   (:states 'normal
@@ -180,7 +181,7 @@
     "C-j" 'evil-window-down
     "C-h" 'evil-window-left
     "C-l" 'evil-window-right)
-  (:states 'visual
+ (:states 'visual
     "y" 'copy-to-clipboard)
   (:states 'normal
     :prefix "SPC"
@@ -188,6 +189,9 @@
     "w/" 'evil-window-vsplit)
   :config
   (evil-mode 1)
+  (add-hook 'ruby-mode-hook
+            (function (lambda ()
+                        (setq evil-shift-width 2))))
   (unless (display-graphic-p)
       (add-hook 'evil-insert-state-entry-hook (lambda () (send-string-to-terminal "\033[5 q"))) ;; set cursor to bar
       (add-hook 'evil-normal-state-entry-hook (lambda () (send-string-to-terminal "\033[0 q"))))) ;; set cursor to block
