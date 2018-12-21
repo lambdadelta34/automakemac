@@ -48,7 +48,7 @@
 ;; stop creating #autosave# files
 (setq auto-save-default nil)
 ;; silent bell
-(setq ring-bell-function 'ignore )
+(setq ring-bell-function 'ignore)
 
 ;; set theme
 ;; (add-to-list 'custom-theme-load-path "~/.emacs.d/themes/dracula")
@@ -74,6 +74,12 @@
 (menu-bar-mode -1)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; packages
+;; mac $PATH finding
+;; (use-package exec-path-from-shell
+;;   :if (memq window-system '(mac ns))
+;;   :ensure t
+;;   :init
+;;   (exec-path-from-shell-initialize))
 ;; general
 (use-package general
   :ensure t
@@ -127,6 +133,12 @@
   (:states 'normal
     :prefix "SPC"
     "/" 'counsel-fzf))
+
+;; ag
+(use-package ag
+  :ensure t
+  :config
+  (setq ag-highlight-search t))
 
 ;; swiper
 (use-package swiper
@@ -192,6 +204,9 @@
   (add-hook 'ruby-mode-hook
             (function (lambda ()
                         (setq evil-shift-width 2))))
+  (add-hook 'js-mode-hook
+            (function (lambda ()
+                        (setq evil-shift-width 2))))
   (unless (display-graphic-p)
       (add-hook 'evil-insert-state-entry-hook (lambda () (send-string-to-terminal "\033[5 q"))) ;; set cursor to bar
       (add-hook 'evil-normal-state-entry-hook (lambda () (send-string-to-terminal "\033[0 q"))))) ;; set cursor to block
@@ -236,21 +251,21 @@
   (add-hook 'neo-after-create-hook
             (lambda (&rest _) (display-line-numbers-mode -1)))
   (add-hook 'neotree-mode-hook
-              (lambda ()
-                (define-key evil-normal-state-local-map (kbd "x") 'neotree-close-parent)
-                (define-key evil-normal-state-local-map (kbd "q") 'neotree-hide)
-                (define-key evil-normal-state-local-map (kbd "I") 'neotree-hidden-file-toggle)
-                (define-key evil-normal-state-local-map (kbd "z") 'neotree-stretch-toggle)
-                (define-key evil-normal-state-local-map (kbd "R") 'neotree-refresh)
-                (define-key evil-normal-state-local-map (kbd "m") 'neotree-rename-node)
-                (define-key evil-normal-state-local-map (kbd "c") 'neotree-create-node)
-                (define-key evil-normal-state-local-map (kbd "d") 'neotree-delete-node)
-                (define-key evil-normal-state-local-map (kbd "s") 'neotree-enter-vertical-split)
-                (define-key evil-normal-state-local-map (kbd "S") 'neotree-enter-horizontal-split)
-                (define-key evil-normal-state-local-map (kbd "RET") 'neotree-enter)))
+            (lambda ()
+              (define-key evil-normal-state-local-map (kbd "x") 'neotree-close-parent)
+              (define-key evil-normal-state-local-map (kbd "q") 'neotree-hide)
+              (define-key evil-normal-state-local-map (kbd "I") 'neotree-hidden-file-toggle)
+              (define-key evil-normal-state-local-map (kbd "z") 'neotree-stretch-toggle)
+              (define-key evil-normal-state-local-map (kbd "R") 'neotree-refresh)
+              (define-key evil-normal-state-local-map (kbd "m") 'neotree-rename-node)
+              (define-key evil-normal-state-local-map (kbd "c") 'neotree-create-node)
+              (define-key evil-normal-state-local-map (kbd "d") 'neotree-delete-node)
+              (define-key evil-normal-state-local-map (kbd "s") 'neotree-enter-vertical-split)
+              (define-key evil-normal-state-local-map (kbd "S") 'neotree-enter-horizontal-split)
+              (define-key evil-normal-state-local-map (kbd "RET") 'neotree-enter)))
   :general
   (:states 'normal
-    "TAB" 'neotree-toggle))
+           "TAB" 'neotree-toggle))
 
 ;; projectile
 (use-package projectile
@@ -342,13 +357,33 @@
   :init
   (add-hook 'reason-mode-hook (lambda ()
             (add-hook 'before-save-hook #'refmt-before-save))))
+(use-package js2-mode
+  :ensure t
+  :mode "\\.js\\'"
+  :config
+  (setq-default js2-strict-trailing-comma-warning nil))
+(use-package rjsx-mode
+  :ensure t)
 
 ;;;;;;;;;;;
 ;; syntax checking
 (use-package flycheck
   :ensure t
+  :preface
+  (defun eslint-from-node-modules ()
+    "function to find eslint in project folder, not globally"
+    (let ((root (locate-dominating-file
+                 (or (buffer-file-name) default-directory)
+                 (lambda (dir)
+                   (let ((eslint (expand-file-name "node_modules/.bin/eslint" dir)))
+                     (and eslint (file-executable-p eslint)))))))
+      (when root
+        (let ((eslint (expand-file-name "node_modules/.bin/eslint" root)))
+          (setq-local flycheck-javascript-eslint-executable eslint)))))
   :init
-  (global-flycheck-mode))
+  (global-flycheck-mode)
+  :config
+  (add-hook 'flycheck-mode-hook #'eslint-from-node-modules))
 
 ;; autocomplete
 (use-package company
@@ -376,3 +411,17 @@
   (smartparens-global-mode 1)
   (sp-pair "'" "'" :actions '(wrap)))
 ;;; init.el ends here
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(package-selected-packages
+   (quote
+    (exec-path-from-shell rjsx-mode web-mode which-key use-package smartparens rubocop reason-mode rainbow-mode projectile neotree js2-mode haskell-mode general flycheck flx evil-surround evil-nerd-commenter evil-args dumb-jump dracula-theme doom-themes counsel company-quickhelp))))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ )
