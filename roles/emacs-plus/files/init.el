@@ -14,13 +14,15 @@
   (package-refresh-contents)
   (package-install 'use-package))
 
-(require 'use-package)
-;; global config
+(require 'use-package) ;; global config
 ;; disable startup menu
 (setq inhibit-startup-screen t)
 ;; frame size
 (add-to-list 'default-frame-alist '(width . 200))
 (add-to-list 'default-frame-alist '(height . 55))
+
+(setq gc-cons-threshold (* 50 1000 1000))
+(setq gc-cons-threshold (* 2 1000 1000))
 ;; force use of spaces
 (setq-default indent-tabs-mode nil)
 ;; enable line numbers
@@ -54,9 +56,9 @@
 ;; (add-to-list 'custom-theme-load-path "~/.emacs.d/themes/dracula")
 ;; (load-theme 'dracula t)
 (use-package dracula-theme
-    :ensure t
-    :config
-    (load-theme 'dracula t))
+  :ensure t
+  :config
+  (load-theme 'dracula t))
 ;; (use-package doom-themes
 ;;   :ensure t
 ;;   :init
@@ -99,6 +101,7 @@
 ;; ivy
 (use-package ivy
   :ensure t
+  :defer t
   :diminish (ivy-mode . "")
   :init
   (ivy-mode 1)
@@ -127,6 +130,7 @@
 
 ;; counsel
 (use-package counsel
+  :defer t
   :ensure t
   :general
   ("M-x" 'counsel-M-x)
@@ -136,12 +140,14 @@
 
 ;; ag
 (use-package ag
+  :defer t
   :ensure t
   :config
   (setq ag-highlight-search t))
 
 ;; swiper
 (use-package swiper
+  :defer t
   :ensure t
   :general
   (:states 'normal
@@ -150,10 +156,12 @@
 
 ;; flx/fuzzy
 (use-package flx
+  :defer t
   :ensure t)
 
 ;; key menu
 (use-package which-key
+  :defer t
   :ensure t
   :init
   (which-key-mode)
@@ -164,6 +172,7 @@
 
 ;;required for evil
 (use-package undo-tree
+  :defer t
   :ensure t
   :config
   (global-undo-tree-mode))
@@ -172,6 +181,7 @@
 
 ;; evil mode stuff
 (use-package evil
+  :defer t
   :ensure t
   :preface
   (defun copy-to-clipboard ()
@@ -232,10 +242,12 @@
 
 ;; icons
 (use-package all-the-icons
+  :defer t
   :ensure t)
 
 ;; neotree
 (use-package neotree
+  :defer t
   :ensure t
   :preface
   (defun neotree-close-parent ()
@@ -269,6 +281,7 @@
 
 ;; projectile
 (use-package projectile
+  :defer 2
   :ensure t
   :preface
   (defun neotree-project-dir ()
@@ -298,6 +311,7 @@
 
 ;; goto definition
 (use-package dumb-jump
+  :defer 3
   :ensure t
   :config
   (setq dumb-jump-force-searcher 'ag
@@ -351,23 +365,31 @@
 ;;   (add-hook 'haskell-mode-hook 'eglot-ensure))
 
 (use-package haskell-mode
+  :defer t
   :ensure t)
 (use-package reason-mode
+  :defer t
   :ensure t
   :init
   (add-hook 'reason-mode-hook (lambda ()
             (add-hook 'before-save-hook #'refmt-before-save))))
+(use-package tuareg
+  :defer t
+  :ensure t)
 (use-package js2-mode
+  :defer t
   :ensure t
   :mode "\\.js\\'"
   :config
   (setq-default js2-strict-trailing-comma-warning nil))
 (use-package rjsx-mode
+  :defer t
   :ensure t)
 
 ;;;;;;;;;;;
 ;; syntax checking
 (use-package flycheck
+  :defer t
   :ensure t
   :preface
   (defun eslint-from-node-modules ()
@@ -387,6 +409,7 @@
 
 ;; autocomplete
 (use-package company
+  :defer t
   :ensure t
   :init
   (global-company-mode)
@@ -400,28 +423,16 @@
     "C-k" 'company-select-previous))
 
 (use-package company-quickhelp
+  :defer t
   :ensure t
   :init
   (company-quickhelp-mode))
 
 ;; smart parens
 (use-package smartparens
+  :defer t
   :ensure t
   :init
   (smartparens-global-mode 1)
   (sp-pair "'" "'" :actions '(wrap)))
 ;;; init.el ends here
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(package-selected-packages
-   (quote
-    (exec-path-from-shell rjsx-mode web-mode which-key use-package smartparens rubocop reason-mode rainbow-mode projectile neotree js2-mode haskell-mode general flycheck flx evil-surround evil-nerd-commenter evil-args dumb-jump dracula-theme doom-themes counsel company-quickhelp))))
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- )
