@@ -3,7 +3,7 @@
 set fileencoding=utf-8
 
 call plug#begin('~/.local/share/nvim/plugged')
-Plug 'dracula/vim', { 'as': 'dracula' } " theme
+" Plug 'dracula/vim' " theme
 Plug 'scrooloose/nerdtree' " navigation tree
 " Plug 'Xuyuanp/nerdtree-git-plugin' " git info for nerdtree
 Plug 'vim-airline/vim-airline' " status bar
@@ -47,9 +47,15 @@ Plug 'elzr/vim-json', { 'for': 'json' } " better json
 Plug 'jparise/vim-graphql' " graphql support
 Plug 'moll/vim-node', { 'for': 'javascript' } " node support
 Plug 'neovimhaskell/haskell-vim', { 'for': 'haskell' }
+" Plug 'sheerun/vim-polyglot'
 """""""""""""""""""
 
 Plug 'ryanoasis/vim-devicons' " icons stuff
+" Plug 'joshdick/onedark.vim'
+Plug 'liuchengxu/space-vim-dark'
+" Plug 'jdsimcoe/abstract.vim'
+" Plug 'whatyouhide/vim-gotham'
+" Plug 'nanotech/jellybeans.vim'
 call plug#end()
 
 " settings
@@ -84,11 +90,41 @@ endif
 " forbid overriding syntax items on re-sourcing
 if !exists('g:syntax_on')
 	syntax enable
+  syntax on
 endif
 
 " theme
-color dracula
-let g:airline_theme='dracula'
+" colorscheme jellybeans
+" color dracula
+" let g:airline_theme='dracula'
+
+let g:airline_theme='violet'
+colorscheme space-vim-dark
+" http://www.calmar.ws/vim/256-xterm-24bit-rgb-color-chart.html
+hi Comment cterm=italic
+hi Normal ctermbg=NONE
+hi LineNr ctermbg=NONE
+hi SignColumn ctermbg=NONE
+" Ale
+hi ALEInfo cterm=underline
+" ruby hi
+hi rubySymbol ctermfg=41
+hi rubyString ctermfg=229
+hi rubyCapitalizedMethod ctermfg=213
+hi rubyBlockParameter ctermfg=87
+hi rubyConditional ctermfg=50
+hi rubyMethodExceptional ctermfg=9
+""""""
+
+" let g:onedark_terminal_italics = 1
+" let g:airline_theme='onedark'
+" colorscheme onedark
+
+" colorscheme abstract
+
+" let g:airline_theme='gotham256'
+" let g:gotham_airline_emphasised_insert = 0
+" colorscheme gotham256
 
 " persistent undo
 if has('persistent_undo')
@@ -107,7 +143,7 @@ let g:haskell_enable_pattern_synonyms = 1 " to enable highlighting of `pattern`
 let g:haskell_enable_typeroles = 1        " to enable highlighting of type roles
 let g:haskell_enable_static_pointers = 1  " to enable highlighting of `static`
 let g:haskell_backpack = 1                " to enable highlighting of backpack keywords
-let g:haskell_classic_highlighting = 1
+" let g:haskell_classic_highlighting = 1
 
 " rooter settings
 let g:rooter_patterns = ['Makefile', 'Rakefile', 'mix.exs', '.git/']
@@ -250,13 +286,17 @@ imap <expr> <C-k> pumvisible() ? "\<C-p>" : "\<C-k>"
 " nmap <leader>ls :call LanguageClient#textDocument_documentSymbol()<CR>
 
 " ale settings
+let g:ale_completion_enabled = 1
 let g:ale_fix_on_save = 1
+let g:ale_set_highlights = 0
+let g:airline#extensions#ale#enabled = 1
 let g:ale_linters = {
   \ 'javascrtipt': ['eslint'],
   \ 'ruby': ['rubocop'],
+  \ 'haskell': ['hlint'],
   \}
 hi link ALEError Error
-hi Warning term=underline cterm=underline ctermfg=Yellow gui=undercurl guisp=Gold
+hi Warning ctermfg=Red
 hi link ALEWarning Warning
 hi link ALEInfo SpellCap
 let g:ale_fixers = {
@@ -264,6 +304,7 @@ let g:ale_fixers = {
   \ 'javascript': ['eslint'],
   \ 'ruby': ['rubocop'],
   \ 'reason': ['refmt'],
+  \ 'haskell': ['hlint'],
   \}
 
 " git shortcuts
@@ -271,3 +312,13 @@ nmap <leader>gb :Gblame<CR>
 nmap <leader>gs :Gstatus<CR>
 nmap <leader>gd :Gdiff<CR>
 nmap <leader>gp :Gpull<CR>
+
+nmap <leader>sn :call <SID>SynStack()<CR>
+function! <SID>SynStack()
+  if !exists("*synstack")
+    return
+  endif
+  echo map(synstack(line('.'), col('.')), 'synIDattr(v:val, "name")')
+endfunc
+
+nmap <leader>asd :so $VIMRUNTIME/syntax/hitest.vim<CR>

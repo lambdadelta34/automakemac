@@ -1,0 +1,9 @@
+---
+- name: install nix
+  shell: sh (curl https://nixos.org/nix/install | psub) --no-daemon
+
+- name: link nix generated profile
+  file:
+    src: "{{ playbook_dir }}/roles/nix/files/nix-daemon.fish"
+    dest: ~/.config/fish/nix-daemon.fish
+    state: link
