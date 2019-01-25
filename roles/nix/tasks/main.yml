@@ -7,3 +7,9 @@
     src: "{{ playbook_dir }}/roles/nix/files/nix-daemon.fish"
     dest: ~/.config/fish/nix-daemon.fish
     state: link
+
+- name: link daemon to start up
+  file:
+    src: "{{ playbook_dir }}/roles/nix/files/nix.daemon.runner.plist"
+    dest: /Library/LaunchDaemons
+    state: link
