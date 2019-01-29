@@ -22,3 +22,13 @@
 
 - name: make default shell
   shell: chsh -s /usr/local/bin/fish
+
+- name: link functions
+  file:
+    src: "{{ playbook_dir }}/roles/fish/files/{{ item }}"
+    dest: "{{ config_path }}/functions/{{ item }}.fish"
+    state: link
+    with_items:
+      - gcb
+      - gfb
+      - gcbh
