@@ -29,6 +29,8 @@ Plug 'ncm2/ncm2-tern' " js
 Plug 'ncm2/ncm2-tmux' " tmux
 Plug 'ncm2/ncm2-vim' " vimscript
 """""""""""
+Plug 'iamcco/markdown-preview.nvim', { 'do': { -> mkdp#util#install() }}
+"""""""""""
 
 " lsp
 Plug 'w0rp/ale' " linter and lsp client
@@ -191,7 +193,7 @@ let g:airline_enable_fugitive=1
 nmap <leader>bn :bn<CR>
 nmap <leader>bp :bp<CR>
 nmap <leader>bf :bf<CR>
-nmap <leader>bx :%bd \| e#<CR>
+nmap <leader>bx :%bd\|e#\|bd#<CR>
 
 nmap <leader>bl :bl<CR>
 nmap <leader>bd :bd!<CR>
