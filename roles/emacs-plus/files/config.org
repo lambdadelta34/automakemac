@@ -1,0 +1,231 @@
+#+TITLE: emacs config
+#+OPTIONS: toc:nil
+
+* Preferences
+Removes unnecessary window docaration.
+
+#+BEGIN_SRC emacs-lisp
+(tool-bar-mode -1)
+(scroll-bar-mode -1)
+(menu-bar-mode -1)
+#+END_SRC
+
+Disable startup menu
+
+#+BEGIN_SRC emacs-lisp
+(setq inhibit-startup-screen t)
+#+END_SRC
+
+Window frame size
+
+#+BEGIN_SRC emacs-lisp
+(add-to-list 'default-frame-alist '(width . 200))
+(add-to-list 'default-frame-alist '(height . 55))
+#+END_SRC
+
+Garbage collection threshold to 20 mb
+
+#+BEGIN_SRC emacs-lisp
+(setq gc-cons-threshold (* 20 1000 1000))
+#+END_SRC
+
+Force use of spaces instead of tabs, blahh.
+
+#+BEGIN_SRC emacs-lisp
+(setq-default indent-tabs-mode nil)
+#+END_SRC
+
+Enable line numbers. I was confused when didn't see line numbers by default.
+
+#+BEGIN_SRC emacs-lisp
+(global-display-line-numbers-mode)
+#+END_SRC
+
+Ask "y" or "n" instead of "yes" or "no". Yes, laziness is great.
+
+#+BEGIN_SRC emacs-lisp
+(fset 'yes-or-no-p 'y-or-n-p)
+#+END_SRC
+
+Highlight corresponding parentheses when cursor is on one.
+
+#+BEGIN_SRC emacs-lisp
+(show-paren-mode t)
+#+END_SRC
+
+Autorefresh buffers when file changes on disk.
+
+#+BEGIN_SRC emacs-lisp
+(global-auto-revert-mode 1)
+#+END_SRC
+
+Remove useless whitespace before saving a file.
+
+#+BEGIN_SRC emacs-lisp
+(add-hook 'before-save-hook 'delete-trailing-whitespace)
+#+END_SRC
+
+Stop creating annoying backup~ files.
+
+#+BEGIN_SRC emacs-lisp
+(setq make-backup-files nil)
+#+END_SRC
+
+Stop creating not less annoying #autosave# files.
+
+#+BEGIN_SRC emacs-lisp
+(setq auto-save-default nil)
+#+END_SRC
+
+Silent ring bell(really, REALLY? DO I REALLY HAVE TO DO THIS??)
+
+#+BEGIN_SRC emacs-lisp
+(setq ring-bell-function 'ignore)
+#+END_SRC
+
+Use command as meta key.
+
+#+BEGIN_SRC emacs-lisp
+(setq mac-command-modifier 'meta
+      mac-option-modifier 'none)
+#+END_SRC
+
+Org-mode for *scratch* file.
+
+#+BEGIN_SRC emacs-lisp
+(setq initial-major-mode 'org-mode)
+#+END_SRC
+
+* Configuration
+I forgot everything i've done in my previous init.el file, so i decided to start another one from scratch in org-mode to be able to write a lot about stuff happening here.
+Also, i'd like to start using org-mode, finally.
+
+** Config initialization
+So, we need this to require emacs default package manager and be able to initialize them before configuring them.
+[[https://wikemacs.org/wiki/Package.el] [link to the doc]]
+Also add melpa to package manager.
+
+#+BEGIN_SRC emacs-lisp
+(package-initialize)
+(require 'package)
+(add-to-list 'package-archives
+             '("melpa" . "https://melpa.org/packages/") t)
+#+END_SRC
+
+This little dude here is enables lazy loading.
+
+#+BEGIN_SRC emacs-lisp
+(setq package-enable-at-startup nil)
+#+END_SRC
+
+** use-package
+This is where the fun begins. It is a elisp macro which goal is to simplify package configuration.
+[[https://github.com/jwiegley/use-package] [github link]]
+Some elisp code to install it if it isn't yet. And ensure that all packages would be installed automatically if they are not.
+
+#+BEGIN_SRC emacs-lisp
+(unless (package-installed-p 'use-package)
+  (package-refresh-contents)
+  (package-install 'use-package))
+
+(require 'use-package)
+(setq use-package-always-ensure t)
+#+END_SRC
+
+* Packages
+
+** Genaral
+General is very convenient way to bind keys. [[https://github.com/noctuid/general.el] [github link]]
+
+#+BEGIN_SRC emacs-lisp
+(use-package general
+  :config
+  (general-evil-setup t)
+  (general-define-key
+    :states '(normal insert emacs)
+    :prefix "SPC"
+    :non-normal-prefix "C-SPC"
+    "wd" 'delete-window
+    "wc" 'delete-other-windows
+    "fed" (lambda () (interactive) (find-file user-init-file))
+    "feR" 'eval-buffer
+    "fs" 'save-buffer
+    "qq" 'save-buffers-kill-terminal))
+#+END_SRC
+
+** EVIL mode
+Because i like vim too. [[https://github.com/emacs-evil/evil] [github link]]
+
+#+BEGIN_SRC emacs-lisp
+(use-package evil
+  :defer t
+  :preface
+  (defun copy-to-clipboard ()
+         (interactive)
+         (if (display-graphic-p)
+             (progn
+               (call-interactively 'clipboard-kill-ring-save))
+           (if (region-active-p)
+               (progn
+                 (shell-command-on-region (region-beginning) (region-end) "pbcopy")
+                 (deactivate-mark)))))
+
+  :init
+  (setq evil-motion-state-modes nil)
+  :general
+  (:states 'normal
+    "C-k" 'evil-window-up
+    "C-j" 'evil-window-down
+    "C-h" 'evil-window-left
+    "C-l" 'evil-window-right)
+  (:states 'visual
+    "y" 'copy-to-clipboard)
+  (:states 'normal
+    :prefix "SPC"
+    "wn" 'evil-window-split
+    "w/" 'evil-window-vsplit)
+  :config
+  (evil-mode 1)
+  (add-hook 'ruby-mode-hook
+            (function (lambda ()
+                        (setq evil-shift-width 2))))
+  (add-hook 'js-mode-hook
+            (function (lambda ()
+                        (setq evil-shift-width 2))))
+  (unless (display-graphic-p) ;; if in terminal mode
+          (add-hook 'evil-insert-state-entry-hook (lambda () (send-string-to-terminal "\033[5 q"))) ;; set cursor to bar
+          (add-hook 'evil-normal-state-entry-hook (lambda () (send-string-to-terminal "\033[0 q"))))) ;; set cursor to block
+#+END_SRC
+
+Surround mode for EVIL. [[https://github.com/emacs-evil/evil-surround] [github link]]
+
+#+BEGIN_SRC emacs-lisp
+(use-package evil-surround
+  :defer t
+  :config
+  (global-evil-surround-mode 1))
+#+END_SRC
+
+Adds args motions and text object. [[https://github.com/wcsmith/evil-args] [github link]]
+
+#+BEGIN_SRC emacs-lisp
+(use-package evil-args
+  :defer t
+  :general
+  (:keymaps 'evil-inner-text-objects-map
+    "a" 'evil-inner-arg)
+  (:keymaps 'evil-outer-text-objects-map
+    "a" 'evil-outer-arg))
+#+END_SRC
+
+Code commentary. [[https://github.com/redguardtoo/evil-nerd-commenter] [github link]]
+
+#+BEGIN_SRC emacs-lisp
+(use-package evil-nerd-commenter
+  :defer t
+  :general
+  (:states 'normal
+    "gcc" 'evilnc-comment-or-uncomment-lines)
+  (:states 'visual
+    "gc" 'evilnc-comment-or-uncomment-lines))
+#+END_SRC

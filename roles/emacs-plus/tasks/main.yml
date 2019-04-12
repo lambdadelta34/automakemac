@@ -15,6 +15,12 @@
     dest: ~/.emacs.d/
     state: link
 
+- name: link config org file
+  file:
+    src: "{{ playbook_dir }}/roles/emacs-plus/files/config.org"
+    dest: ~/.emacs.d/
+    state: link
+
 - name: install dracula-theme
   git:
     repo: https://github.com/dracula/emacs.git

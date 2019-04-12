@@ -168,6 +168,7 @@ let NERDTreeAutoDeleteBuffer = 1
 let NERDTreeMinimalUI = 1
 let NERDTreeMapOpenSplit = 'I'
 let NERDTreeMapToggleHidden = 'i'
+let NERDTreeIgnore = ['node_modules']
 " nmap <leader>pt :NERDTreeToggle<CR>
 nmap <Tab> :NERDTreeToggle<CR>
 nmap <leader>pt :NERDTreeFind<CR>
