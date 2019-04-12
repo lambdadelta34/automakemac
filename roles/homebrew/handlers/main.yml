@@ -9,3 +9,7 @@
       - stack
       - yarn
       - tmux
+      - ctags
+      - global
+      - cmake
+      - automake

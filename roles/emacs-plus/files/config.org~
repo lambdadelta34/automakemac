@@ -1,6 +1,0 @@
-#+TITLE: emacs config
-
-#+BEGIN_SRC emacs-lisp
-(package-initialize)
-(message "hello")
-#+END_SRC

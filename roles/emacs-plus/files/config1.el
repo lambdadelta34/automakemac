@@ -1,10 +1,6 @@
 ;; set theme
 ;; (add-to-list 'custom-theme-load-path "~/.emacs.d/themes/dracula")
 ;; (load-theme 'dracula t)
-(use-package dracula-theme
-  :ensure t
-  :config
-  (load-theme 'dracula t))
 ;; (use-package doom-themes
 ;;   :ensure t
 ;;   :init
@@ -25,87 +21,6 @@
 ;;   :ensure t
 ;;   :init
 ;;   (exec-path-from-shell-initialize))
-;; ivy
-(use-package ivy
-  :ensure t
-  :defer t
-  :diminish (ivy-mode . "")
-  :init
-  (ivy-mode 1)
-  (setq ivy-re-builders-alist
-      '((swiper . ivy--regex-plus)
-        (t      . ivy--regex-fuzzy)))
-  :general
-  (:keymaps 'ivy-minibuffer-map
-    "C-j" '(ivy-next-line :which-key "next line")
-    "C-k" '(ivy-previous-line :which-key "prev line")
-    "C-h" '(ivy-beginning-of-buffer :which-key "beginning of ivy minibuffer")
-    "C-l" '(ivy-end-of-buffer :which-key "end if ivy mini buffer")
-    "RET" '(ivy-immediate-done :which-key "exits fro mivy search without selecting curent item")
-    "C-v" '(ivy-scroll-up-command :which-key "page up ivy buffer")
-    "M-v" '(ivy-scroll-down-command :which-key "page down ivy buffer"))
-  (:states 'normal
-    :prefix "SPC"
-    "bs" 'ivy-switch-buffer
-    "bn" 'next-buffer
-    "bd" 'kill-this-buffer
-    "bp" 'previous-buffer)
-
-  :config
-  (setq ivy-use-virtual-buffers t
-    ivy-height 20
-    ivy-count-format "(%d/%d) "))
-
-;; counsel
-(use-package counsel
-  :defer t
-  :ensure t
-  :general
-  ("M-x" 'counsel-M-x)
-  (:states 'normal
-    :prefix "SPC"
-    "/" 'counsel-fzf))
-
-;; ag
-(use-package ag
-  :defer t
-  :ensure t
-  :config
-  (setq ag-highlight-search t))
-
-;; swiper
-(use-package swiper
-  :defer t
-  :ensure t
-  :general
-  (:states 'normal
-    "C-s" 'swiper
-    "/" 'swiper))
-
-;; flx/fuzzy
-(use-package flx
-  :defer t
-  :ensure t)
-
-;; key menu
-(use-package which-key
-  :defer t
-  :ensure t
-  :init
-  (which-key-mode)
-  :config
-  (setq which-key-sort-order 'which-key-key-order-alpha
-        which-key-side-window-max-height 0.33
-        which-key-idle-delay 0.5))
-
-;;required for evil
-(use-package undo-tree
-  :defer t
-  :ensure t
-  :config
-  (global-undo-tree-mode))
-(use-package goto-chg
-  :ensure t)
 
 ;; icons
 (use-package all-the-icons
@@ -147,50 +62,21 @@
            "TAB" 'neotree-toggle))
 
 ;; projectile
-(use-package projectile
-  :defer 2
-  :ensure t
-  :preface
-  (defun neotree-project-dir ()
-    "Open NeoTree using the git root."
-    (interactive)
-    (let ((project-dir (projectile-project-root))
-          (file-name (buffer-file-name)))
-      (neotree-toggle)
-      (if project-dir
-          (if (neo-global--window-exists-p)
-              (progn
-                (neotree-dir project-dir)
-                (neotree-find file-name)))
-        (message "Could not find git project root."))))
-  :init
-  (projectile-mode +1)
-  (setq projectile-completion-system 'ivy
-        projectile-require-project-root nil
-        projectile-enable-caching t)
-  :general
-  (:states 'normal
-    :keymaps 'projectile-mode-map
-    :prefix "SPC"
-    "p" 'projectile-command-map
-    "pt" 'neotree-project-dir
-    "ff" 'projectile-find-file))
-
 ;; goto definition
-(use-package dumb-jump
-  :defer 3
-  :ensure t
-  :config
-  (setq dumb-jump-force-searcher 'ag
-        dumb-jump-aggressive nil
-	dumb-jump-selector 'ivy)
-  :general
-  (:states '(normal insert)
-    :prefix "SPC"
-    :non-normal-prefix "M-SPC"
-    "jd" 'dumb-jump-go
-    "jb" 'dumb-jump-back
-    "jq" 'dumb-jump-quick-look))
+; (use-package dumb-jump
+;   :defer 3
+;   :ensure t
+;   :config
+;   (setq dumb-jump-force-searcher 'ag
+;         dumb-jump-aggressive nil
+; 	dumb-jump-selector 'ivy)
+;   :general
+;   (:states '(normal insert)
+;     :prefix "SPC"
+;     :non-normal-prefix "M-SPC"
+;     "jd" 'dumb-jump-go
+;     "jb" 'dumb-jump-back
+;     "jq" 'dumb-jump-quick-look))
 
 ;; lsp
 ; (use-package lsp-haskell
@@ -231,27 +117,6 @@
 ;;   (add-hook 'reason-mode-hook 'eglot-ensure)
 ;;   (add-hook 'haskell-mode-hook 'eglot-ensure))
 
-(use-package haskell-mode
-  :defer t
-  :ensure t)
-(use-package reason-mode
-  :defer t
-  :ensure t
-  :init
-  (add-hook 'reason-mode-hook (lambda ()
-            (add-hook 'before-save-hook #'refmt-before-save))))
-(use-package tuareg
-  :defer t
-  :ensure t)
-(use-package js2-mode
-  :defer t
-  :ensure t
-  :mode "\\.js\\'"
-  :config
-  (setq-default js2-strict-trailing-comma-warning nil))
-(use-package rjsx-mode
-  :defer t
-  :ensure t)
 
 ;;;;;;;;;;;
 ;; syntax checking
