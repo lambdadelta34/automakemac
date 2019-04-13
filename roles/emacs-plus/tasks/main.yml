@@ -21,7 +21,8 @@
     dest: ~/.emacs.d/
     state: link
 
-- name: install dracula-theme
-  git:
-    repo: https://github.com/dracula/emacs.git
-    dest: ~/.emacs.d/themes
+- name: link daemon to start up
+  file:
+    src: "{{ playbook_dir }}/roles/emacs-plus/files/gnu.emacs.daemon.runner.plist"
+    dest: /Library/LaunchDaemons
+    state: link

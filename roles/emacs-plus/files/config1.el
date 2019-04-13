@@ -61,7 +61,6 @@
   (:states 'normal
            "TAB" 'neotree-toggle))
 
-;; projectile
 ;; goto definition
 ; (use-package dumb-jump
 ;   :defer 3
@@ -117,27 +116,6 @@
 ;;   (add-hook 'reason-mode-hook 'eglot-ensure)
 ;;   (add-hook 'haskell-mode-hook 'eglot-ensure))
 
-
-;;;;;;;;;;;
-;; syntax checking
-(use-package flycheck
-  :defer t
-  :ensure t
-  :preface
-  (defun eslint-from-node-modules ()
-    "function to find eslint in project folder, not globally"
-    (let ((root (locate-dominating-file
-                 (or (buffer-file-name) default-directory)
-                 (lambda (dir)
-                   (let ((eslint (expand-file-name "node_modules/.bin/eslint" dir)))
-                     (and eslint (file-executable-p eslint)))))))
-      (when root
-        (let ((eslint (expand-file-name "node_modules/.bin/eslint" root)))
-          (setq-local flycheck-javascript-eslint-executable eslint)))))
-  :init
-  (global-flycheck-mode)
-  :config
-  (add-hook 'flycheck-mode-hook #'eslint-from-node-modules))
 
 ;; autocomplete
 (use-package company
