@@ -17,15 +17,6 @@ Also add melpa to package manager.
              '("melpa" . "https://melpa.org/packages/") t)
 #+END_SRC
 
-Mac os use PATH set by user shell. Just in case.
-
-#+BEGIN_SRC emacs-lisp
-(use-package exec-path-from-shell
-  :if (memq window-system '(mac ns))
-  :config
-  (exec-path-from-shell-initialize))
-#+END_SRC
-
 This little dude here is enables lazy loading.
 
 #+BEGIN_SRC emacs-lisp
@@ -44,6 +35,15 @@ Some elisp code to install it if it isn't yet. And ensure that all packages woul
 
 (require 'use-package)
 (setq use-package-always-ensure t)
+#+END_SRC
+
+Mac os use PATH set by user shell. Just in case.
+
+#+BEGIN_SRC emacs-lisp
+(use-package exec-path-from-shell
+  :if (memq window-system '(mac ns))
+  :config
+  (exec-path-from-shell-initialize))
 #+END_SRC
 
 * Preferences
@@ -240,10 +240,7 @@ It is strange that evil mode doesn't init when i use =:general= keyword. So i us
                         (setq evil-shift-width 2))))
   (add-hook 'js-mode-hook
             (function (lambda ()
-                        (setq evil-shift-width 2))))
-  (unless (display-graphic-p)
-    (add-hook 'evil-insert-state-entry-hook (lambda () (send-string-to-terminal "\033[5 q"))) ;; set cursor to bar
-    (add-hook 'evil-normal-state-entry-hook (lambda () (send-string-to-terminal "\033[0 q"))))) ;; set cursor to block
+                        (setq evil-shift-width 2)))))
 #+END_SRC
 
 Surround mode for EVIL. [[https://github.com/emacs-evil/evil-surround][github link]]
@@ -275,6 +272,17 @@ Code commentary. [[https://github.com/redguardtoo/evil-nerd-commenter][github li
     "gcc" 'evilnc-comment-or-uncomment-lines)
   (:states 'visual
     "gc" 'evilnc-comment-or-uncomment-lines))
+#+END_SRC
+
+*** Evil-daemon problem.
+:PROPERTIES:
+:CUSTOM_ID: evil-daemon
+:END:
+
+#+BEGIN_SRC emacs-lisp
+;;  (unless (display-graphic-p)
+;;    (add-hook 'evil-insert-state-entry-hook (lambda () (send-string-to-terminal "\033[5 q"))) ;; set cursor to bar
+;;    (add-hook 'evil-normal-state-entry-hook (lambda () (send-string-to-terminal "\033[0 q"))))) ;; set cursor to block
 #+END_SRC
 
 ** Info mode
@@ -359,6 +367,13 @@ Search for ivy.
 
 ** Org stuff
 
+Just for org-mode config.
+
+#+BEGIN_SRC emacs-lisp
+(use-package org-mode
+  :ensure nil)
+#+END_SRC
+
 Pretty bullets.
 
 #+BEGIN_SRC emacs-lisp
@@ -392,7 +407,7 @@ Projects, projects everywhere
     :keymaps 'projectile-mode-map
     :prefix "SPC"
     "p" 'projectile-command-map
-    "ff" 'counsel-projectile-find-file))
+    "ff" 'projectile-find-file))
 #+END_SRC
 
 Counsel for projectile.
@@ -595,8 +610,11 @@ And rjsx.
 ** LSP
 ** Autocompleting
 * Problems to solve
-** .dir-locals.el with ranger
+** TODO .dir-locals.el with ranger
 It just freezes. Fix that.
-** emacs --daemon doesn't open files
-  Strange shit with termcap. "Device is not a termcap terminal device"
-** emacs --daemon doesn't know about projects at startup
+** DONE emacs --daemon doesn't open files
+Strange thing with termcap. "Device is not a termcap terminal device".
+Happend to be some bug with evil mode post-command-hook (evil-mode-check-buffers).
+[[#evil-daemon]] - caused problem. I gotta look into how to make it lazy.
+** DONE emacs --daemon doesn't know about projects at startup
+Related to evil stuff. [[#evil-daemon]] problem.
