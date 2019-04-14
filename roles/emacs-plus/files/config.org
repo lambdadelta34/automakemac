@@ -370,7 +370,7 @@ Search for ivy.
 Just for org-mode config.
 
 #+BEGIN_SRC emacs-lisp
-(use-package org-mode
+(use-package org
   :ensure nil)
 #+END_SRC
 
@@ -572,6 +572,26 @@ Comes with [[https://github.com/emacs-lsp/lsp-ui][lsp-ui]].
 ;;   :commands lsp-ui-mode
 ;;   :config
 ;;   (add-hook 'ruby-mode-hook 'flycheck-mode))
+#+END_SRC
+
+Try [[https://github.com/joaotavora/eglot][eglot]].
+
+#+BEGIN_SRC emacs-lisp
+(use-package eglot
+  :config
+  (add-to-list 'eglot-server-programs '(ruby-mode . ("solargraph" "stdio")))
+  (add-to-list 'eglot-server-programs '(caml-mode . ("ocaml-language-server" "--stdio")))
+  (add-to-list 'eglot-server-programs '(js-mode . ("javascript-typescript-stdio")))
+  (add-to-list 'eglot-server-programs '(rjsx-mode . ("javascript-typescript-stdio")))
+  (add-to-list 'eglot-server-programs '(reason-mode . ("ocaml-language-server" "--stdio")))
+  (add-to-list 'eglot-server-programs '(haskell-mode . ("hie-wrapper")))
+
+  (add-hook 'ruby-mode-hook 'eglot-ensure)
+  (add-hook 'caml-mode-hook 'eglot-ensure)
+  (add-hook 'js-mode-hook 'eglot-ensure)
+  (add-hook 'rjsx-mode 'eglot-ensure)
+  (add-hook 'reason-mode-hook 'eglot-ensure)
+  (add-hook 'haskell-mode-hook 'eglot-ensure))
 #+END_SRC
 
 ** Programming
