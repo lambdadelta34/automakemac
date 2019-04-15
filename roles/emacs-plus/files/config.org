@@ -160,7 +160,7 @@ Dracula, hocho, just a little bite.
 
 * Packages
 
-** Genaral
+** Genaral(general.el, not general config)
 General is very convenient way to bind keys. [[https://github.com/noctuid/general.el][github link]]
 
 #+BEGIN_SRC emacs-lisp
@@ -222,7 +222,6 @@ It is strange that evil mode doesn't init when i use =:general= keyword. So i us
   (evil-mode 1)
   (general-define-key
     :states '(normal insert)
-    "C-i" 'eshell
     "C-k" 'evil-window-up
     "C-j" 'evil-window-down
     "C-h" 'evil-window-left
@@ -493,6 +492,9 @@ Gitgutter
   (ranger-override-dired-mode 'ranger)
   (add-hook 'ranger-mode-hook 'all-the-icons-dired-mode)
   (general-define-key
+    :states '(normal insert visual)
+    "TAB" 'ranger)
+  (general-define-key
     :states 'normal
     :prefix "SPC"
     "d" 'ranger))
@@ -557,6 +559,23 @@ I'm not sure yet if i need it. We'll see.
 
 ** Term
 
+Eshell config.
+
+#+BEGIN_SRC emacs-lisp
+(use-package eshell
+  :ensure nil
+  :config
+  (add-hook
+    'eshell-mode-hook
+    (lambda ()
+      (setq pcomplete-cycle-completions nil)))
+  (general-define-key
+    :states '(normal insert)
+    "C-," 'eshell)) ;; "C-i" causes starting eshell with TAB too. crazy stuff
+#+END_SRC
+
+Completion for fish.
+
 #+BEGIN_SRC emacs-lisp
 (use-package fish-completion
   :if (executable-find "fish")
@@ -618,6 +637,16 @@ Try [[https://github.com/joaotavora/eglot][eglot]].
 
 ** Programming
 
+[[https://github.com/Malabarba/aggressive-indent-mode][Aggressive indent]] keeps your code indented always.
+
+#+BEGIN_SRC emacs-lisp
+(use-package aggressive-indent
+  :hook ((ruby-mode
+          emacs-lisp-mode
+          lisp-mode) . aggressive-indent-mode)
+  :defer t)
+#+END_SRC
+
 Becuse i'm interested in haskell.
 
 #+BEGIN_SRC emacs-lisp
@@ -649,11 +678,12 @@ And rjsx.
 #+END_SRC
 * TODOs
 ** Search with preview
-** LSP
 ** Autocompleting
 * Problems to solve
 ** TODO .dir-locals.el with ranger
 It just freezes. Fix that.
+** TODO emacsclient from mac os launchpad
+** DONE disable TABing eshell in modes other than org
 ** DONE emacs --daemon doesn't open files
 Strange thing with termcap. "Device is not a termcap terminal device".
 Happend to be some bug with evil mode post-command-hook (evil-mode-check-buffers).
