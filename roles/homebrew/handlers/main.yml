@@ -5,6 +5,7 @@
     state: present
     with_items:
       - the_silver_searcher
+      - ripgrep
       - httpie
       - stack
       - yarn

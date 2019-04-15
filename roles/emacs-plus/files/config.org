@@ -323,7 +323,7 @@ Everybody looks for something. I do this with swiper and ag.
     "C-k" '(ivy-previous-line :which-key "prev line")
     "C-h" '(ivy-beginning-of-buffer :which-key "beginning of ivy minibuffer")
     "C-l" '(ivy-end-of-buffer :which-key "end if ivy mini buffer")
-    "C-o" '(ivy-immediate-done :which-key "exits fro mivy search without selecting curent item")
+    "C-o" '(ivy-immediate-done :which-key "exits from ivy search without selecting curent item")
     "C-v" '(ivy-scroll-up-command :which-key "page up ivy buffer")
     "M-v" '(ivy-scroll-down-command :which-key "page down ivy buffer"))
   (:states 'normal
@@ -351,7 +351,7 @@ Wrapper around some emacs commands.
   ("M-x" 'counsel-M-x)
   (:states 'normal
     :prefix "SPC"
-    "/" 'counsel-fzf))
+    "/" 'counsel-rg))
 #+END_SRC
 
 Search for ivy.
@@ -361,7 +361,6 @@ Search for ivy.
   :defer t
   :general
   (:states 'normal
-    "C-s" 'swiper
     "/" 'swiper))
 #+END_SRC
 
@@ -427,6 +426,29 @@ Meh, decided not to. Breaks projectile hooks.
   :general
   (:states '(motion insert)
     "C-]" 'ggtags-find-tag-dwim))
+#+END_SRC
+
+** Search
+
+I use [[https://github.com/Wilfred/ag.el][ag]].
+
+#+BEGIN_SRC emacs-lisp
+;; (use-package ag
+;;   :defer t
+;;   :config
+;;   (setq ag-highlight-search t)
+;;   (add-hook 'ag-mode-hook 'wgrep-change-to-wgrep-mode))
+#+END_SRC
+
+Or [[https://github.com/Wilfred/deadgrep][ripgrep]].
+
+#+BEGIN_SRC emacs-lisp
+(use-package deadgrep
+  :defer t)
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+;; (use-package wgrep-ag)
 #+END_SRC
 
 ** Magit
