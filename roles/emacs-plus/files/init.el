@@ -1,3 +1,5 @@
+;;; i want this to be loaded first. running this from config.org is tedious.
+(fset 'yes-or-no-p 'y-or-n-p)
 (org-babel-load-file "~/.emacs.d/config.org")
 (custom-set-variables
  ;; custom-set-variables was added by Custom.

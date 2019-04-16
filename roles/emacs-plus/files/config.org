@@ -94,12 +94,6 @@ Enable line numbers. I was confused when didn't see line numbers by default.
 (global-display-line-numbers-mode)
 #+END_SRC
 
-Ask "y" or "n" instead of "yes" or "no". Yes, laziness is great.
-
-#+BEGIN_SRC emacs-lisp
-(fset 'yes-or-no-p 'y-or-n-p)
-#+END_SRC
-
 Highlight corresponding parentheses when cursor is on one.
 
 #+BEGIN_SRC emacs-lisp
@@ -529,7 +523,42 @@ Icons for dired and ranger.
 
 I'm not sure yet if i need it. We'll see.
 
+There is no alternatives to [[http://company-mode.github.io/][company-mode]].
+
 #+BEGIN_SRC emacs-lisp
+(use-package company
+  :defer t
+  :hook ((eshell-mode . (lambda () (setq-local company-backends '(company-files)))))
+  :init
+  (global-company-mode)
+  (setq company-idle-delay 0.2
+        company-show-numbers t
+        company-tooltip-align-annotations t
+        company-selection-wrap-around t)
+  :general
+  (:keymaps 'company-active-map
+    "C-j" 'company-select-next
+    "C-k" 'company-select-previous
+    "C-l" 'company-complete-selection)
+  (:keymaps 'company-mode-map
+    "C-p" 'company-complete))
+#+END_SRC
+
+Quickhelp too.
+
+#+BEGIN_SRC emacs-lisp
+(use-package company-quickhelp
+  :defer t
+  :init
+  (company-quickhelp-mode))
+#+END_SRC
+Why not irony.
+
+#+BEGIN_SRC emacs-lisp
+(use-package company-irony
+  :defer t
+  :hook (irony-mode . (lambda ()
+    (setq-local company-backends '(company-irony company-capf)))))
 #+END_SRC
 
 ** Lint
@@ -569,6 +598,9 @@ Eshell config.
     'eshell-mode-hook
     (lambda ()
       (setq pcomplete-cycle-completions nil)))
+  ;; (general-define-key
+  ;;   :states '(normal insert)
+  ;;   "M-q" ) ;; eshell/exit
   (general-define-key
     :states '(normal insert)
     "C-," 'eshell)) ;; "C-i" causes starting eshell with TAB too. crazy stuff
@@ -584,7 +616,12 @@ Completion for fish.
   (global-fish-completion-mode))
 #+END_SRC
 
-Extras.
+#+BEGIN_SRC emacs-lisp
+(use-package readline-complete
+  :commands 'eshell)
+#+END_SRC
+
+Term extra info.
 
 #+BEGIN_SRC emacs-lisp
 (use-package eshell-prompt-extras
@@ -660,6 +697,7 @@ Irony for C.
 (use-package irony
   :hook (c-mode . irony-mode))
 #+END_SRC
+
 And sometimes need to work with js.
 
 #+BEGIN_SRC emacs-lisp
@@ -676,13 +714,25 @@ And rjsx.
 (use-package rjsx-mode
   :defer t)
 #+END_SRC
+
+Ruby mode settings.
+
+#+BEGIN_SRC emacs-lisp
+(use-package ruby-mode
+  :ensure nil
+  :config
+  (setq ruby-insert-encoding-magic-comment nil))
+
+#+END_SRC
+
 * TODOs
 ** Search with preview
-** Autocompleting
+** Better parenths
 * Problems to solve
 ** TODO .dir-locals.el with ranger
 It just freezes. Fix that.
 ** TODO emacsclient from mac os launchpad
+** TODO eshell at-point-autocomplete(or maybe use term)
 ** DONE disable TABing eshell in modes other than org
 ** DONE emacs --daemon doesn't open files
 Strange thing with termcap. "Device is not a termcap terminal device".
