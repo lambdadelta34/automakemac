@@ -97,7 +97,8 @@ Enable line numbers. I was confused when didn't see line numbers by default.
 Highlight corresponding parentheses when cursor is on one.
 
 #+BEGIN_SRC emacs-lisp
-(show-paren-mode t)
+;; (show-paren-mode t)
+(setq show-paren-style 'mixed)
 #+END_SRC
 
 Autorefresh buffers when file changes on disk.
@@ -506,9 +507,9 @@ Icons for dired and ranger.
   :defer t)
 #+END_SRC
 
-** Multiple cursors
+** Cursors
 
-[[https://github.com/magnars/multiple-cursors.el][mc]].
+[[https://github.com/magnars/multiple-cursors.el][Multiple cursors]].
 
 #+BEGIN_SRC emacs-lisp
 (use-package multiple-cursors
@@ -519,7 +520,17 @@ Icons for dired and ranger.
     "C-n" 'mc/mark-next-like-this-word)
   (:states 'visual
     "C-n" 'mc/mark-next-like-this))
+#+END_SRC
 
+#+BEGIN_SRC emacs-lisp
+(use-package beacon
+  :config
+  (beacon-mode 1)
+  (setq beacon-blink-when-focused t
+        beacon-color "#ee6bff"
+        beacon-blink-duration 0.5
+        beacon-size 70
+        beacon-blink-when-point-moves-vertically 15))
 #+END_SRC
 
 ** Autocomplete
@@ -587,6 +598,41 @@ Why not irony.
   :config
   (add-hook 'flycheck-mode-hook #'eslint-from-node-modules)
   (add-hook 'flycheck-mode-hook #'ggtags-mode))
+#+END_SRC
+
+** Parentheses
+
+Oh where would we be without them. Maybe coding on Haskell.
+
+I love my [[https://github.com/Fuco1/smartparens][parenths]] smart.
+
+#+BEGIN_SRC emacs-lisp
+  (use-package smartparens
+    :defer t
+    :init
+    (show-smartparens-global-mode t)
+    (smartparens-global-mode 1)
+    (sp-local-pair 'emacs-lisp-mode "'" nil :actions '(:rem insert))
+    :config
+    (set-face-attribute 'sp-show-pair-match-face nil
+                        :foreground "#00ffff"
+                        :background "#6700D4"
+                        )
+    (set-face-attribute 'sp-show-pair-match-content-face nil
+                        :foreground "#00ffff"
+                        :background "#6700D4"
+                        )
+    )
+#+END_SRC
+
+[[https://github.com/tsdh/highlight-parentheses.el][Highlight]] matching parentheses.
+
+#+BEGIN_SRC emacs-lisp
+(use-package highlight-parentheses
+  :hook ((ruby-mode
+          emacs-lisp-mode
+          lisp-mode) . highlight-parentheses-mode)
+  :defer t)
 #+END_SRC
 
 ** Term
@@ -729,8 +775,9 @@ Ruby mode settings.
 #+END_SRC
 
 * TODOs
-** Search with preview
-** Better parenths
+ - Search with preview
+ - Persistent undo
+ - Move lines up/down
 * Problems to solve
 ** TODO .dir-locals.el with ranger
 It just freezes. Fix that.
