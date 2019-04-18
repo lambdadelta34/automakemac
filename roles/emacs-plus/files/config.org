@@ -184,8 +184,13 @@ Very cool stuff for undoing things.
 (use-package undo-tree
   :defer t
   :config
+  (general-define-key
+    :states 'normal
+    :prefix "SPC"
+    "u" 'undo-tree-visualize)
   (global-undo-tree-mode)
   (setq undo-tree-auto-save-history t
+        undo-tree-visualizer-diff t
         undo-tree-history-directory-alist '(("." . "~/.emacs.d/undo"))))
 #+END_SRC
 
@@ -197,9 +202,7 @@ Just functionality to go to last chages. Nothing fancy here.
 
 *** Mode itself & stuff
 
-[[https://github.com/emacs-evil/evil][github link]]
-
-It is strange that evil mode doesn't init when i use =:general= keyword. So i used workaround with =general-define-key= function.
+[[https://github.com/emacs-evil/evil][Evil]] itself.
 
 #+BEGIN_SRC emacs-lisp
 (use-package evil
@@ -215,6 +218,16 @@ It is strange that evil mode doesn't init when i use =:general= keyword. So i us
             (shell-command-on-region (region-beginning) (region-end) "pbcopy")
             (deactivate-mark)))))
 
+  (defun move-line-up ()
+    (interactive)
+    (transpose-lines 1)
+    (forward-line -2))
+
+  (defun move-line-down ()
+    (interactive)
+    (forward-line 1)
+    (transpose-lines 1)
+    (forward-line -1))
   :init
   (setq evil-motion-state-modes nil
         evil-shift-width 2)
@@ -226,6 +239,17 @@ It is strange that evil mode doesn't init when i use =:general= keyword. So i us
     "C-j" 'evil-window-down
     "C-h" 'evil-window-left
     "C-l" 'evil-window-right)
+
+  (general-define-key
+    :states 'normal
+    "[e" 'move-line-down
+    "]e" 'move-line-up)
+
+  (general-define-key
+    :states '(normal visual)
+    "[e" 'move-line-down
+    "]e" 'move-line-up)
+
   (general-define-key
     :states 'visual
     "y" 'copy-to-clipboard)
@@ -234,6 +258,7 @@ It is strange that evil mode doesn't init when i use =:general= keyword. So i us
     :prefix "SPC"
     "wn" 'evil-window-split
     "w/" 'evil-window-vsplit)
+  (add-hook 'view-mode-hook 'evil-motion-state)
   (add-hook 'ruby-mode-hook
             (function (lambda ()
                         (setq evil-shift-width 2))))
@@ -316,6 +341,34 @@ Everybody looks for something. I do this with swiper and ag.
 (use-package ivy
   :defer t
   :diminish (ivy-mode . "")
+  ;; define here function which opens provided file
+  ;; :preface
+  ;; (defun ivy-copy-to-buffer-action (x)
+  ;;   (with-ivy-window
+  ;;     (insert x)))
+
+  ;; (defun quick-look (filename)
+  ;;   (if filename
+  ;;       (pcase (split-string filename ":")
+  ;;         (
+  ;;          `("")
+  ;;          (message "No file provided")
+  ;;          )
+  ;;         (
+  ;;          `(,filename)
+  ;;          (view-file filename))
+  ;;         (
+  ;;          `(,filename ,line)
+  ;;          (view-file filename)
+  ;;          (goto-line (string-to-number line)))
+  ;;         (
+  ;;          `(,filename ,line ,column)
+  ;;          (view-file filename)
+  ;;          (goto-line (string-to-number line))
+  ;;          (move-to-column (string-to-number column))))
+  ;;     (message "No file provided"))
+  ;;   )
+
   :general
   (:keymaps 'ivy-minibuffer-map
     "C-j" '(ivy-next-line :which-key "next line")
@@ -333,6 +386,12 @@ Everybody looks for something. I do this with swiper and ag.
     "bp" 'previous-buffer)
 
   :config
+  ;; sets actions in minibuffer. gets string as arg. and grep result can lead to file.
+  ;; or i may try to redirect whole search result to ranger
+  ;; (ivy-set-actions
+  ;; t
+  ;; '(("i" ivy-copy-to-buffer-action "insert")
+  ;;   ("y" ivy-yank-action "yank")))
   (ivy-mode 1)
   (setcdr (assoc 'counsel-M-x ivy-initial-inputs-alist) "")
   (setq ivy-use-virtual-buffers t
@@ -487,17 +546,19 @@ Gitgutter
 [[https://github.com/ralesi/ranger.el][Ranger]] is for dired.
 
 #+BEGIN_SRC emacs-lisp
-(use-package ranger
-  :config
-  (ranger-override-dired-mode 'ranger)
-  (add-hook 'ranger-mode-hook 'all-the-icons-dired-mode)
-  (general-define-key
-    :states '(normal insert visual)
-    "TAB" 'ranger)
-  (general-define-key
-    :states 'normal
-    :prefix "SPC"
-    "d" 'ranger))
+  (use-package ranger
+    :config
+    (setq ranger-show-hidden 'prefer)
+    (add-to-list 'ranger-prefer-regexp "^\\.")
+    (ranger-override-dired-mode 'ranger)
+    (add-hook 'ranger-mode-hook 'all-the-icons-dired-mode)
+    (general-define-key
+     :states '(normal insert visual)
+     "TAB" 'ranger)
+    (general-define-key
+     :states 'normal
+     :prefix "SPC"
+     "d" 'ranger))
 #+END_SRC
 
 Icons for dired and ranger.
@@ -519,8 +580,14 @@ Icons for dired and ranger.
   (setq mc/always-run-for-all t)
   :general
   (:states 'normal
+    "C-S-n" 'mc/unmark-next-like-this
+    "C-S-p" 'mc/unmark-previous-like-this
+    "C-p" 'mc/mark-previous-like-this-word
     "C-n" 'mc/mark-next-like-this-word)
   (:states 'visual
+    "C-S-n" 'mc/unmark-next-like-this
+    "C-S-p" 'mc/unmark-previous-like-this
+    "C-p" 'mc/mark-previous-like-this
     "C-n" 'mc/mark-next-like-this))
 #+END_SRC
 
@@ -551,23 +618,29 @@ There is no alternatives to [[http://company-mode.github.io/][company-mode]].
         company-show-numbers t
         company-tooltip-align-annotations t
         company-selection-wrap-around t)
-  :general
-  (:keymaps 'company-active-map
+  :config
+  (general-define-key
+    :keymaps 'company-active-map
     "C-j" 'company-select-next
     "C-k" 'company-select-previous
     "C-l" 'company-complete-selection)
-  (:keymaps 'company-mode-map
+
+
+  (general-define-key
+    :keymaps 'company-mode-map
     "C-p" 'company-complete))
 #+END_SRC
 
 Quickhelp too.
+(not working properly with evil bindings)
 
 #+BEGIN_SRC emacs-lisp
-(use-package company-quickhelp
-  :defer t
-  :init
-  (company-quickhelp-mode))
+;; (use-package company-quickhelp
+;;   :defer t
+;;   :init
+;;   (company-quickhelp-mode))
 #+END_SRC
+
 Why not irony.
 
 #+BEGIN_SRC emacs-lisp
@@ -778,8 +851,7 @@ Ruby mode settings.
 
 * TODOs
  - Search with preview
- - Persistent undo
- - Move lines up/down
+   - [[https://github.com/abo-abo/swiper/wiki/ivy-display-function][Start from here]].
 * Problems to solve
 ** TODO .dir-locals.el with ranger
 It just freezes. Fix that.
