@@ -475,7 +475,7 @@ Meh, decided not to. Breaks projectile hooks.
 ;;   :defer t)
 #+END_SRC
 
-[[https://github.com/leoliu/ggtags][ggtags]] for code navigation
+[[https://github.com/leoliu/ggtags][ggtags]] for code navigation.
 
 #+BEGIN_SRC emacs-lisp
 (use-package ggtags
