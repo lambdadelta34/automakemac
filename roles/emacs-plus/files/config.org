@@ -552,9 +552,14 @@ Gitgutter
     (add-to-list 'ranger-prefer-regexp "^\\.")
     (ranger-override-dired-mode 'ranger)
     (add-hook 'ranger-mode-hook 'all-the-icons-dired-mode)
+
     (general-define-key
      :states '(normal insert visual)
      "TAB" 'ranger)
+
+    (general-define-key
+      :keymaps 'ranger-normal-mode-map
+      "c" 'find-file)
     (general-define-key
      :states 'normal
      :prefix "SPC"
@@ -855,7 +860,8 @@ Ruby mode settings.
 * Problems to solve
 ** TODO .dir-locals.el with ranger
 It just freezes. Fix that.
-** TODO emacsclient from mac os launchpad
+** DONE emacsclient from mac os launchpad
+For now I use function with focus on frame.
 ** TODO eshell at-point-autocomplete(or maybe use term)
 ** DONE disable TABing eshell in modes other than org
 ** DONE emacs --daemon doesn't open files
