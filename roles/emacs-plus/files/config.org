@@ -337,16 +337,14 @@ Code [[https://github.com/redguardtoo/evil-nerd-commenter][commentary]].
 Everybody looks for something. I do this with swiper and ag.
 [[https://github.com/abo-abo/swiper][ivy/swiper]]
 
+Ivy has a nice function `ivy-read` which does most of the job.
+So, when you iterate over ivy candidates via `-and-call` functions you can call action, binded to called command, which, for grep commands, is to preview file.
+
 #+BEGIN_SRC emacs-lisp
 (use-package ivy
   :defer t
   :diminish (ivy-mode . "")
-  ;; define here function which opens provided file
   ;; :preface
-  ;; (defun ivy-copy-to-buffer-action (x)
-  ;;   (with-ivy-window
-  ;;     (insert x)))
-
   ;; (defun quick-look (filename)
   ;;   (if filename
   ;;       (pcase (split-string filename ":")
@@ -371,6 +369,8 @@ Everybody looks for something. I do this with swiper and ag.
 
   :general
   (:keymaps 'ivy-minibuffer-map
+    "C-M-j" '(ivy-next-line-and-call :which-key "next line")
+    "C-M-k" '(ivy-previous-line-and-call :which-key "prev line")
     "C-j" '(ivy-next-line :which-key "next line")
     "C-k" '(ivy-previous-line :which-key "prev line")
     "C-h" '(ivy-beginning-of-buffer :which-key "beginning of ivy minibuffer")
@@ -386,12 +386,6 @@ Everybody looks for something. I do this with swiper and ag.
     "bp" 'previous-buffer)
 
   :config
-  ;; sets actions in minibuffer. gets string as arg. and grep result can lead to file.
-  ;; or i may try to redirect whole search result to ranger
-  ;; (ivy-set-actions
-  ;; t
-  ;; '(("i" ivy-copy-to-buffer-action "insert")
-  ;;   ("y" ivy-yank-action "yank")))
   (ivy-mode 1)
   (setcdr (assoc 'counsel-M-x ivy-initial-inputs-alist) "")
   (setq ivy-use-virtual-buffers t
@@ -855,8 +849,6 @@ Ruby mode settings.
 #+END_SRC
 
 * TODOs
- - Search with preview
-   - [[https://github.com/abo-abo/swiper/wiki/ivy-display-function][Start from here]].
 * Problems to solve
 ** TODO .dir-locals.el with ranger
 It just freezes. Fix that.
