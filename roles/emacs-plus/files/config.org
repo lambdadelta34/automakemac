@@ -48,7 +48,15 @@ Mac os use PATH set by user shell. Just in case.
 
 * Preferences
 
-Font
+Leader key for evil mode.
+
+#+BEGIN_SRC emacs-lisp
+(setq leader "SPC")
+(setq alt-leader "C-SPC")
+#+END_SRC
+
+Font.
+
 #+BEGIN_SRC emacs-lisp
 (add-to-list 'default-frame-alist
              '(font . "Hack Nerd Font 12"))
@@ -62,20 +70,20 @@ Removes unnecessary window docaration.
 (menu-bar-mode -1)
 #+END_SRC
 
-Disable startup menu
+Disable startup menu.
 
 #+BEGIN_SRC emacs-lisp
 (setq inhibit-startup-screen t)
 #+END_SRC
 
-Window frame size
+Window frame size.
 
 #+BEGIN_SRC emacs-lisp
 (add-to-list 'default-frame-alist '(width . 200))
 (add-to-list 'default-frame-alist '(height . 55))
 #+END_SRC
 
-Garbage collection threshold to 20 mb
+Garbage collection threshold to 20 mb.
 
 #+BEGIN_SRC emacs-lisp
 (setq gc-cons-threshold (* 20 1000 1000))
@@ -165,8 +173,8 @@ Dracula, hocho, just a little bite.
   (general-evil-setup t)
   (general-define-key
     :states '(normal insert emacs)
-    :prefix "SPC"
-    :non-normal-prefix "C-SPC"
+    :prefix leader
+    :non-normal-prefix alt-leader
     "wd" 'delete-window
     "wc" 'delete-other-windows
     "fed" (lambda () (interactive) (find-file user-init-file))
@@ -186,7 +194,7 @@ Very cool stuff for undoing things.
   :config
   (general-define-key
     :states 'normal
-    :prefix "SPC"
+    :prefix leader
     "u" 'undo-tree-visualize)
   (global-undo-tree-mode)
   (setq undo-tree-auto-save-history t
@@ -255,7 +263,7 @@ Just functionality to go to last chages. Nothing fancy here.
     "y" 'copy-to-clipboard)
   (general-define-key
     :states 'normal
-    :prefix "SPC"
+    :prefix leader
     "wn" 'evil-window-split
     "w/" 'evil-window-vsplit)
   (add-hook 'view-mode-hook 'evil-motion-state)
@@ -379,7 +387,7 @@ So, when you iterate over ivy candidates via `-and-call` functions you can call 
     "C-v" '(ivy-scroll-up-command :which-key "page up ivy buffer")
     "M-v" '(ivy-scroll-down-command :which-key "page down ivy buffer"))
   (:states 'normal
-    :prefix "SPC"
+    :prefix leader
     "bs" 'ivy-switch-buffer
     "bn" 'next-buffer
     "bd" 'kill-this-buffer
@@ -402,7 +410,7 @@ Wrapper around some emacs commands.
   :general
   ("M-x" 'counsel-M-x)
   (:states 'normal
-    :prefix "SPC"
+    :prefix leader
     "/" 'counsel-rg))
 #+END_SRC
 
@@ -456,7 +464,7 @@ Pretty bullets.
   (general-define-key
     :states 'normal
     :keymaps 'projectile-mode-map
-    :prefix "SPC"
+    :prefix leader
     "p" 'projectile-command-map
     "ff" 'projectile-find-file))
 #+END_SRC
@@ -513,7 +521,7 @@ I heard [[https://github.com/magit/magit][magit]] to be best git client. Let's s
   :init
   (general-define-key
     :states 'normal
-    :prefix "SPC"
+    :prefix leader
     "g" 'magit-status))
 
 #+END_SRC
@@ -556,7 +564,7 @@ Gitgutter
       "c" 'find-file)
     (general-define-key
      :states 'normal
-     :prefix "SPC"
+     :prefix leader
      "d" 'ranger))
 #+END_SRC
 
@@ -849,6 +857,8 @@ Ruby mode settings.
 #+END_SRC
 
 * TODOs
+** Keybindings
+  - Map leader * to search for selected region/word.
 * Problems to solve
 ** TODO .dir-locals.el with ranger
 It just freezes. Fix that.
