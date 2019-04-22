@@ -9,6 +9,9 @@
     name: emacs-plus
     state: present
 
+- name: create emacs folder
+  shell: "mkdir -p ~/.emacs.d/"
+
 - name: link dotemacs config
   file:
     src: "{{ playbook_dir }}/roles/emacs-plus/files/init.el"
