@@ -216,7 +216,7 @@ Just functionality to go to last chages. Nothing fancy here.
 (use-package evil
   :defer t
   :preface
-  (defun copy-to-clipboard ()
+  (defun my/copy-to-clipboard ()
     (interactive)
     (if (display-graphic-p)
         (progn
@@ -226,12 +226,12 @@ Just functionality to go to last chages. Nothing fancy here.
             (shell-command-on-region (region-beginning) (region-end) "pbcopy")
             (deactivate-mark)))))
 
-  (defun move-line-up ()
+  (defun my/move-line-up ()
     (interactive)
     (transpose-lines 1)
     (forward-line -2))
 
-  (defun move-line-down ()
+  (defun my/move-line-down ()
     (interactive)
     (forward-line 1)
     (transpose-lines 1)
@@ -250,17 +250,17 @@ Just functionality to go to last chages. Nothing fancy here.
 
   (general-define-key
     :states 'normal
-    "[e" 'move-line-down
-    "]e" 'move-line-up)
+    "[e" 'my/move-line-down
+    "]e" 'my/move-line-up)
 
   (general-define-key
     :states '(normal visual)
-    "[e" 'move-line-down
-    "]e" 'move-line-up)
+    "[e" 'my/move-line-down
+    "]e" 'my/move-line-up)
 
   (general-define-key
     :states 'visual
-    "y" 'copy-to-clipboard)
+    "y" 'my/copy-to-clipboard)
   (general-define-key
     :states 'normal
     :prefix leader
@@ -407,8 +407,23 @@ Wrapper around some emacs commands.
 #+BEGIN_SRC emacs-lisp
 (use-package counsel
   :defer t
+  :preface
+  (defun my/rg-word-visual ()
+    (interactive)
+    (counsel-rg (buffer-substring
+                  (evil-range-beginning (evil-visual-range))
+                  (evil-range-end (evil-visual-range)))))
+  (defun my/rg-word ()
+    (interactive)
+    (counsel-rg (thing-at-point 'word)))
   :general
   ("M-x" 'counsel-M-x)
+  (:states 'normal
+    :prefix leader
+    "*" 'my/rg-word)
+  (:states 'visual
+    :prefix leader
+    "*" 'my/rg-word-visual)
   (:states 'normal
     :prefix leader
     "/" 'counsel-rg))
@@ -419,8 +434,13 @@ Search for ivy.
 #+BEGIN_SRC emacs-lisp
 (use-package swiper
   :defer t
+  :preface
+  (defun my/s-word()
+    (interactive)
+    (swiper (thing-at-point 'symbol)))
   :general
   (:states 'normal
+    "*" 'my/s-word
     "/" 'swiper))
 #+END_SRC
 
@@ -450,7 +470,7 @@ Pretty bullets.
 (use-package projectile
   :defer 2
   :preface
-  (defun projectile-ranger ()
+  (defun my/projectile-ranger ()
     "Use ranger instead of dired"
     (interactive)
     (ranger (projectile-ensure-project (projectile-project-root))))
@@ -459,7 +479,7 @@ Pretty bullets.
   :config
   (setq projectile-completion-system 'ivy
         projectile-require-project-root nil
-        projectile-switch-project-action 'projectile-ranger)
+        projectile-switch-project-action 'my/projectile-ranger)
   ;; (counsel-projectile-mode)
   (general-define-key
     :states 'normal
@@ -665,7 +685,7 @@ Why not irony.
 (use-package flycheck
   :defer t
   :preface
-  (defun eslint-from-node-modules ()
+  (defun my/eslint-from-node-modules ()
     "function to find eslint in project folder, not globally"
     (let ((root (locate-dominating-file
                  (or (buffer-file-name) default-directory)
@@ -678,8 +698,8 @@ Why not irony.
   :init
   (global-flycheck-mode)
   :config
-  (add-hook 'flycheck-mode-hook #'eslint-from-node-modules)
-  (add-hook 'flycheck-mode-hook #'ggtags-mode))
+  (add-hook 'flycheck-mode-hook 'my/eslint-from-node-modules)
+  (add-hook 'flycheck-mode-hook 'ggtags-mode))
 #+END_SRC
 
 ** Parentheses
@@ -795,11 +815,11 @@ Try [[https://github.com/joaotavora/eglot][eglot]].
   (add-to-list 'eglot-server-programs '(reason-mode . ("ocaml-language-server" "--stdio")))
   (add-to-list 'eglot-server-programs '(haskell-mode . ("hie-wrapper")))
 
-  (add-hook 'ruby-mode-hook 'eglot-ensure)
-  (add-hook 'caml-mode-hook 'eglot-ensure)
-  (add-hook 'js-mode-hook 'eglot-ensure)
-  (add-hook 'rjsx-mode 'eglot-ensure)
-  (add-hook 'reason-mode-hook 'eglot-ensure)
+  ;; (add-hook 'ruby-mode-hook 'eglot-ensure)
+  ;; (add-hook 'caml-mode-hook 'eglot-ensure)
+  ;; (add-hook 'js-mode-hook 'eglot-ensure)
+  ;; (add-hook 'rjsx-mode 'eglot-ensure)
+  ;; (add-hook 'reason-mode-hook 'eglot-ensure)
   (add-hook 'haskell-mode-hook 'eglot-ensure))
 #+END_SRC
 
@@ -808,13 +828,11 @@ Try [[https://github.com/joaotavora/eglot][eglot]].
 [[https://github.com/Malabarba/aggressive-indent-mode][Aggressive indent]] keeps your code indented always.
 
 #+BEGIN_SRC emacs-lisp
-(use-package aggressive-indent
-  :hook ((ruby-mode
-          emacs-lisp-mode
-          lisp-mode) . aggressive-indent-mode)
-  :defer t)
+;; (use-package aggressive-indent
+;;   :hook ((ruby-mode
+;;           emacs-lisp-mode ;;           lisp-mode) . aggressive-indent-mode)
+;;   :defer t)
 #+END_SRC
-
 Becuse i'm interested in haskell.
 
 #+BEGIN_SRC emacs-lisp
@@ -853,7 +871,56 @@ Ruby mode settings.
   :ensure nil
   :config
   (setq ruby-insert-encoding-magic-comment nil))
+#+END_SRC
 
+Pry.
+
+#+BEGIN_SRC emacs-lisp
+(use-package inf-ruby
+  :config
+  (general-define-key
+    :keymaps 'rspec-compilation-mode-map
+    :states 'normal
+    :prefix leader
+    "rx" 'inf-ruby-switch-from-compilation))
+#+END_SRC
+
+Run specs from emacs.
+
+#+BEGIN_SRC emacs-lisp
+;; (use-package rspec-simple
+;;   :config
+;;   (general-define-key
+;;     :keymaps 'ruby-mode-map
+;;     :states 'normal
+;;     :prefix leader
+;;     "tt" 'rspec-find-related-file
+;;     "rtn" 'rspec-compile-on-line
+;;     "rtf" 'rspec-compile-file))
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+(use-package rspec-mode
+  :config
+  (add-hook 'after-init-hook 'inf-ruby-switch-setup)
+  (general-define-key
+    :states 'normal
+    :prefix leader
+    "rtt" 'rspec-toggle-spec-and-target
+    "rtf" 'rspec-verify
+    "rtm" 'rspec-verify-matching
+    "rtn" 'rspec-verify-single))
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+;; (use-package ruby-test-mode
+;;   :config
+;;   (general-define-key
+;;     :keymaps 'ruby-test-mode-map
+;;     :states 'normal
+;;     :prefix leader
+;;     "rtn" 'ruby-test-run-at-point
+;;     "rtf" 'ruby-test-run))
 #+END_SRC
 
 * TODOs
