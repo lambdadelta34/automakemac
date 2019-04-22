@@ -10,6 +10,9 @@
   shell: "mkdir -p {{ config_path }}"
   args:
     creates: "{{ config_path }}"
+    
+- name: create functions folder
+  shell: "mkdir -p {{ config_path }}/functions"
 
 - name: import config
   file:
