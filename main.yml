@@ -9,4 +9,8 @@
     - rbenv
     - ruby
     - emacs-plus
-    - spacemacs
+    # - spacemacs
+    - nvim
+    - kitty
+    - tmux
+    - nix

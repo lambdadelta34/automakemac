@@ -1,0 +1,9 @@
+---
+- name: Install kitty
+  shell: "curl -L https://sw.kovidgoyal.net/kitty/installer.sh | sh /dev/stdin"
+
+- name: link kitty config
+  file:
+    src: "{{ playbook_dir }}/roles/kitty/files/kitty.conf"
+    dest: ~/.config/kitty/kitty.conf
+    state: link

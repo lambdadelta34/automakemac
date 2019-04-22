@@ -1,0 +1,941 @@
+#+TITLE: emacs config
+#+OPTIONS: toc:nil
+
+* Configuration
+I forgot everything i've done in my previous init.el file, so i decided to start another one from scratch in org-mode to be able to write a lot about stuff happening here.
+Also, i'd like to start using org-mode, finally.
+
+** Config initialization
+So, we need this to require emacs default package manager and be able to initialize them before configuring them.
+[[https://wikemacs.org/wiki/Package.el][link to the doc]]
+Also add melpa to package manager.
+
+#+BEGIN_SRC emacs-lisp
+(package-initialize)
+(require 'package)
+(add-to-list 'package-archives
+             '("melpa" . "https://melpa.org/packages/") t)
+#+END_SRC
+
+This little dude here is enables lazy loading.
+
+#+BEGIN_SRC emacs-lisp
+(setq package-enable-at-startup nil)
+#+END_SRC
+
+** use-package
+This is where the fun begins. It is a elisp macro which goal is to simplify package configuration.
+[[https://github.com/jwiegley/use-package][github link]]
+Some elisp code to install it if it isn't yet. And ensure that all packages would be installed automatically if they are not.
+
+#+BEGIN_SRC emacs-lisp
+(unless (package-installed-p 'use-package)
+  (package-refresh-contents)
+  (package-install 'use-package))
+
+(require 'use-package)
+(setq use-package-always-ensure t)
+#+END_SRC
+
+Mac os use PATH set by user shell. Just in case.
+
+#+BEGIN_SRC emacs-lisp
+(use-package exec-path-from-shell
+  :if (memq window-system '(mac ns))
+  :config
+  (exec-path-from-shell-initialize))
+#+END_SRC
+
+* Preferences
+
+Leader key for evil mode.
+
+#+BEGIN_SRC emacs-lisp
+(setq leader "SPC")
+(setq alt-leader "C-SPC")
+#+END_SRC
+
+Font.
+
+#+BEGIN_SRC emacs-lisp
+(add-to-list 'default-frame-alist
+             '(font . "Hack Nerd Font 12"))
+#+END_SRC
+
+Removes unnecessary window docaration.
+
+#+BEGIN_SRC emacs-lisp
+(tool-bar-mode -1)
+(scroll-bar-mode -1)
+(menu-bar-mode -1)
+#+END_SRC
+
+Disable startup menu.
+
+#+BEGIN_SRC emacs-lisp
+(setq inhibit-startup-screen t)
+#+END_SRC
+
+Window frame size.
+
+#+BEGIN_SRC emacs-lisp
+(add-to-list 'default-frame-alist '(width . 200))
+(add-to-list 'default-frame-alist '(height . 55))
+#+END_SRC
+
+Garbage collection threshold to 20 mb.
+
+#+BEGIN_SRC emacs-lisp
+(setq gc-cons-threshold (* 20 1000 1000))
+#+END_SRC
+
+Force use of spaces instead of tabs, blahh. And tab width.
+
+#+BEGIN_SRC emacs-lisp
+(setq-default indent-tabs-mode nil)
+(setq-default tab-width 2)
+#+END_SRC
+
+Enable line numbers. I was confused when didn't see line numbers by default.
+
+#+BEGIN_SRC emacs-lisp
+(global-display-line-numbers-mode)
+#+END_SRC
+
+Highlight corresponding parentheses when cursor is on one. (smartparentheses takes care of this)
+
+#+BEGIN_SRC emacs-lisp
+;; (show-paren-mode t)
+;; (setq show-paren-style 'mixed)
+#+END_SRC
+
+Autorefresh buffers when file changes on disk.
+
+#+BEGIN_SRC emacs-lisp
+(global-auto-revert-mode 1)
+#+END_SRC
+
+Remove useless whitespace before saving a file.
+
+#+BEGIN_SRC emacs-lisp
+(add-hook 'before-save-hook 'delete-trailing-whitespace)
+#+END_SRC
+
+Stop creating annoying backup~ files.
+
+#+BEGIN_SRC emacs-lisp
+(setq make-backup-files nil)
+#+END_SRC
+
+Stop creating not less annoying #autosave# files.
+
+#+BEGIN_SRC emacs-lisp
+(setq auto-save-default nil)
+#+END_SRC
+
+Silent ring bell(really, REALLY? DO I REALLY HAVE TO DO THIS??)
+
+#+BEGIN_SRC emacs-lisp
+(setq ring-bell-function 'ignore)
+#+END_SRC
+
+Use command as meta key.
+
+#+BEGIN_SRC emacs-lisp
+(setq mac-command-modifier 'meta
+      mac-option-modifier 'none)
+#+END_SRC
+
+Org-mode for *scratch* file.
+
+#+BEGIN_SRC emacs-lisp
+(setq initial-major-mode 'org-mode)
+#+END_SRC
+
+* Theme
+Dracula, hocho, just a little bite.
+
+#+BEGIN_SRC emacs-lisp
+(use-package dracula-theme
+  :config
+  (load-theme 'dracula t))
+#+END_SRC
+
+* Packages
+
+** Genaral(general.el, not general config)
+
+[[https://github.com/noctuid/general.el][General]] is very convenient way to bind keys.
+
+#+BEGIN_SRC emacs-lisp
+(use-package general
+  :config
+  (general-evil-setup t)
+  (general-define-key
+    :states '(normal insert emacs)
+    :prefix leader
+    :non-normal-prefix alt-leader
+    "wd" 'delete-window
+    "wc" 'delete-other-windows
+    "fed" (lambda () (interactive) (find-file user-init-file))
+    "feR" 'eval-buffer
+    "fs" 'save-buffer
+    "qq" 'save-buffers-kill-terminal))
+#+END_SRC
+
+** EVIL mode
+Because i like vim too.
+*** Dependencies
+Very cool stuff for undoing things.
+
+#+BEGIN_SRC emacs-lisp
+(use-package undo-tree
+  :defer t
+  :config
+  (general-define-key
+    :states 'normal
+    :prefix leader
+    "u" 'undo-tree-visualize)
+  (global-undo-tree-mode)
+  (setq undo-tree-auto-save-history t
+        undo-tree-visualizer-diff t
+        undo-tree-history-directory-alist '(("." . "~/.emacs.d/undo"))))
+#+END_SRC
+
+Just functionality to go to last chages. Nothing fancy here.
+
+#+BEGIN_SRC emacs-lisp
+(use-package goto-chg)
+#+END_SRC
+
+*** Mode itself & stuff
+
+[[https://github.com/emacs-evil/evil][Evil]] itself.
+
+#+BEGIN_SRC emacs-lisp
+(use-package evil
+  :defer t
+  :preface
+  (defun my/copy-to-clipboard ()
+    (interactive)
+    (if (display-graphic-p)
+        (progn
+          (call-interactively 'clipboard-kill-ring-save))
+      (if (region-active-p)
+          (progn
+            (shell-command-on-region (region-beginning) (region-end) "pbcopy")
+            (deactivate-mark)))))
+
+  (defun my/move-line-up ()
+    (interactive)
+    (transpose-lines 1)
+    (forward-line -2))
+
+  (defun my/move-line-down ()
+    (interactive)
+    (forward-line 1)
+    (transpose-lines 1)
+    (forward-line -1))
+  :init
+  (setq evil-motion-state-modes nil
+        evil-shift-width 2)
+  :config
+  (evil-mode 1)
+  (general-define-key
+    :states '(normal insert)
+    "C-k" 'evil-window-up
+    "C-j" 'evil-window-down
+    "C-h" 'evil-window-left
+    "C-l" 'evil-window-right)
+
+  (general-define-key
+    :states 'normal
+    "[e" 'my/move-line-down
+    "]e" 'my/move-line-up)
+
+  (general-define-key
+    :states '(normal visual)
+    "[e" 'my/move-line-down
+    "]e" 'my/move-line-up)
+
+  (general-define-key
+    :states 'visual
+    "y" 'my/copy-to-clipboard)
+  (general-define-key
+    :states 'normal
+    :prefix leader
+    "wn" 'evil-window-split
+    "w/" 'evil-window-vsplit)
+  (add-hook 'view-mode-hook 'evil-motion-state)
+  (add-hook 'ruby-mode-hook
+            (function (lambda ()
+                        (setq evil-shift-width 2))))
+  (add-hook 'js-mode-hook
+            (function (lambda ()
+                        (setq evil-shift-width 2)))))
+#+END_SRC
+
+[[https://github.com/emacs-evil/evil-surround][Surround mode]] mode for EVIL.
+
+#+BEGIN_SRC emacs-lisp
+(use-package evil-surround
+  :config
+  (global-evil-surround-mode 1))
+#+END_SRC
+
+Adds [[https://github.com/wcsmith/evil-arg][args]] motions and text object.
+
+#+BEGIN_SRC emacs-lisp
+(use-package evil-args
+  :general
+  (:keymaps 'evil-inner-text-objects-map
+    "a" 'evil-inner-arg)
+  (:keymaps 'evil-outer-text-objects-map
+    "a" 'evil-outer-arg))
+#+END_SRC
+
+Code [[https://github.com/redguardtoo/evil-nerd-commenter][commentary]].
+
+#+BEGIN_SRC emacs-lisp
+(use-package evil-nerd-commenter
+  :defer t
+  :general
+  (:states 'normal
+    "gcc" 'evilnc-comment-or-uncomment-lines)
+  (:states 'visual
+    "gc" 'evilnc-comment-or-uncomment-lines))
+#+END_SRC
+
+*** Evil-daemon problem.
+:PROPERTIES:
+:CUSTOM_ID: evil-daemon
+:END:
+
+#+BEGIN_SRC emacs-lisp
+;;  (unless (display-graphic-p)
+;;    (add-hook 'evil-insert-state-entry-hook (lambda () (send-string-to-terminal "\033[5 q"))) ;; set cursor to bar
+;;    (add-hook 'evil-normal-state-entry-hook (lambda () (send-string-to-terminal "\033[0 q"))))) ;; set cursor to block
+#+END_SRC
+
+** Info mode
+
+[[https://github.com/justbur/emacs-which-key][which-key]] is a package which show info about key sequences.
+
+#+BEGIN_SRC emacs-lisp
+(use-package which-key
+  :defer t
+  :init
+  (which-key-mode)
+  :config
+  (setq which-key-sort-order 'which-key-key-order-alpha
+        which-key-side-window-max-height 0.33
+        which-key-idle-delay 0.5))
+#+END_SRC
+
+[[https://github.com/milkypostman/powerline][Powerline]] like in vim.
+
+#+BEGIN_SRC emacs-lisp
+(use-package powerline
+  :config
+  (powerline-center-evil-theme))
+#+END_SRC
+
+** IVY & Search
+
+Everybody looks for something. I do this with swiper and ag.
+[[https://github.com/abo-abo/swiper][ivy/swiper]]
+
+Ivy has a nice function `ivy-read` which does most of the job.
+So, when you iterate over ivy candidates via `-and-call` functions you can call action, binded to called command, which, for grep commands, is to preview file.
+
+#+BEGIN_SRC emacs-lisp
+(use-package ivy
+  :defer t
+  :diminish (ivy-mode . "")
+  ;; :preface
+  ;; (defun quick-look (filename)
+  ;;   (if filename
+  ;;       (pcase (split-string filename ":")
+  ;;         (
+  ;;          `("")
+  ;;          (message "No file provided")
+  ;;          )
+  ;;         (
+  ;;          `(,filename)
+  ;;          (view-file filename))
+  ;;         (
+  ;;          `(,filename ,line)
+  ;;          (view-file filename)
+  ;;          (goto-line (string-to-number line)))
+  ;;         (
+  ;;          `(,filename ,line ,column)
+  ;;          (view-file filename)
+  ;;          (goto-line (string-to-number line))
+  ;;          (move-to-column (string-to-number column))))
+  ;;     (message "No file provided"))
+  ;;   )
+
+  :general
+  (:keymaps 'ivy-minibuffer-map
+    "C-M-j" '(ivy-next-line-and-call :which-key "next line")
+    "C-M-k" '(ivy-previous-line-and-call :which-key "prev line")
+    "C-j" '(ivy-next-line :which-key "next line")
+    "C-k" '(ivy-previous-line :which-key "prev line")
+    "C-h" '(ivy-beginning-of-buffer :which-key "beginning of ivy minibuffer")
+    "C-l" '(ivy-end-of-buffer :which-key "end if ivy mini buffer")
+    "C-o" '(ivy-immediate-done :which-key "exits from ivy search without selecting curent item")
+    "C-v" '(ivy-scroll-up-command :which-key "page up ivy buffer")
+    "M-v" '(ivy-scroll-down-command :which-key "page down ivy buffer"))
+  (:states 'normal
+    :prefix leader
+    "bs" 'ivy-switch-buffer
+    "bn" 'next-buffer
+    "bd" 'kill-this-buffer
+    "bp" 'previous-buffer)
+
+  :config
+  (ivy-mode 1)
+  (setcdr (assoc 'counsel-M-x ivy-initial-inputs-alist) "")
+  (setq ivy-use-virtual-buffers t
+        magit-completing-read-function 'ivy-completing-read
+        ivy-height 20
+        ivy-count-format "(%d/%d)"))
+#+END_SRC
+
+Wrapper around some emacs commands.
+
+#+BEGIN_SRC emacs-lisp
+(use-package counsel
+  :defer t
+  :preface
+  (defun my/rg-word-visual ()
+    (interactive)
+    (counsel-rg (buffer-substring
+                  (evil-range-beginning (evil-visual-range))
+                  (evil-range-end (evil-visual-range)))))
+  (defun my/rg-word ()
+    (interactive)
+    (counsel-rg (thing-at-point 'word)))
+  :general
+  ("M-x" 'counsel-M-x)
+  (:states 'normal
+    :prefix leader
+    "*" 'my/rg-word)
+  (:states 'visual
+    :prefix leader
+    "*" 'my/rg-word-visual)
+  (:states 'normal
+    :prefix leader
+    "/" 'counsel-rg))
+#+END_SRC
+
+Search for ivy.
+
+#+BEGIN_SRC emacs-lisp
+(use-package swiper
+  :defer t
+  :preface
+  (defun my/s-word()
+    (interactive)
+    (swiper (thing-at-point 'symbol)))
+  :general
+  (:states 'normal
+    "*" 'my/s-word
+    "/" 'swiper))
+#+END_SRC
+
+** Org stuff
+
+Just for org-mode config.
+
+#+BEGIN_SRC emacs-lisp
+(use-package org
+  :ensure nil)
+#+END_SRC
+
+Pretty bullets.
+
+#+BEGIN_SRC emacs-lisp
+(use-package org-bullets
+  :config
+  (setq org-bullets-bullet-list '("∙"))
+  (add-hook 'org-mode-hook 'org-bullets-mode))
+#+END_SRC
+
+** Projectile
+
+[[https://docs.projectile.mx/en/latest][Projects]], projects everywhere.
+
+#+BEGIN_SRC emacs-lisp
+(use-package projectile
+  :defer 2
+  :preface
+  (defun my/projectile-ranger ()
+    "Use ranger instead of dired"
+    (interactive)
+    (ranger (projectile-ensure-project (projectile-project-root))))
+  :init
+  (projectile-mode +1)
+  :config
+  (setq projectile-completion-system 'ivy
+        projectile-require-project-root nil
+        projectile-switch-project-action 'my/projectile-ranger)
+  ;; (counsel-projectile-mode)
+  (general-define-key
+    :states 'normal
+    :keymaps 'projectile-mode-map
+    :prefix leader
+    "p" 'projectile-command-map
+    "ff" 'projectile-find-file))
+#+END_SRC
+
+Counsel for projectile.
+Meh, decided not to. Breaks projectile hooks.
+
+#+BEGIN_SRC emacs-lisp
+;; (use-package counsel-projectile
+;;   :defer t)
+#+END_SRC
+
+[[https://github.com/leoliu/ggtags][ggtags]] for code navigation.
+
+#+BEGIN_SRC emacs-lisp
+(use-package ggtags
+  :defer t
+  :diminish 'ggtags-mode
+  :general
+  (:states '(motion insert)
+    "C-]" 'ggtags-find-tag-dwim))
+#+END_SRC
+
+** Search
+
+I use [[https://github.com/Wilfred/ag.el][ag]].
+
+#+BEGIN_SRC emacs-lisp
+;; (use-package ag
+;;   :defer t
+;;   :config
+;;   (setq ag-highlight-search t)
+;;   (add-hook 'ag-mode-hook 'wgrep-change-to-wgrep-mode))
+#+END_SRC
+
+Or [[https://github.com/Wilfred/deadgrep][ripgrep]].
+
+#+BEGIN_SRC emacs-lisp
+(use-package deadgrep
+  :defer t)
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+;; (use-package wgrep-ag)
+#+END_SRC
+
+** Magit
+
+I heard [[https://github.com/magit/magit][magit]] to be best git client. Let's see.
+
+#+BEGIN_SRC emacs-lisp
+(use-package magit
+  :defer t
+  :init
+  (general-define-key
+    :states 'normal
+    :prefix leader
+    "g" 'magit-status))
+
+#+END_SRC
+
+And, surely, [[https://github.com/emacs-evil/evil-magit][evil-magit]].
+
+#+BEGIN_SRC emacs-lisp
+(use-package evil-magit
+  :after magit)
+#+END_SRC
+
+Gitgutter
+
+#+BEGIN_SRC emacs-lisp
+(use-package git-gutter
+  :config
+  (global-git-gutter-mode t)
+  :diminish
+  git-gutter-mode)
+#+END_SRC
+
+** Ranger
+
+[[https://github.com/ralesi/ranger.el][Ranger]] is for dired.
+
+#+BEGIN_SRC emacs-lisp
+  (use-package ranger
+    :config
+    (setq ranger-show-hidden 'prefer)
+    (add-to-list 'ranger-prefer-regexp "^\\.")
+    (ranger-override-dired-mode 'ranger)
+    (add-hook 'ranger-mode-hook 'all-the-icons-dired-mode)
+
+    (general-define-key
+     :states '(normal insert visual)
+     "TAB" 'ranger)
+
+    (general-define-key
+      :keymaps 'ranger-normal-mode-map
+      "c" 'find-file)
+    (general-define-key
+     :states 'normal
+     :prefix leader
+     "d" 'ranger))
+#+END_SRC
+
+Icons for dired and ranger.
+
+#+BEGIN_SRC emacs-lisp
+(use-package all-the-icons
+  :defer t)
+(use-package all-the-icons-dired
+  :defer t)
+#+END_SRC
+
+** Cursors
+
+[[https://github.com/magnars/multiple-cursors.el][Multiple cursors]].
+
+#+BEGIN_SRC emacs-lisp
+(use-package multiple-cursors
+  :config
+  (setq mc/always-run-for-all t)
+  :general
+  (:states 'normal
+    "C-S-n" 'mc/unmark-next-like-this
+    "C-S-p" 'mc/unmark-previous-like-this
+    "C-p" 'mc/mark-previous-like-this-word
+    "C-n" 'mc/mark-next-like-this-word)
+  (:states 'visual
+    "C-S-n" 'mc/unmark-next-like-this
+    "C-S-p" 'mc/unmark-previous-like-this
+    "C-p" 'mc/mark-previous-like-this
+    "C-n" 'mc/mark-next-like-this))
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+(use-package beacon
+  :config
+  (beacon-mode 1)
+  (setq beacon-blink-when-focused t
+        beacon-color "#ee6bff"
+        beacon-blink-duration 0.5
+        beacon-size 70
+        beacon-blink-when-point-moves-vertically 15))
+#+END_SRC
+
+** Autocomplete
+
+I'm not sure yet if i need it. We'll see.
+
+There is no alternatives to [[http://company-mode.github.io/][company-mode]].
+
+#+BEGIN_SRC emacs-lisp
+(use-package company
+  :defer t
+  :hook ((eshell-mode . (lambda () (setq-local company-backends '(company-files)))))
+  :init
+  (global-company-mode)
+  (setq company-idle-delay 0.2
+        company-show-numbers t
+        company-tooltip-align-annotations t
+        company-selection-wrap-around t)
+  :config
+  (general-define-key
+    :keymaps 'company-active-map
+    "C-j" 'company-select-next
+    "C-k" 'company-select-previous
+    "C-l" 'company-complete-selection)
+
+
+  (general-define-key
+    :keymaps 'company-mode-map
+    "C-p" 'company-complete))
+#+END_SRC
+
+Quickhelp too.
+(not working properly with evil bindings)
+
+#+BEGIN_SRC emacs-lisp
+;; (use-package company-quickhelp
+;;   :defer t
+;;   :init
+;;   (company-quickhelp-mode))
+#+END_SRC
+
+Why not irony.
+
+#+BEGIN_SRC emacs-lisp
+(use-package company-irony
+  :defer t
+  :hook (irony-mode . (lambda ()
+    (setq-local company-backends '(company-irony company-capf)))))
+#+END_SRC
+
+** Lint
+
+[[https://www.flycheck.org/en/latest/][Flycheck]] is good.
+
+#+BEGIN_SRC emacs-lisp
+(use-package flycheck
+  :defer t
+  :preface
+  (defun my/eslint-from-node-modules ()
+    "function to find eslint in project folder, not globally"
+    (let ((root (locate-dominating-file
+                 (or (buffer-file-name) default-directory)
+                 (lambda (dir)
+                   (let ((eslint (expand-file-name "node_modules/.bin/eslint" dir)))
+                     (and eslint (file-executable-p eslint)))))))
+      (when root
+        (let ((eslint (expand-file-name "node_modules/.bin/eslint" root)))
+          (setq-local flycheck-javascript-eslint-executable eslint)))))
+  :init
+  (global-flycheck-mode)
+  :config
+  (add-hook 'flycheck-mode-hook 'my/eslint-from-node-modules)
+  (add-hook 'flycheck-mode-hook 'ggtags-mode))
+#+END_SRC
+
+** Parentheses
+
+Oh where would we be without them. Maybe coding on Haskell.
+
+I love my [[https://github.com/Fuco1/smartparens][parenths]] smart.
+
+#+BEGIN_SRC emacs-lisp
+  (use-package smartparens
+    :defer t
+    :init
+    (show-smartparens-global-mode t)
+    (smartparens-global-mode 1)
+    (sp-local-pair 'emacs-lisp-mode "'" nil :actions '(:rem insert))
+    :config
+    (set-face-attribute 'sp-show-pair-match-face nil
+                        :foreground "#00ffff"
+                        :background "#6700D4"
+                        )
+    (set-face-attribute 'sp-show-pair-match-content-face nil
+                        :foreground "#00ffff"
+                        :background "#6700D4"
+                        )
+    )
+#+END_SRC
+
+[[https://github.com/tsdh/highlight-parentheses.el][Highlight]] matching parentheses.
+
+#+BEGIN_SRC emacs-lisp
+(use-package highlight-parentheses
+  :hook ((ruby-mode
+          emacs-lisp-mode
+          lisp-mode) . highlight-parentheses-mode)
+  :defer t)
+#+END_SRC
+
+** Term
+
+Eshell config.
+
+#+BEGIN_SRC emacs-lisp
+(use-package eshell
+  :ensure nil
+  :config
+  (add-hook
+    'eshell-mode-hook
+    (lambda ()
+      (setq pcomplete-cycle-completions nil)))
+  ;; (general-define-key
+  ;;   :states '(normal insert)
+  ;;   "M-q" ) ;; eshell/exit
+  (general-define-key
+    :states '(normal insert)
+    "C-," 'eshell)) ;; "C-i" causes starting eshell with TAB too. crazy stuff
+#+END_SRC
+
+Completion for fish.
+
+#+BEGIN_SRC emacs-lisp
+(use-package fish-completion
+  :if (executable-find "fish")
+  :defer t
+  :config
+  (global-fish-completion-mode))
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+(use-package readline-complete
+  :commands 'eshell)
+#+END_SRC
+
+Term extra info.
+
+#+BEGIN_SRC emacs-lisp
+(use-package eshell-prompt-extras
+  :config
+  (autoload 'epe-theme-lambda "eshell-prompt-extras")
+  (setq eshell-highlight-prompt nil
+        eshell-prompt-function 'epe-theme-lambda))
+#+END_SRC
+
+** LSP
+
+Experimenting with [[https://github.com/emacs-lsp/lsp-mode][lsp-mode]].
+Doesn't just works.
+
+#+BEGIN_SRC emacs-lisp
+;; (use-package lsp-mode
+;;   :commands lsp
+;;   :config
+;;   (add-hook 'ruby-mode-hook 'lsp))
+#+END_SRC
+
+Comes with [[https://github.com/emacs-lsp/lsp-ui][lsp-ui]].
+
+#+BEGIN_SRC emacs-lisp
+;; (use-package lsp-ui
+;;   :commands lsp-ui-mode
+;;   :config
+;;   (add-hook 'ruby-mode-hook 'flycheck-mode))
+#+END_SRC
+
+Try [[https://github.com/joaotavora/eglot][eglot]].
+
+#+BEGIN_SRC emacs-lisp
+(use-package eglot
+  :config
+  (add-to-list 'eglot-server-programs '(ruby-mode . ("solargraph" "stdio")))
+  (add-to-list 'eglot-server-programs '(caml-mode . ("ocaml-language-server" "--stdio")))
+  (add-to-list 'eglot-server-programs '(js-mode . ("javascript-typescript-stdio")))
+  (add-to-list 'eglot-server-programs '(rjsx-mode . ("javascript-typescript-stdio")))
+  (add-to-list 'eglot-server-programs '(reason-mode . ("ocaml-language-server" "--stdio")))
+  (add-to-list 'eglot-server-programs '(haskell-mode . ("hie-wrapper")))
+
+  ;; (add-hook 'ruby-mode-hook 'eglot-ensure)
+  ;; (add-hook 'caml-mode-hook 'eglot-ensure)
+  ;; (add-hook 'js-mode-hook 'eglot-ensure)
+  ;; (add-hook 'rjsx-mode 'eglot-ensure)
+  ;; (add-hook 'reason-mode-hook 'eglot-ensure)
+  (add-hook 'haskell-mode-hook 'eglot-ensure))
+#+END_SRC
+
+** Programming
+
+[[https://github.com/Malabarba/aggressive-indent-mode][Aggressive indent]] keeps your code indented always.
+
+#+BEGIN_SRC emacs-lisp
+;; (use-package aggressive-indent
+;;   :hook ((ruby-mode
+;;           emacs-lisp-mode ;;           lisp-mode) . aggressive-indent-mode)
+;;   :defer t)
+#+END_SRC
+Becuse i'm interested in haskell.
+
+#+BEGIN_SRC emacs-lisp
+(use-package haskell-mode
+  :defer t)
+#+END_SRC
+
+Irony for C.
+
+#+BEGIN_SRC emacs-lisp
+(use-package irony
+  :hook (c-mode . irony-mode))
+#+END_SRC
+
+And sometimes need to work with js.
+
+#+BEGIN_SRC emacs-lisp
+(use-package js2-mode
+  :defer t
+  :mode "\\.js\\'"
+  :config
+  (setq-default js2-strict-trailing-comma-warning nil))
+#+END_SRC
+
+And rjsx.
+
+#+BEGIN_SRC emacs-lisp
+(use-package rjsx-mode
+  :defer t)
+#+END_SRC
+
+Ruby mode settings.
+
+#+BEGIN_SRC emacs-lisp
+(use-package ruby-mode
+  :ensure nil
+  :config
+  (setq ruby-insert-encoding-magic-comment nil))
+#+END_SRC
+
+Pry.
+
+#+BEGIN_SRC emacs-lisp
+(use-package inf-ruby
+  :config
+  (general-define-key
+    :keymaps 'rspec-compilation-mode-map
+    :states 'normal
+    :prefix leader
+    "rx" 'inf-ruby-switch-from-compilation))
+#+END_SRC
+
+Run specs from emacs.
+
+#+BEGIN_SRC emacs-lisp
+;; (use-package rspec-simple
+;;   :config
+;;   (general-define-key
+;;     :keymaps 'ruby-mode-map
+;;     :states 'normal
+;;     :prefix leader
+;;     "tt" 'rspec-find-related-file
+;;     "rtn" 'rspec-compile-on-line
+;;     "rtf" 'rspec-compile-file))
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+(use-package rspec-mode
+  :config
+  (add-hook 'after-init-hook 'inf-ruby-switch-setup)
+  (general-define-key
+    :states 'normal
+    :prefix leader
+    "rtt" 'rspec-toggle-spec-and-target
+    "rtf" 'rspec-verify
+    "rtm" 'rspec-verify-matching
+    "rtn" 'rspec-verify-single))
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+;; (use-package ruby-test-mode
+;;   :config
+;;   (general-define-key
+;;     :keymaps 'ruby-test-mode-map
+;;     :states 'normal
+;;     :prefix leader
+;;     "rtn" 'ruby-test-run-at-point
+;;     "rtf" 'ruby-test-run))
+#+END_SRC
+
+* TODOs
+** Keybindings
+  - Map leader * to search for selected region/word.
+* Problems to solve
+** TODO .dir-locals.el with ranger
+It just freezes. Fix that.
+** DONE emacsclient from mac os launchpad
+For now I use function with focus on frame.
+** TODO eshell at-point-autocomplete(or maybe use term)
+** DONE disable TABing eshell in modes other than org
+** DONE emacs --daemon doesn't open files
+Strange thing with termcap. "Device is not a termcap terminal device".
+Happend to be some bug with evil mode post-command-hook (evil-mode-check-buffers).
+[[#evil-daemon]] - caused problem. I gotta look into how to make it lazy.
+** DONE emacs --daemon doesn't know about projects at startup
+Related to evil stuff. [[#evil-daemon]] problem.

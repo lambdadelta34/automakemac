@@ -1,0 +1,3 @@
+function gfb
+  git log -p -M --follow --stat $argv
+end

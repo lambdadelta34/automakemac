@@ -8,3 +8,26 @@
   homebrew:
     name: emacs-plus
     state: present
+
+- name: create emacs folder
+  shell: "mkdir -p ~/.emacs.d/"
+
+- name: link dotemacs config
+  file:
+    src: "{{ playbook_dir }}/roles/emacs-plus/files/init.el"
+    dest: ~/.emacs.d/init.el
+    state: link
+
+- name: link config org file
+  file:
+    src: "{{ playbook_dir }}/roles/emacs-plus/files/config.org"
+    dest: ~/.emacs.d/config.org
+    state: link
+
+- name: link daemon to start up
+  file:
+    src: "{{ playbook_dir }}/roles/emacs-plus/files/gnu.emacs.daemon.runner.plist"
+    dest: /Library/LaunchDaemons/gnu.emacs.daemon.runner.plist
+    state: link
+  become: yes
+  become_user: root

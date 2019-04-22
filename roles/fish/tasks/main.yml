@@ -10,6 +10,9 @@
   shell: "mkdir -p {{ config_path }}"
   args:
     creates: "{{ config_path }}"
+    
+- name: create functions folder
+  shell: "mkdir -p {{ config_path }}/functions"
 
 - name: import config
   file:
@@ -22,3 +25,14 @@
 
 - name: make default shell
   shell: chsh -s /usr/local/bin/fish
+
+- name: link functions
+  file:
+    src: "{{ playbook_dir }}/roles/fish/files/{{ item }}"
+    dest: "{{ config_path }}/functions/{{ item }}.fish"
+    state: link
+  with_items:
+    - gcb
+    - gfb
+    - gcbh
+    - ec
