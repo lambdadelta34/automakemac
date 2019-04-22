@@ -1,6 +1,6 @@
 ---
 - name: install nix
-  shell: sh (curl https://nixos.org/nix/install | psub) --no-daemon
+  shell: bash -c 'sh <(curl https://nixos.org/nix/install) --no-daemon'
 
 - name: link nix generated profile
   file:
@@ -11,5 +11,7 @@
 - name: link daemon to start up
   file:
     src: "{{ playbook_dir }}/roles/nix/files/nix.daemon.runner.plist"
-    dest: /Library/LaunchDaemons
+    dest: /Library/LaunchDaemons/nix.daemon.runner.plist
     state: link
+  become: yes
+  become_user: root
