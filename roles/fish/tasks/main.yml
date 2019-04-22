@@ -31,8 +31,8 @@
     src: "{{ playbook_dir }}/roles/fish/files/{{ item }}"
     dest: "{{ config_path }}/functions/{{ item }}.fish"
     state: link
-    with_items:
-      - gcb
-      - gfb
-      - gcbh
-      - ec
+  with_items:
+    - gcb
+    - gfb
+    - gcbh
+    - ec
