@@ -8,4 +8,4 @@ set -x LC_ALL en_US.UTF-8
 set NIX_REMOTE daemon
 
 # opam configuration
-source /Users/aa/.opam/opam-init/init.fish > /dev/null 2> /dev/null; or true
+source ~/.opam/opam-init/init.fish > /dev/null 2> /dev/null; or true
