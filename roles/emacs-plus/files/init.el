@@ -14,4 +14,7 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- )
+ '(awesome-tab-selected ((t :background "#bd93f9")))
+ '(awesome-tab-unselected ((t :background "#8BE9FD")))
+ '(sp-show-pair-match-content-face ((t :foreground "#00ffff" :background "#6700D4")) t)
+ '(sp-show-pair-match-face ((t :foreground "#00ffff" :background "#6700D4"))))
