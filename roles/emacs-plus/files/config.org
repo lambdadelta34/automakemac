@@ -383,6 +383,22 @@ Code [[https://github.com/redguardtoo/evil-nerd-commenter][commentary]].
 ;;    (add-hook 'evil-normal-state-entry-hook (lambda () (send-string-to-terminal "\033[0 q"))))) ;; set cursor to block
 #+END_SRC
 
+** Indent guide
+
+[[https://github.com/DarthFennec/highlight-indent-guides][Indent]] guide with vertical bars.
+
+#+BEGIN_SRC emacs-lisp
+(use-package highlight-indent-guides
+  :init
+  (setq highlight-indent-guides-method 'character
+        ;; highlight-indent-guides-auto-odd-face-perc 15
+        ;; highlight-indent-guides-auto-even-face-perc 15
+        ;; highlight-indent-guides-auto-character-face-perc 20
+        highlight-indent-guides-responsive 'stack)
+  :config
+  (add-hook 'prog-mode-hook 'highlight-indent-guides-mode))
+#+END_SRC
+
 ** Expanding
 
 [[https://github.com/magnars/expand-region.el][Expand region]] helpsto quickly select with expanding region.
@@ -635,7 +651,7 @@ Meh, decided not to. Breaks projectile hooks.
   :defer t
   :diminish 'ggtags-mode
   :general
-  (:states '(motion insert)
+  (:states '(normal insert)
     "C-]" 'ggtags-find-tag-dwim))
 #+END_SRC
 
@@ -773,10 +789,9 @@ There is no alternatives to [[http://company-mode.github.io/][company-mode]].
 #+BEGIN_SRC emacs-lisp
 (use-package company
   :defer t
-  :hook ((eshell-mode . (lambda () (setq-local company-backends '(company-files company-capf)))))
   :init
   (global-company-mode)
-  (setq company-idle-delay 0.2
+  (setq company-idle-delay 0.1
         company-show-numbers t
         company-tooltip-align-annotations t
         company-selection-wrap-around t)
@@ -785,10 +800,12 @@ There is no alternatives to [[http://company-mode.github.io/][company-mode]].
     :keymaps 'company-active-map
     "C-j" 'company-select-next
     "C-k" 'company-select-previous
+    "C-p" 'company-other-backend
     "C-l" 'company-complete-selection)
 
 
   (general-define-key
+    :states '(normal insert)
     :keymaps 'company-mode-map
     "C-p" 'company-complete))
 #+END_SRC
@@ -886,6 +903,7 @@ Eshell config.
 
 #+BEGIN_SRC emacs-lisp
 (use-package eshell
+  :hook ((eshell-mode . (lambda () (setq-local company-backends '(company-files company-capf)))))
   :ensure nil
   :preface
   (defun my/eshell ()
@@ -1031,12 +1049,39 @@ Try [[https://github.com/joaotavora/eglot][eglot]].
 ;;           emacs-lisp-mode ;;           lisp-mode) . aggressive-indent-mode)
 ;;   :defer t)
 #+END_SRC
+
 Becuse i'm interested in haskell.
 
 #+BEGIN_SRC emacs-lisp
 (use-package haskell-mode
-  :defer t)
+  :defer t
+  :preface
+  (defun my/autocomplete ()
+    (setq-local company-backends '(company-ghc company-dabbrev-code)))
+  :init
+  (setq haskell-tags-on-save t
+        tags-revert-without-query t
+        haskell-process-type 'stack-ghci
+        haskell-stylish-on-save t
+        haskell-compile-cabal-build-command "stack build"
+  )
+  :config
+  (general-define-key
+    ;; :prefix leader
+    :keymaps 'haskell-mode-map
+    "C-]" 'haskell-mode-tag-find
+  )
+  (add-hook 'haskell-mode-hook 'my/autocomplete)
+  (add-hook 'haskell-mode-hook 'turn-on-haskell-unicode-input-method)
+  (add-hook 'haskell-mode-hook 'haskell-auto-insert-module-template)
+  (add-hook 'haskell-mode-hook 'interactive-haskell-mode)
+)
+
+(use-package company-ghc
+  :config
+  (add-to-list 'company-backends 'company-ghc))
 #+END_SRC
+
 Irony for C.
 
 #+BEGIN_SRC emacs-lisp
