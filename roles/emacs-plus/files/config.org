@@ -124,7 +124,35 @@ Remove useless whitespace before saving a file.
 Stop creating annoying backup~ files.
 
 #+BEGIN_SRC emacs-lisp
-(setq make-backup-files nil)
+;; (setq make-backup-files nil)
+#+END_SRC
+
+Not that I needed to backup, but it's better to be safe than sorry.
+
+#+BEGIN_SRC emacs-lisp
+(setq vc-make-backup-files t ;; emacs doesn't do backup for VCed files
+      version-control t      ;; Use version numbers for backups.
+      kept-new-versions 10   ;; Number of newest versions to keep.
+      kept-old-versions 0    ;; Number of oldest versions to keep.
+      delete-old-versions t  ;; Don't ask to delete excess backup versions.
+      backup-by-copying t    ;; Copy all files, don't rename them.
+      backup-directory-alist '(("" . "~/.emacs.d/backup/per-save")))
+
+(defun force-backup-of-buffer ()
+    ;; Make a special "per session" backup at the first save of each
+    ;; emacs session.
+    (when (not buffer-backed-up)
+      ;; Override the default parameters for per-session backups.
+      (let ((backup-directory-alist '(("" . "~/.emacs.d/backup/per-session")))
+            (kept-new-versions 3))
+        (backup-buffer)))
+    ;; Make a "per save" backup on each save.  The first save results in
+    ;; both a per-session and a per-save backup, to keep the numbering
+    ;; of per-save backups consistent.
+    (let ((buffer-backed-up nil))
+      (backup-buffer)))
+
+(add-hook 'before-save-hook  'force-backup-of-buffer)
 #+END_SRC
 
 Stop creating not less annoying #autosave# files.
@@ -339,7 +367,7 @@ Code [[https://github.com/redguardtoo/evil-nerd-commenter][commentary]].
   :defer t
   :general
   (:states 'normal
-    "gcc" 'evilnc-comment-or-uncomment-lines)
+    "gy" 'evilnc-comment-or-uncomment-lines)
   (:states 'visual
     "gc" 'evilnc-comment-or-uncomment-lines))
 #+END_SRC
@@ -368,6 +396,20 @@ Code [[https://github.com/redguardtoo/evil-nerd-commenter][commentary]].
     :states 'normal
     :prefix leader
     "x" 'er/expand-region))
+#+END_SRC
+
+** Jumping
+
+[[https://github.com/abo-abo/avy][Avy]] jump mode.
+
+#+BEGIN_SRC emacs-lisp
+(use-package avy
+  :config
+  (general-define-key
+    :states 'normal
+    "gw" 'avy-goto-word-1
+    "gc" 'avy-goto-char
+    "gl" 'avy-goto-line))
 #+END_SRC
 
 ** EMOJI!
@@ -1120,8 +1162,7 @@ Run specs from emacs.
   ;; (setq nyan-wavy-trail t
   ;;       nyan-animate-nyancat t)
   :config
-  (nyan-mode)
-)
+  (nyan-mode))
 #+END_SRC
 
 * TODOs
