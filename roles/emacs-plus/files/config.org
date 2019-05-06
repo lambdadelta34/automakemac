@@ -6,6 +6,7 @@ I forgot everything i've done in my previous init.el file, so i decided to start
 Also, i'd like to start using org-mode, finally.
 
 ** Config initialization
+
 So, we need this to require emacs default package manager and be able to initialize them before configuring them.
 [[https://wikemacs.org/wiki/Package.el][link to the doc]]
 Also add melpa to package manager.
@@ -24,6 +25,7 @@ This little dude here is enables lazy loading.
 #+END_SRC
 
 ** use-package
+
 This is where the fun begins. It is a elisp macro which goal is to simplify package configuration.
 [[https://github.com/jwiegley/use-package][github link]]
 Some elisp code to install it if it isn't yet. And ensure that all packages would be installed automatically if they are not.
@@ -36,6 +38,8 @@ Some elisp code to install it if it isn't yet. And ensure that all packages woul
 (require 'use-package)
 (setq use-package-always-ensure t)
 #+END_SRC
+
+Check out for [[https://github.com/raxod502/straight.el][straight.el]] instead of use-package.
 
 Mac os use PATH set by user shell. Just in case.
 
@@ -181,12 +185,60 @@ Org-mode for *scratch* file.
 #+END_SRC
 
 * Theme
+
 Dracula, hocho, just a little bite.
 
 #+BEGIN_SRC emacs-lisp
 (use-package dracula-theme
   :config
   (load-theme 'dracula t))
+#+END_SRC
+
+Pretty symbols.
+
+#+BEGIN_SRC emacs-lisp
+(defun my/pretty-syms-hask ()
+  (setq prettify-symbols-alist
+        '(
+          ("lambda" . 955)              ; λ
+          ("\\" . 955)                  ; λ
+          ("->" . 8594)                 ; →
+          ("=>" . 8658)                 ; ⇒
+          ("map" . 8614)                ; ↦
+          ("forall" . 8704)             ; ∀
+          ("exists" . 8707)             ; ∃
+          ("<-" . 8592)                 ; ←
+          ("~>" . 8604)                 ; ⇝
+          ("<~" . 8605)                 ; ⇜
+          ("&&" . 8743)                 ; ∧
+          ("||" . 8744)                 ; ∨
+          ("=" . 8797)                  ; ≝
+          ("==" . 8801)                 ; ≡
+          ("//=" . 8802)                ; ≢, ≠
+          ("<=" . 8804)                 ; ≤
+          (">=" . 8805)                 ; ≥
+          ("//<" . 8814)                ; ≮
+          ("//>" . 8815)                ; ≯
+          ("*" . 8728)                  ; ⋅
+          ("`elem`" . 8712)             ; ∈
+          ("`notElem`" . 8713)          ; ∉
+          ("`member`" . 8712)           ; ∈
+          ("`notMember`" . 8713)        ; ∉
+          ("`union`" . 8746)            ; ∪
+          ("`intersection`" . 8745)     ; ∩
+          ("`isSubsetOf`" . 8838)       ; ⊆
+          ("`isProperSubsetOf`" . 8834) ; ⊂
+          ("<<<" . 8920)                ; ⋘
+          (">>>" . 8921)                ; ⋙
+          ("<|" . 8882)                 ; ⊲
+          ("|>" . 8883)                 ; ⊳
+          ("><" . 8904)                 ; ⋈
+          ("mappend" . 8853)            ; ⊕
+          ("." . 8729)                  ; ∘
+          ("undefined" . 8869)          ; ⊥
+          )))
+(add-hook 'haskell-mode-hook 'prettify-symbols-mode)
+(add-hook 'haskell-mode-hook 'my/pretty-syms-hask)
 #+END_SRC
 
 * Packages
@@ -391,12 +443,15 @@ Code [[https://github.com/redguardtoo/evil-nerd-commenter][commentary]].
 (use-package highlight-indent-guides
   :init
   (setq highlight-indent-guides-method 'character
+        highlight-indent-guides-delay 0
+        highlight-indent-guides-responsive 'stack
         ;; highlight-indent-guides-auto-odd-face-perc 15
         ;; highlight-indent-guides-auto-even-face-perc 15
         ;; highlight-indent-guides-auto-character-face-perc 20
-        highlight-indent-guides-responsive 'stack)
+        )
   :config
-  (add-hook 'prog-mode-hook 'highlight-indent-guides-mode))
+  (add-hook 'prog-mode-hook 'highlight-indent-guides-mode)
+  (add-hook 'highlight-indent-guides-mode-hook 'highlight-indent-guides-auto-set-faces))
 #+END_SRC
 
 ** Expanding
@@ -434,6 +489,8 @@ Code [[https://github.com/redguardtoo/evil-nerd-commenter][commentary]].
 
 #+BEGIN_SRC emacs-lisp
 (use-package emojify
+  :init
+  (setq emojify-emoji-styles 'unicode)
   :config
   (global-emojify-mode))
 #+END_SRC
@@ -824,9 +881,7 @@ Why not irony.
 
 #+BEGIN_SRC emacs-lisp
 (use-package company-irony
-  :defer t
-  :hook (irony-mode . (lambda ()
-    (setq-local company-backends '(company-irony company-capf)))))
+  :defer t)
 #+END_SRC
 
 ** Parentheses
@@ -903,7 +958,6 @@ Eshell config.
 
 #+BEGIN_SRC emacs-lisp
 (use-package eshell
-  :hook ((eshell-mode . (lambda () (setq-local company-backends '(company-files company-capf)))))
   :ensure nil
   :preface
   (defun my/eshell ()
@@ -1057,7 +1111,7 @@ Becuse i'm interested in haskell.
   :defer t
   :preface
   (defun my/autocomplete ()
-    (setq-local company-backends '(company-ghc company-dabbrev-code)))
+    (add-to-list 'company-backends 'company-ghc ))
   :init
   (setq haskell-tags-on-save t
         tags-revert-without-query t
@@ -1072,14 +1126,12 @@ Becuse i'm interested in haskell.
     "C-]" 'haskell-mode-tag-find
   )
   (add-hook 'haskell-mode-hook 'my/autocomplete)
-  (add-hook 'haskell-mode-hook 'turn-on-haskell-unicode-input-method)
+  ;; (add-hook 'haskell-mode-hook 'turn-on-haskell-unicode-input-method) ;; nope
   (add-hook 'haskell-mode-hook 'haskell-auto-insert-module-template)
   (add-hook 'haskell-mode-hook 'interactive-haskell-mode)
 )
 
-(use-package company-ghc
-  :config
-  (add-to-list 'company-backends 'company-ghc))
+(use-package company-ghc)
 #+END_SRC
 
 Irony for C.
@@ -1140,7 +1192,7 @@ Oh, and this chages apply to ruby-mode.
 
   :config
   (font-lock-add-keywords 'ruby-mode
-        '(("\\([A-Z].*?\\)\(.*?\)" 1 font-lock-function-name-face)))
+        '(("\\([A-Z][a-z]*?\\)\(.*?\)" 1 font-lock-function-name-face)))
   (setq ruby-insert-encoding-magic-comment nil
         flycheck-ruby-rubocop-executable "rubocop"))
 
