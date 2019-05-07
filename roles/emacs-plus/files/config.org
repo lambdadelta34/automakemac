@@ -1174,28 +1174,30 @@ Oh, and this chages apply to ruby-mode.
   :preface
   (defun my/rubocop-fix-file ()
     (interactive)
-    (message "rubocop fixing the" (buffer-file-name))
-    (with-temp-buffer
-      (shell-command (format "%s %s" flycheck-ruby-rubocop-executable
-                            (concat "-a " (buffer-file-name)))
-                    t)))
+    (let ((cop-filename (buffer-file-name)))
+      (message (concat "rubocop fixing the " cop-filename))
+      (with-temp-buffer
+        (async-shell-command (format "%s %s" flycheck-ruby-rubocop-executable
+                              (concat "-a " cop-filename))
+                      t))))
 
   (defun my/rubocop-fix-file-and-revert ()
     (interactive)
     (my/rubocop-fix-file))
     ;; (revert-buffer t t))
 
+  :init
+  (setq ruby-insert-encoding-magic-comment nil
+        flycheck-ruby-rubocop-executable "rubocop")
+
   :general
   (:states 'normal
     :prefix leader
-    "rfx" 'my/rubocop-fix-file-and-revert)
+    "rfx" 'my/rubocop-fix-file)
 
   :config
   (font-lock-add-keywords 'ruby-mode
-        '(("\\([A-Z][a-z]*?\\)\(.*?\)" 1 font-lock-function-name-face)))
-  (setq ruby-insert-encoding-magic-comment nil
-        flycheck-ruby-rubocop-executable "rubocop"))
-
+        '(("\\([A-Z][a-z]*?\\)\(.*?\)" 1 font-lock-function-name-face))))
 #+END_SRC
 
 Pry.
