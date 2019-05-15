@@ -377,9 +377,9 @@ Just functionality to go to last chages. Nothing fancy here.
     help
     man
     outline
-    (package-menu package)
+    (package-menu package)))
     ;; process-menu
-    simple))
+    ;;simple))
     ;; view))
   :config
   (evil-collection-init))
@@ -708,7 +708,7 @@ Meh, decided not to. Breaks projectile hooks.
   :defer t
   :diminish 'ggtags-mode
   :general
-  (:states '(normal insert)
+  (:states 'normal
     "C-]" 'ggtags-find-tag-dwim))
 #+END_SRC
 
@@ -929,27 +929,27 @@ I love my [[https://github.com/Fuco1/smartparens][parenths]] smart.
 Author doesn't like melpa, so I have to git clone that stuff and update by pulling.
 
 #+BEGIN_SRC emacs-lisp
-  (use-package awesome-tab
-    :load-path "~/.emacs.d/aw-tab"
-    :init
-    (setq awesome-tab-style 'alternate
-          awesome-tab-background-color "#282a36")
-    :custom-face
-    (awesome-tab-unselected ((t :background "#8BE9FD")))
-    (awesome-tab-selected ((t :background "#bd93f9")))
-    :config
-    (awesome-tab-mode t)
-    (general-define-key
-      :states 'normal
-      :prefix leader
-      "bg" 'awesome-tab-build-ivy-source
-      "bn" 'awesome-tab-forward
-      "bp" 'awesome-tab-backward
-      "bl" 'awesome-tab-select-end-tab
-      "bf" 'awesome-tab-select-beg-tab
-      "bd" 'kill-this-buffer
-      "bx" 'awesome-tab-kill-other-buffers-in-current-group)
-    )
+(use-package awesome-tab
+  :load-path "~/.emacs.d/aw-tab"
+  :init
+  (setq awesome-tab-style 'alternate
+        awesome-tab-background-color "#282a36")
+  :custom-face
+  (awesome-tab-unselected ((t :background "#8BE9FD")))
+  (awesome-tab-selected ((t :background "#bd93f9")))
+  :config
+  (awesome-tab-mode t)
+  (general-define-key
+    :states 'normal
+    :prefix leader
+    "bg" 'awesome-tab-build-ivy-source
+    "bn" 'awesome-tab-forward
+    "bp" 'awesome-tab-backward
+    "bl" 'awesome-tab-select-end-tab
+    "bf" 'awesome-tab-select-beg-tab
+    "bd" 'kill-this-buffer
+    "bx" 'awesome-tab-kill-other-buffers-in-current-group)
+  )
 #+END_SRC
 
 ** Term
@@ -1030,7 +1030,6 @@ Term extra info.
 ** LSP
 
 Experimenting with [[https://github.com/emacs-lsp/lsp-mode][lsp-mode]].
-Doesn't just works.
 
 #+BEGIN_SRC emacs-lisp
 ;; (use-package lsp-mode
@@ -1094,6 +1093,13 @@ Try [[https://github.com/joaotavora/eglot][eglot]].
 #+END_SRC
 
 ** Programming
+
+[[https://github.com/yoshiki/yaml-mode][Yaml]] mode.
+
+#+BEGIN_SRC emacs-lisp
+(use-package yaml-mode
+  )
+#+END_SRC
 
 [[https://github.com/Malabarba/aggressive-indent-mode][Aggressive indent]] keeps your code indented always.
 
