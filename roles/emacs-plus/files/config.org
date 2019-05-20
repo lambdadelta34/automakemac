@@ -83,8 +83,11 @@ Disable startup menu.
 Window frame size.
 
 #+BEGIN_SRC emacs-lisp
-(add-to-list 'default-frame-alist '(width . 200))
-(add-to-list 'default-frame-alist '(height . 55))
+;; (toggle-frame-fullscreen)
+(add-to-list 'default-frame-alist '(fullscreen . fullboth))
+;; (add-hook )
+;; (add-to-list 'default-frame-alist '(width . 200))
+;; (add-to-list 'default-frame-alist '(height . 55))
 #+END_SRC
 
 Garbage collection threshold to 20 mb.
@@ -334,6 +337,7 @@ Just functionality to go to last chages. Nothing fancy here.
 
   (general-define-key
     :states 'normal
+    "Q" 'quit-window
     "[e" 'my/move-line-down
     "]e" 'my/move-line-up)
 
@@ -789,7 +793,8 @@ Gitgutter
 
     (general-define-key
       :keymaps 'ranger-normal-mode-map
-      "c" 'find-file)
+      "c" 'find-file
+      "f" 'projectile-find-file)
     (general-define-key
      :states 'normal
      :prefix leader
@@ -1098,6 +1103,13 @@ Try [[https://github.com/joaotavora/eglot][eglot]].
 
 #+BEGIN_SRC emacs-lisp
 (use-package yaml-mode
+  )
+#+END_SRC
+
+[[https://github.com/slim-template/emacs-slim][Slim]].
+
+#+BEGIN_SRC emacs-lisp
+(use-package slim-mode
   )
 #+END_SRC
 

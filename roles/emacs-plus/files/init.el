@@ -8,7 +8,7 @@
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
    (quote
-    (magit powerline which-key use-package tuareg smartparens rjsx-mode reason-mode projectile neotree haskell-mode ggtags general flycheck flx evil-surround evil-nerd-commenter evil-args dumb-jump dracula-theme counsel company-quickhelp all-the-icons ag))))
+    (slim-mode magit powerline which-key use-package tuareg smartparens rjsx-mode reason-mode projectile neotree haskell-mode ggtags general flycheck flx evil-surround evil-nerd-commenter evil-args dumb-jump dracula-theme counsel company-quickhelp all-the-icons ag))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
