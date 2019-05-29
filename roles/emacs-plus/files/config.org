@@ -408,14 +408,6 @@ Adds [[https://github.com/wcsmith/evil-arg][args]] motions and text object.
     "a" 'evil-outer-arg))
 #+END_SRC
 
-Evil [[https://github.com/gabesoft/evil-mc][multicursor]].
-
-#+BEGIN_SRC emacs-lisp
-(use-package evil-mc
-  :config
-  (global-evil-mc-mode  1))
-#+END_SRC
-
 Code [[https://github.com/redguardtoo/evil-nerd-commenter][commentary]].
 
 #+BEGIN_SRC emacs-lisp
@@ -829,6 +821,35 @@ Icons for dired and ranger.
 ;;     "C-S-p" 'mc/unmark-previous-like-this
 ;;     "C-p" 'mc/mark-previous-like-this
 ;;     "C-n" 'mc/mark-next-like-this))
+#+END_SRC
+
+Evil [[https://github.com/gabesoft/evil-mc][multicursor]].
+
+#+BEGIN_SRC emacs-lisp
+(use-package evil-mc
+  :config
+  (global-evil-mc-mode  1)
+  (general-define-key
+    :states 'normal
+    "grm" 'evil-mc-make-all-cursors
+    "gru" 'evil-mc-undo-last-added-cursor
+    "grq" 'evil-mc-undo-all-cursors
+    "grs" 'evil-mc-pause-cursors
+    "grr" 'evil-mc-resume-cursors
+    "grf" 'evil-mc-make-and-goto-first-cursor
+    "grl" 'evil-mc-make-and-goto-last-cursor
+    "grh" 'evil-mc-make-cursor-here
+    "grj" 'evil-mc-make-cursor-move-next-line
+    "grk" 'evil-mc-make-cursor-move-prev-line
+    "M-n" 'evil-mc-make-and-goto-next-cursor
+    "grN" 'evil-mc-skip-and-goto-next-cursor
+    "M-p" 'evil-mc-make-and-goto-prev-cursor
+    "grP" 'evil-mc-skip-and-goto-prev-cursor
+    "C-n" 'evil-mc-make-and-goto-next-match
+    "grn" 'evil-mc-skip-and-goto-next-match
+    "C-t" 'evil-mc-skip-and-goto-next-match
+    "C-p" 'evil-mc-make-and-goto-prev-match
+    "grp" 'evil-mc-skip-and-goto-prev-match))
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp
