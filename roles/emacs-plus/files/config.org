@@ -171,6 +171,7 @@ Stop creating not less annoying #autosave# files.
 Silent ring bell(really, REALLY? DO I REALLY HAVE TO DO THIS??)
 
 #+BEGIN_SRC emacs-lisp
+(setq visible-bell nil)
 (setq ring-bell-function 'ignore)
 #+END_SRC
 
@@ -438,7 +439,7 @@ Code [[https://github.com/redguardtoo/evil-nerd-commenter][commentary]].
 #+BEGIN_SRC emacs-lisp
 (use-package highlight-indent-guides
   :init
-  (setq highlight-indent-guides-method 'character
+  (setq highlight-indent-guides-method 'column
         highlight-indent-guides-delay 1
         highlight-indent-guides-responsive 'stack
         ;; highlight-indent-guides-auto-odd-face-perc 15
@@ -581,8 +582,8 @@ So, when you iterate over ivy candidates via `-and-call` functions you can call 
       "C-j" '(ivy-next-line :which-key "next line")
       "C-k" '(ivy-previous-line :which-key "prev line")
       "C-h" '(ivy-beginning-of-buffer :which-key "beginning of ivy minibuffer")
-      "C-l" '(ivy-end-of-buffer :which-key "end if ivy mini buffer")
-      "C-o" '(ivy-immediate-done :which-key "exits from ivy search without selecting curent item")
+      ;; "C-l" '(ivy-end-of-buffer :which-key "end if ivy mini buffer")
+      "C-l" '(ivy-immediate-done :which-key "exits from ivy search without selecting curent item")
       "C-v" '(ivy-scroll-up-command :which-key "page up ivy buffer")
       "M-v" '(ivy-scroll-down-command :which-key "page down ivy buffer"))
     (:states 'normal
@@ -893,6 +894,11 @@ There is no alternatives to [[http://company-mode.github.io/][company-mode]].
     "C-p" 'company-complete))
 #+END_SRC
 
+#+BEGIN_SRC emacs-lisp
+;; (use-package company-box
+;;   :hook (company-mode . company-box-mode))
+#+END_SRC
+
 Quickhelp too.
 (not working properly with evil bindings)
 
@@ -1058,39 +1064,57 @@ Term extra info.
 Experimenting with [[https://github.com/emacs-lsp/lsp-mode][lsp-mode]].
 
 #+BEGIN_SRC emacs-lisp
-;; (use-package lsp-mode
-;;   :commands lsp
-;;   :config
-;;   (add-hook 'ruby-mode-hook 'lsp))
+(use-package lsp-mode
+  :init
+  (setq lsp-enable-snippet nil
+        lsp-prefer-flymake nil
+        lsp-auto-guess-root t
+        ;; lsp-auto-configure nil
+  )
+)
 #+END_SRC
 
 Comes with [[https://github.com/emacs-lsp/lsp-ui][lsp-ui]].
 
 #+BEGIN_SRC emacs-lisp
-;; (use-package lsp-ui
-;;   :commands lsp-ui-mode
-;;   :config
-;;   (add-hook 'ruby-mode-hook 'flycheck-mode))
+(use-package lsp-ui
+  :config
+  (add-hook 'lsp-mode-hook 'lsp-ui-mode)
+  (add-hook 'haskell-mode-hook 'flycheck-mode)
+  ;; (add-hook 'ruby-mode-hook 'flycheck-mode)
+)
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+(use-package lsp-haskell
+  :init
+  (setq lsp-haskell-process-path-hie "hie-wrapper")
+)
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+(use-package company-lsp
+)
 #+END_SRC
 
 Try [[https://github.com/joaotavora/eglot][eglot]].
 
 #+BEGIN_SRC emacs-lisp
-(use-package eglot
-  :config
-  (add-to-list 'eglot-server-programs '(ruby-mode . ("solargraph" "stdio")))
-  (add-to-list 'eglot-server-programs '(caml-mode . ("ocaml-language-server" "--stdio")))
-  (add-to-list 'eglot-server-programs '(js-mode . ("javascript-typescript-stdio")))
-  (add-to-list 'eglot-server-programs '(rjsx-mode . ("javascript-typescript-stdio")))
-  (add-to-list 'eglot-server-programs '(reason-mode . ("ocaml-language-server" "--stdio")))
-  (add-to-list 'eglot-server-programs '(haskell-mode . ("hie-wrapper")))
+;; (use-package eglot
+;;   :config
+;;   (add-to-list 'eglot-server-programs '(ruby-mode . ("solargraph" "stdio")))
+;;   (add-to-list 'eglot-server-programs '(caml-mode . ("ocaml-language-server" "--stdio")))
+;;   (add-to-list 'eglot-server-programs '(js-mode . ("javascript-typescript-stdio")))
+;;   (add-to-list 'eglot-server-programs '(rjsx-mode . ("javascript-typescript-stdio")))
+;;   (add-to-list 'eglot-server-programs '(reason-mode . ("ocaml-language-server" "--stdio")))
+;;   (add-to-list 'eglot-server-programs '(haskell-mode . ("hie-wrapper")))
 
-  ;; (add-hook 'ruby-mode-hook 'eglot-ensure)
-  ;; (add-hook 'caml-mode-hook 'eglot-ensure)
-  ;; (add-hook 'js-mode-hook 'eglot-ensure)
-  ;; (add-hook 'rjsx-mode 'eglot-ensure)
-  ;; (add-hook 'reason-mode-hook 'eglot-ensure)
-  (add-hook 'haskell-mode-hook 'eglot-ensure))
+;;   ;; (add-hook 'ruby-mode-hook 'eglot-ensure)
+;;   ;; (add-hook 'caml-mode-hook 'eglot-ensure)
+;;   ;; (add-hook 'js-mode-hook 'eglot-ensure)
+;;   ;; (add-hook 'rjsx-mode 'eglot-ensure)
+;;   ;; (add-hook 'reason-mode-hook 'eglot-ensure)
+;;   (add-hook 'haskell-mode-hook 'eglot-ensure))
 #+END_SRC
 
 ** Lint
@@ -1124,7 +1148,7 @@ Try [[https://github.com/joaotavora/eglot][eglot]].
 
 #+BEGIN_SRC emacs-lisp
 (use-package yaml-mode
-  )
+)
 #+END_SRC
 
 [[https://github.com/slim-template/emacs-slim][Slim]].
@@ -1148,6 +1172,8 @@ Becuse i'm interested in haskell.
 #+BEGIN_SRC emacs-lisp
 (use-package haskell-mode
   :defer t
+  :mode
+    ("\\.l?hs\\'" . haskell-mode)
   :preface
   (defun my/autocomplete ()
     (add-to-list 'company-backends 'company-ghc ))
@@ -1237,6 +1263,10 @@ Oh, and this chages apply to ruby-mode.
   :config
   (font-lock-add-keywords 'ruby-mode
         '(("\\([A-Z][a-z]*?\\)\(.*?\)" 1 font-lock-function-name-face))))
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+(use-package ruby-end)
 #+END_SRC
 
 Pry.
