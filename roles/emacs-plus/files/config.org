@@ -880,13 +880,13 @@ There is no alternatives to [[http://company-mode.github.io/][company-mode]].
         company-tooltip-align-annotations t
         company-selection-wrap-around t)
   :config
+  (add-to-list 'company-backends 'company-yasnippet)
   (general-define-key
     :keymaps 'company-active-map
     "C-j" 'company-select-next
     "C-k" 'company-select-previous
     "C-p" 'company-other-backend
     "C-l" 'company-complete-selection)
-
 
   (general-define-key
     :states '(normal insert)
@@ -1144,6 +1144,18 @@ Try [[https://github.com/joaotavora/eglot][eglot]].
 
 ** Programming
 
+[[https://github.com/joaotavora/yasnippet][Snippets]].
+
+#+BEGIN_SRC emacs-lisp
+(use-package yasnippet
+  :config
+  (yas-global-mode 1)
+)
+
+(use-package yasnippet-snippets
+)
+#+END_SRC
+
 [[https://github.com/yoshiki/yaml-mode][Yaml]] mode.
 
 #+BEGIN_SRC emacs-lisp
@@ -1176,7 +1188,7 @@ Becuse i'm interested in haskell.
     ("\\.l?hs\\'" . haskell-mode)
   :preface
   (defun my/autocomplete ()
-    (add-to-list 'company-backends 'company-ghc ))
+    (add-to-list 'company-backends 'company-ghc))
   :init
   (setq haskell-tags-on-save t
         tags-revert-without-query t
