@@ -3,3 +3,5 @@
   shell: >
     /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
     creates=/usr/local/bin/brew
+  notify:
+    - install libs
