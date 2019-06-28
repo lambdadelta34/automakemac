@@ -348,7 +348,9 @@ Just functionality to go to last chages. Nothing fancy here.
 
   (general-define-key
     :states 'visual
-    "y" 'my/copy-to-clipboard)
+    "y" 'my/copy-to-clipboard
+    "gs" 'sort-lines)
+
   (general-define-key
     :states 'normal
     :prefix leader
