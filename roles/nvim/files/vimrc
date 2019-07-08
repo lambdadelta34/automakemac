@@ -4,7 +4,7 @@ set fileencoding=utf-8
 
 call plug#begin('~/.local/share/nvim/plugged')
 " Plug 'dracula/vim' " theme
-Plug 'scrooloose/nerdtree' " navigation tree
+" Plug 'scrooloose/nerdtree' " navigation tree
 " Plug 'Xuyuanp/nerdtree-git-plugin' " git info for nerdtree
 Plug 'vim-airline/vim-airline' " status bar
 Plug 'vim-airline/vim-airline-themes' " status bar themes
@@ -13,46 +13,48 @@ Plug 'tpope/vim-commentary' " comment code
 " Plug 'jiangmiao/auto-pairs' " paired symbols
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' } " fuzzy search
 Plug 'junegunn/fzf.vim' " fuzzy for vim
-Plug 'dyng/ctrlsf.vim' " code search and view
+" Plug 'dyng/ctrlsf.vim' " code search and view
 Plug 'terryma/vim-multiple-cursors' " multiple cursors
-Plug 'airblade/vim-rooter' " project root
+" Plug 'airblade/vim-rooter' " project root
 Plug 'tpope/vim-fugitive' " git
-Plug 'airblade/vim-gitgutter' " git st in files
+" Plug 'airblade/vim-gitgutter' " git st in files
 Plug 'tpope/vim-repeat' " better .
 Plug 'wellle/targets.vim' " new text objects
 
 " autocomplete
-Plug 'ncm2/ncm2' " lib
-Plug 'roxma/nvim-yarp' " remote plugin framework
-Plug 'ncm2/ncm2-path' " path
-Plug 'ncm2/ncm2-tern' " js
-Plug 'ncm2/ncm2-tmux' " tmux
-Plug 'ncm2/ncm2-vim' " vimscript
+" Plug 'ncm2/ncm2' " lib
+" Plug 'roxma/nvim-yarp' " remote plugin framework
+" Plug 'ncm2/ncm2-path' " path
+" Plug 'ncm2/ncm2-tern' " js
+" Plug 'ncm2/ncm2-tmux' " tmux
+" Plug 'ncm2/ncm2-vim' " vimscript
 """""""""""
 Plug 'iamcco/markdown-preview.nvim', { 'do': { -> mkdp#util#install() }}
 """""""""""
 
 " lsp
-Plug 'w0rp/ale' " linter and lsp client
+" Plug 'w0rp/ale' " linter and lsp client
 " Plug 'autozimu/LanguageClient-neovim', { 'branch': 'next', 'do': 'bash install.sh' } " lsp client
+Plug 'neoclide/coc.nvim', {'branch': 'release'}
+"""""""
 Plug 'vim-ruby/vim-ruby', { 'for': 'ruby' } " ruby support
 Plug 'tpope/vim-rails', { 'for': 'ruby' } " rails support
 Plug 'tpope/vim-dispatch', { 'for': 'ruby' } " async support for ruby
 Plug 'tpope/vim-endwise', { 'for': 'ruby' } " block autocomplete
-Plug 'slim-template/vim-slim', { 'for': 'slim' } " slim support
+" Plug 'slim-template/vim-slim', { 'for': 'slim' } " slim support
 Plug 'janko-m/vim-test' " vim test support
-Plug 'rgrinberg/vim-ocaml' " ocaml
+" Plug 'rgrinberg/vim-ocaml' " ocaml
 " Plug 'reasonml-editor/vim-reason-plus' " reason support
-Plug 'pangloss/vim-javascript', { 'for': 'javascript' } " js support
-Plug 'mxw/vim-jsx', { 'for': 'javascript' } " jsx support
+" Plug 'pangloss/vim-javascript', { 'for': 'javascript' } " js support
+" Plug 'mxw/vim-jsx', { 'for': 'javascript' } " jsx support
 Plug 'elzr/vim-json', { 'for': 'json' } " better json
-Plug 'jparise/vim-graphql' " graphql support
-Plug 'moll/vim-node', { 'for': 'javascript' } " node support
-Plug 'neovimhaskell/haskell-vim', { 'for': 'haskell' }
+" Plug 'jparise/vim-graphql' " graphql support
+" Plug 'moll/vim-node', { 'for': 'javascript' } " node support
+" Plug 'neovimhaskell/haskell-vim', { 'for': 'haskell' }
 " Plug 'sheerun/vim-polyglot'
 """""""""""""""""""
 
-Plug 'ryanoasis/vim-devicons' " icons stuff
+" Plug 'ryanoasis/vim-devicons' " icons stuff
 " Plug 'joshdick/onedark.vim'
 Plug 'liuchengxu/space-vim-dark'
 " Plug 'jdsimcoe/abstract.vim'
@@ -135,44 +137,6 @@ if has('persistent_undo')
   set undofile
 endif
 
-" Align 'then' two spaces after 'if'
-let g:haskell_indent_if = 2
-let g:haskell_indent_before_where = 2
-let g:haskell_enable_quantification = 1   " to enable highlighting of `forall`
-let g:haskell_enable_recursivedo = 1      " to enable highlighting of `mdo` and `rec`
-let g:haskell_enable_arrowsyntax = 1      " to enable highlighting of `proc`
-let g:haskell_enable_pattern_synonyms = 1 " to enable highlighting of `pattern`
-let g:haskell_enable_typeroles = 1        " to enable highlighting of type roles
-let g:haskell_enable_static_pointers = 1  " to enable highlighting of `static`
-let g:haskell_backpack = 1                " to enable highlighting of backpack keywords
-" let g:haskell_classic_highlighting = 1
-
-" rooter settings
-let g:rooter_patterns = ['Makefile', 'Rakefile', 'mix.exs', '.git/']
-
-" nerdtree settings
-" let g:NERDTreeIndicatorMapCustom = {
-"     \ "Modified"  : "✹",
-"     \ "Staged"    : "✚",
-"     \ "Untracked" : "✭",
-"     \ "Renamed"   : "➜",
-"     \ "Unmerged"  : "═",
-"     \ "Deleted"   : "✖",
-"     \ "Dirty"     : "✗",
-"     \ "Clean"     : "✔︎",
-"     \ 'Ignored'   : '☒',
-"     \ "Unknown"   : "?"
-"     \ }
-
-let NERDTreeAutoDeleteBuffer = 1
-let NERDTreeMinimalUI = 1
-let NERDTreeMapOpenSplit = 'I'
-let NERDTreeMapToggleHidden = 'i'
-let NERDTreeIgnore = ['node_modules']
-" nmap <leader>pt :NERDTreeToggle<CR>
-nmap <Tab> :NERDTreeToggle<CR>
-nmap <leader>pt :NERDTreeFind<CR>
-
 " multicursor
 let g:multi_cursor_select_all_word_key = '<C-a>'
 let g:multi_cursor_select_all_key = 'g<C-a>'
@@ -223,28 +187,20 @@ nmap <leader>feR :so $MYVIMRC<CR>
 nmap <leader>qq :q!<CR>
 
 " ctrlsf settings
-nmap <leader>pf <Plug>CtrlSFPrompt
-nmap <leader>* <Plug>CtrlSFCwordPath<CR>
-vmap <leader>* <Plug>CtrlSFVwordExec<CR>
+" nmap <leader>pf <Plug>CtrlSFPrompt
+" nmap <leader>* <Plug>CtrlSFCwordPath<CR>
+" vmap <leader>* <Plug>CtrlSFVwordExec<CR>
 
 " git gutter keys
 nmap ]h <Plug>GitGutterNextHunk
 nmap [h <Plug>GitGutterPrevHunk
 
 " search settings
-nmap <leader>ff :FZF<CR>
-nmap <leader>/ :Ag!<CR>
-nmap <leader>/w :Ag! <C-R><C-W><CR>
+" nmap <leader>ff :FZF<CR>
+" nmap <leader>/ :Ag!<CR>
+" nmap <leader>/w :Ag! <C-R><C-W><CR>
 " let $FZF_DEFAULT_COMMAND = 'ag --ignore assets'
 nmap // :nohlsearch<CR>
-
-" Ag search only content not filenames
-command! -bang -nargs=* Ag
-  \ call fzf#vim#ag(<q-args>,
-  \                 '--ignore assets --ignore node_modules',
-  \                 <bang>0 ? fzf#vim#with_preview({'options': '--delimiter : --nth 4..'}, 'up:60%')
-  \                         : fzf#vim#with_preview({'options': '--delimeter : --nth 4..'}, 'right:50%:hidden', '?'),
-  \                 <bang>0)
 
 " dev icons config
 let g:WebDevIconsOS = 'Darwin'
@@ -258,70 +214,8 @@ nmap <leader>rtf :TestFile<CR>
 nmap <leader>rts :TestSuite<CR>
 nmap <leader>rtl :TestLast<CR>
 
-" enable ncm2 for all buffers
-autocmd BufEnter * call ncm2#enable_for_buffer()
-set completeopt=noinsert,menuone,noselect
-let g:ncm2#popup_limit = 10
-" imap <expr> <CR> (pumvisible() ? "\<c-y>\<cr>" : "\<CR>")
-imap <expr> <C-j> pumvisible() ? "\<C-n>" : "\<C-j>"
-imap <expr> <C-k> pumvisible() ? "\<C-p>" : "\<C-k>"
-
-" lsp and lang settings
-" let g:LanguageClient_settingsPath = expand('~/.config/nvim/settings.json')
-" let g:LanguageClient_rootMarkers = ['*.cabal', 'stack.yaml']
-" let g:LanguageClient_autoStart = 1
-" let g:LanguageClient_serverCommands = {
-"     \ 'ruby': ['solargraph', 'stdio'],
-"     \ 'reason': ['ocaml-language-server', '--stdio'],
-"     \ 'ocaml': ['ocaml-language-server', '--stdio'],
-"     \ 'javascript': ['javascript-typescript-stdio'],
-"     \ 'javascript.jsx': ['javascript-typescript-stdio'],
-"     \ 'haskell': ['hie-wrapper'],
-"     \}
-
-" nmap <leader>lm :call LanguageClient_contextMenu()<CR>
-" nmap <leader>lk :call LanguageClient#textDocument_hover()<CR>
-" nmap <leader>lg :call LanguageClient#textDocument_definition()<CR>
-" nmap <leader>lr :call LanguageClient#textDocument_rename()<CR>
-" nmap <leader>lf :call LanguageClient#textDocument_formatting()<CR>
-" nmap <leader>lb :call LanguageClient#textDocument_references()<CR>
-" nmap <leader>la :call LanguageClient#textDocument_codeAction()<CR>
-" nmap <leader>ls :call LanguageClient#textDocument_documentSymbol()<CR>
-
-" ale settings
-let g:ale_completion_enabled = 1
-let g:ale_fix_on_save = 1
-let g:ale_set_highlights = 0
-let g:airline#extensions#ale#enabled = 1
-let g:ale_linters = {
-  \ 'javascrtipt': ['eslint'],
-  \ 'ruby': ['rubocop'],
-  \ 'haskell': ['hlint'],
-  \}
-hi link ALEError Error
-hi Warning ctermfg=Red
-hi link ALEWarning Warning
-hi link ALEInfo SpellCap
-let g:ale_fixers = {
-  \ '*': ['remove_trailing_lines'],
-  \ 'javascript': ['eslint'],
-  \ 'ruby': ['rubocop'],
-  \ 'reason': ['refmt'],
-  \ 'haskell': ['hlint'],
-  \}
-
 " git shortcuts
-nmap <leader>gb :Gblame<CR>
-nmap <leader>gs :Gstatus<CR>
-nmap <leader>gd :Gdiff<CR>
-nmap <leader>gp :Gpull<CR>
-
-nmap <leader>sn :call <SID>SynStack()<CR>
-function! <SID>SynStack()
-  if !exists("*synstack")
-    return
-  endif
-  echo map(synstack(line('.'), col('.')), 'synIDattr(v:val, "name")')
-endfunc
-
-nmap <leader>asd :so $VIMRUNTIME/syntax/hitest.vim<CR>
+" nmap <leader>gb :Gblame<CR>
+" nmap <leader>gs :Gstatus<CR>
+" nmap <leader>gd :Gdiff<CR>
+" nmap <leader>gp :Gpull<CR>

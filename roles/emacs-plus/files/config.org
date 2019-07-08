@@ -439,18 +439,18 @@ Code [[https://github.com/redguardtoo/evil-nerd-commenter][commentary]].
 [[https://github.com/DarthFennec/highlight-indent-guides][Indent]] guide with vertical bars.
 
 #+BEGIN_SRC emacs-lisp
-(use-package highlight-indent-guides
-  :init
-  (setq highlight-indent-guides-method 'column
-        highlight-indent-guides-delay 1
-        highlight-indent-guides-responsive 'stack
-        ;; highlight-indent-guides-auto-odd-face-perc 15
-        ;; highlight-indent-guides-auto-even-face-perc 15
-        ;; highlight-indent-guides-auto-character-face-perc 20
-        )
-  :config
-  (add-hook 'prog-mode-hook 'highlight-indent-guides-mode)
-  (add-hook 'highlight-indent-guides-mode-hook 'highlight-indent-guides-auto-set-faces))
+;; (use-package highlight-indent-guides
+;;   :init
+;;   (setq highlight-indent-guides-method 'column
+;;         highlight-indent-guides-delay 1
+;;         highlight-indent-guides-responsive 'stack
+;;         ;; highlight-indent-guides-auto-odd-face-perc 15
+;;         ;; highlight-indent-guides-auto-even-face-perc 15
+;;         ;; highlight-indent-guides-auto-character-face-perc 20
+;;         )
+;;   :config
+;;   (add-hook 'prog-mode-hook 'highlight-indent-guides-mode)
+;;   (add-hook 'highlight-indent-guides-mode-hook 'highlight-indent-guides-auto-set-faces))
 #+END_SRC
 
 ** Expanding
@@ -525,9 +525,23 @@ Nyan compatibility achieved by patching source theme with
 and then recompiling it ~(byte-recompile-directory package-user-dir nil 'force)~.
 
 #+BEGIN_SRC emacs-lisp
-(use-package powerline
-  :config
-  (powerline-center-evil-theme))
+;; (use-package powerline
+;;   :config
+;;   (powerline-center-evil-theme))
+#+END_SRC
+
+Try [[https://github.com/tarsius/moody][moody]].
+
+#+BEGIN_SRC emacs-lisp
+(use-package moody
+  ;; :config
+  ;; (setq x-underline-at-descent-line t)
+  ;; (moody-replace-mode-line-buffer-identification)
+  ;; (moody-replace-vc-mode)
+)
+
+(use-package minions
+  :config (minions-mode 1))
 #+END_SRC
 
 [[https://github.com/elpa-host/goto-line-preview][Goto-line]] preview.
@@ -588,6 +602,10 @@ So, when you iterate over ivy candidates via `-and-call` functions you can call 
       "C-l" '(ivy-immediate-done :which-key "exits from ivy search without selecting curent item")
       "C-v" '(ivy-scroll-up-command :which-key "page up ivy buffer")
       "M-v" '(ivy-scroll-down-command :which-key "page down ivy buffer"))
+    (:keymaps 'ivy-switch-buffer-map
+      "M-k" '(ivy-switch-buffer-kill :which-key "ivy kill buffer in switch mode")
+      "C-k" '(ivy-previous-line :which-key "prev line")
+    )
     (:states 'normal
       :prefix leader
       "bs" 'ivy-switch-buffer)
@@ -783,7 +801,7 @@ Gitgutter
     (add-hook 'ranger-mode-hook 'all-the-icons-dired-mode)
 
     (general-define-key
-     :states '(normal insert visual)
+     :states '(normal visual)
      "TAB" 'ranger)
 
     (general-define-key
@@ -1080,10 +1098,12 @@ Comes with [[https://github.com/emacs-lsp/lsp-ui][lsp-ui]].
 
 #+BEGIN_SRC emacs-lisp
 (use-package lsp-ui
+  :init
+  (setq lsp-ui-doc-enable nil)
   :config
   (add-hook 'lsp-mode-hook 'lsp-ui-mode)
   (add-hook 'haskell-mode-hook 'flycheck-mode)
-  ;; (add-hook 'ruby-mode-hook 'flycheck-mode)
+  (add-hook 'ruby-mode-hook 'flycheck-mode)
 )
 #+END_SRC
 

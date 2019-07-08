@@ -3,14 +3,14 @@
   homebrew:
     name: "{{ item }}"
     state: present
-    with_items:
-      - the_silver_searcher
-      - ripgrep
-      - httpie
-      - stack
-      - yarn
-      - tmux
-      - ctags
-      - global
-      - cmake
-      - automake
+  with_items:
+    - the_silver_searcher
+    - ripgrep
+    - httpie
+    - stack
+    - yarn
+    - tmux
+    - ctags
+    - global
+    - cmake
+    - automake
