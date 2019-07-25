@@ -14,8 +14,8 @@ Also add melpa to package manager.
 #+BEGIN_SRC emacs-lisp
 (package-initialize)
 (require 'package)
-(add-to-list 'package-archives
-             '("melpa" . "https://melpa.org/packages/") t)
+(setq package-archives '(("gnu" . "https://gitlab.com/d12frosted/elpa-mirror/raw/master/gnu/")
+                         ("melpa" . "https://melpa.org/packages/")))
 #+END_SRC
 
 This little dude here is enables lazy loading.
@@ -109,11 +109,11 @@ Enable line numbers. I was confused when didn't see line numbers by default.
 (global-display-line-numbers-mode)
 #+END_SRC
 
-Highlight corresponding parentheses when cursor is on one. (smartparentheses takes care of this)
+Highlight corresponding parentheses when cursor is on one.
 
 #+BEGIN_SRC emacs-lisp
-;; (show-paren-mode t)
-;; (setq show-paren-style 'mixed)
+(show-paren-mode t)
+(setq show-paren-style 'mixed)
 #+END_SRC
 
 Autorefresh buffers when file changes on disk.
@@ -175,13 +175,6 @@ Silent ring bell(really, REALLY? DO I REALLY HAVE TO DO THIS??)
 (setq ring-bell-function 'ignore)
 #+END_SRC
 
-Use command as meta key.
-
-#+BEGIN_SRC emacs-lisp
-(setq mac-command-modifier 'meta
-      mac-option-modifier 'none)
-#+END_SRC
-
 Org-mode for *scratch* file.
 
 #+BEGIN_SRC emacs-lisp
@@ -193,9 +186,10 @@ Org-mode for *scratch* file.
 Dracula, hocho, just a little bite.
 
 #+BEGIN_SRC emacs-lisp
-(use-package dracula-theme
-  :config
-  (load-theme 'dracula t))
+;; (use-package dracula-theme
+;;   :config
+;;   (load-theme 'dracula t))
+(load-theme 'dichromacy)
 #+END_SRC
 
 Pretty symbols.
@@ -273,16 +267,17 @@ Very cool stuff for undoing things.
 
 #+BEGIN_SRC emacs-lisp
 (use-package undo-tree
-  :defer t
+  :init
+  (setq undo-tree-auto-save-history t
+        undo-tree-visualizer-diff t
+        undo-tree-history-directory-alist '(("." . "~/.emacs.d/undo")))
   :config
   (general-define-key
     :states 'normal
     :prefix leader
     "u" 'undo-tree-visualize)
-  (global-undo-tree-mode)
-  (setq undo-tree-auto-save-history t
-        undo-tree-visualizer-diff t
-        undo-tree-history-directory-alist '(("." . "~/.emacs.d/undo"))))
+  (global-undo-tree-mode 1)
+)
 #+END_SRC
 
 Just functionality to go to last chages. Nothing fancy here.
@@ -455,7 +450,7 @@ Code [[https://github.com/redguardtoo/evil-nerd-commenter][commentary]].
 
 ** Expanding
 
-[[https://github.com/magnars/expand-region.el][Expand region]] helpsto quickly select with expanding region.
+[[https://github.com/magnars/expand-region.el][Expand region]] helps to quickly select with expanding region.
 
 #+BEGIN_SRC emacs-lisp
 (use-package expand-region
@@ -479,7 +474,12 @@ Code [[https://github.com/redguardtoo/evil-nerd-commenter][commentary]].
     :states 'normal
     "gw" 'avy-goto-word-1
     "gc" 'avy-goto-char
-    "gl" 'avy-goto-line))
+    "gl" 'avy-goto-line)
+  (general-define-key
+    :states 'insert
+    "C-;" 'avy-goto-char)
+)
+
 #+END_SRC
 
 ** EMOJI!
@@ -562,65 +562,69 @@ Ivy has a nice function `ivy-read` which does most of the job.
 So, when you iterate over ivy candidates via `-and-call` functions you can call action, binded to called command, which, for grep commands, is to preview file.
 
 #+BEGIN_SRC emacs-lisp
-  (use-package ivy
-    :defer t
-    :diminish (ivy-mode . "")
-    :preface
-    (defun my/kill-other-buffers ()
-      (interactive)
-      (mapc 'kill-buffer (delq (current-buffer) (buffer-list))))
-    ;; (defun quick-look (filename)
-    ;;   (if filename
-    ;;       (pcase (split-string filename ":")
-    ;;         (
-    ;;          `("")
-    ;;          (message "No file provided")
-    ;;          )
-    ;;         (
-    ;;          `(,filename)
-    ;;          (view-file filename))
-    ;;         (
-    ;;          `(,filename ,line)
-    ;;          (view-file filename)
-    ;;          (goto-line (string-to-number line)))
-    ;;         (
-    ;;          `(,filename ,line ,column)
-    ;;          (view-file filename)
-    ;;          (goto-line (string-to-number line))
-    ;;          (move-to-column (string-to-number column))))
-    ;;     (message "No file provided"))
-    ;;   )
-
-    :general
-    (:keymaps 'ivy-minibuffer-map
-      "C-M-j" '(ivy-next-line-and-call :which-key "next line")
-      "C-M-k" '(ivy-previous-line-and-call :which-key "prev line")
-      "C-j" '(ivy-next-line :which-key "next line")
-      "C-k" '(ivy-previous-line :which-key "prev line")
-      "C-h" '(ivy-beginning-of-buffer :which-key "beginning of ivy minibuffer")
-      ;; "C-l" '(ivy-end-of-buffer :which-key "end if ivy mini buffer")
-      "C-l" '(ivy-immediate-done :which-key "exits from ivy search without selecting curent item")
-      "C-v" '(ivy-scroll-up-command :which-key "page up ivy buffer")
-      "M-v" '(ivy-scroll-down-command :which-key "page down ivy buffer"))
-    (:keymaps 'ivy-switch-buffer-map
-      "M-k" '(ivy-switch-buffer-kill :which-key "ivy kill buffer in switch mode")
-      "C-k" '(ivy-previous-line :which-key "prev line")
-    )
-    (:states 'normal
-      :prefix leader
-      "bs" 'ivy-switch-buffer)
-      ;; "bn" 'next-buffer
-      ;; "bd" 'kill-this-buffer
-      ;; "bp" 'previous-buffer
-      ;; "bx" 'my/kill-other-buffers)
-
-    :config
-    (ivy-mode 1)
-    (setcdr (assoc 'counsel-M-x ivy-initial-inputs-alist) "")
-    (setq ivy-use-virtual-buffers t
-          magit-completing-read-function 'ivy-completing-read
-          ivy-height 20
-          ivy-count-format "(%d/%d)"))
+(use-package ivy
+  :defer t
+  :diminish (ivy-mode . "")
+  :init
+  (ivy-re-builders-alist
+    '((swiper           . ivy--regex-plus)
+      (counsel-rg       . ivy--regex-plus)
+      (t                . ivy--regex-fuzzy)))
+  :preface
+  (defun my/kill-other-buffers ()
+    (interactive)
+    (mapc 'kill-buffer (delq (current-buffer) (buffer-list))))
+  ;; (defun quick-look (filename)
+  ;;   (if filename
+  ;;       (pcase (split-string filename ":")
+  ;;         (
+  ;;          `("")
+  ;;          (message "No file provided")
+  ;;          )
+  ;;         (
+  ;;          `(,filename)
+  ;;          (view-file filename))
+  ;;         (
+  ;;          `(,filename ,line)
+  ;;          (view-file filename)
+  ;;          (goto-line (string-to-number line)))
+  ;;         (
+  ;;          `(,filename ,line ,column)
+  ;;          (view-file filename)
+  ;;          (goto-line (string-to-number line))
+  ;;          (move-to-column (string-to-number column))))
+  ;;     (message "No file provided"))
+  ;;   )
+  :general
+  (:keymaps 'ivy-minibuffer-map
+    "C-M-j" '(ivy-next-line-and-call :which-key "next line")
+    "C-M-k" '(ivy-previous-line-and-call :which-key "prev line")
+    "C-j" '(ivy-next-line :which-key "next line")
+    "C-k" '(ivy-previous-line :which-key "prev line")
+    "C-h" '(ivy-beginning-of-buffer :which-key "beginning of ivy minibuffer")
+    ;; "C-l" '(ivy-end-of-buffer :which-key "end if ivy mini buffer")
+    "C-l" '(ivy-immediate-done :which-key "exits from ivy search without selecting curent item")
+    "C-v" '(ivy-scroll-up-command :which-key "page up ivy buffer")
+    "C-v" '(ivy-scroll-up-command :which-key "page up ivy buffer")
+    "M-v" '(ivy-scroll-down-command :which-key "page down ivy buffer"))
+  (:keymaps 'ivy-switch-buffer-map
+    "M-k" '(ivy-switch-buffer-kill :which-key "ivy kill buffer in switch mode")
+    "C-k" '(ivy-previous-line :which-key "prev line")
+  )
+  (:states 'normal
+    :prefix leader
+    "bs" 'ivy-switch-buffer)
+    ;; "bn" 'next-buffer
+    ;; "bd" 'kill-this-buffer
+    ;; "bp" 'previous-buffer
+    ;; "bx" 'my/kill-other-buffers)
+  :config
+  (ivy-mode 1)
+  (setcdr (assoc 'counsel-M-x ivy-initial-inputs-alist) "")
+  (setq ivy-use-virtual-buffers t
+        magit-completing-read-function 'ivy-completing-read
+        ivy-height 20
+        ivy-count-format "(%d/%d)"))
 #+END_SRC
 
 Wrapper around some emacs commands.
@@ -943,17 +947,17 @@ Oh where would we be without them. Maybe coding on Haskell.
 I love my [[https://github.com/Fuco1/smartparens][parenths]] smart.
 
 #+BEGIN_SRC emacs-lisp
-(use-package smartparens
-  :defer t
-  :init
-  (show-smartparens-global-mode t)
-  (smartparens-global-mode 1)
-  (sp-local-pair 'emacs-lisp-mode "'" nil :actions '(:rem insert))
-  :custom-face
-  (sp-show-pair-match-face ((t :foreground "#00ffff"
-                               :background "#6700D4")))
-  (sp-show-pair-match-content-face ((t :foreground "#00ffff"
-                                       :background "#6700D4"))))
+;; (use-package smartparens
+;;   :defer t
+;;   :init
+;;   (show-smartparens-global-mode t)
+;;   (smartparens-global-mode 1)
+;;   (sp-local-pair 'emacs-lisp-mode "'" nil :actions '(:rem insert))
+;;   :custom-face
+;;   (sp-show-pair-match-face ((t :foreground "#00ffff"
+;;                                :background "#6700D4")))
+;;   (sp-show-pair-match-content-face ((t :foreground "#00ffff"
+;;                                        :background "#6700D4"))))
 #+END_SRC
 
 [[https://github.com/tsdh/highlight-parentheses.el][Highlight]] matching parentheses.
@@ -963,7 +967,10 @@ I love my [[https://github.com/Fuco1/smartparens][parenths]] smart.
   :hook ((ruby-mode
           emacs-lisp-mode
           lisp-mode) . highlight-parentheses-mode)
-  :defer t)
+  :defer t
+  :init
+  (setq hl-paren-colors '("magenta1" "DeepSkyBlue1" "goldenrod2" "black"))
+)
 #+END_SRC
 
 [[https://github.com/Fanael/rainbow-delimiters][Rainbow]] delimeters.
@@ -976,7 +983,7 @@ I love my [[https://github.com/Fuco1/smartparens][parenths]] smart.
 
 ** Tabs
 
-[[https://github.com/manateelazycat/awesome-tab][Awesome tabs]] for tabs.
+[[https://github.com/manateelazycat/awesome-tab][Awesome tab]] for tabs.
 
 Author doesn't like melpa, so I have to git clone that stuff and update by pulling.
 
@@ -985,7 +992,8 @@ Author doesn't like melpa, so I have to git clone that stuff and update by pulli
   :load-path "~/.emacs.d/aw-tab"
   :init
   (setq awesome-tab-style 'alternate
-        awesome-tab-background-color "#282a36")
+  )
+        ;; awesome-tab-background-color "#282a36")
   :custom-face
   (awesome-tab-unselected ((t :background "#8BE9FD")))
   (awesome-tab-selected ((t :background "#bd93f9")))
@@ -994,7 +1002,7 @@ Author doesn't like melpa, so I have to git clone that stuff and update by pulli
   (general-define-key
     :states 'normal
     :prefix leader
-    "bg" 'awesome-tab-build-ivy-source
+    "bg" 'awesome-tab-counsel-switch-group
     "bn" 'awesome-tab-forward
     "bp" 'awesome-tab-backward
     "bl" 'awesome-tab-select-end-tab
@@ -1002,6 +1010,33 @@ Author doesn't like melpa, so I have to git clone that stuff and update by pulli
     "bd" 'kill-this-buffer
     "bx" 'awesome-tab-kill-other-buffers-in-current-group)
   )
+#+END_SRC
+
+He also created [[https://github.com/manateelazycat/awesome-pair][awesome pair]].
+
+#+BEGIN_SRC emacs-lisp
+(use-package awesome-pair
+  :load-path "~/.emacs.d/aw-pair"
+  :config
+  (dolist (modes (list
+                'haskell-mode-hook
+                'emacs-lisp-mode-hook
+                'lisp-interaction-mode-hook
+                'lisp-mode-hook
+                'ruby-mode-hook
+                ))
+    (add-hook modes '(lambda () (awesome-pair-mode 1))))
+  (general-define-key
+    :keymaps 'awesome-pair-mode-map
+    "(" 'awesome-pair-open-round
+    "[" 'awesome-pair-open-bracket
+    "{" 'awesome-pair-open-curly
+    "=" 'awesome-pair-equal
+    ;; "%" 'awesome-pair-match-paren
+    "C-'" 'awesome-pair-unwrap
+  )
+)
+
 #+END_SRC
 
 ** Term
@@ -1293,7 +1328,6 @@ Oh, and this chages apply to ruby-mode.
   (:states 'normal
     :prefix leader
     "rfx" 'my/rubocop-fix-file)
-
   :config
   (font-lock-add-keywords 'ruby-mode
         '(("\\([A-Z][a-z]*?\\)\(.*?\)" 1 font-lock-function-name-face))))
