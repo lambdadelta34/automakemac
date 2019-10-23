@@ -189,7 +189,13 @@ Dracula, hocho, just a little bite.
 ;; (use-package dracula-theme
 ;;   :config
 ;;   (load-theme 'dracula t))
-(load-theme 'dichromacy)
+;; (load-theme 'dichromacy)
+(use-package color-theme-modern
+  :custom-face
+  (font-lock-type-face ((t :foreground "DarkRed"
+                           )))
+  :config
+  (load-theme 'snowish t))
 #+END_SRC
 
 Pretty symbols.
@@ -354,7 +360,7 @@ Just functionality to go to last chages. Nothing fancy here.
     "w/" 'evil-window-vsplit)
   (add-hook 'view-mode-hook 'evil-motion-state)
   (add-hook 'ruby-mode-hook 'my/tab2)
-  (add-hook 'js-mode-hook 'my/tab2)
+  (add-hook 'js2-mode-hook 'my/tab2)
   (add-hook 'prog-mode-hook 'my/_as-word))
 #+END_SRC
 
@@ -904,7 +910,7 @@ There is no alternatives to [[http://company-mode.github.io/][company-mode]].
         company-tooltip-align-annotations t
         company-selection-wrap-around t)
   :config
-  (add-to-list 'company-backends 'company-yasnippet)
+  ;; (add-to-list 'company-backends 'company-yasnippet)
   (general-define-key
     :keymaps 'company-active-map
     "C-j" 'company-select-next
@@ -1139,6 +1145,7 @@ Comes with [[https://github.com/emacs-lsp/lsp-ui][lsp-ui]].
   (add-hook 'lsp-mode-hook 'lsp-ui-mode)
   (add-hook 'haskell-mode-hook 'flycheck-mode)
   (add-hook 'ruby-mode-hook 'flycheck-mode)
+  (add-hook 'js2-mode-hook 'flycheck-mode)
 )
 #+END_SRC
 
@@ -1281,7 +1288,10 @@ And sometimes need to work with js.
 (use-package js2-mode
   :defer t
   :mode "\\.js\\'"
+  :init
+  (setq js-indent-level 2)
   :config
+  (add-hook 'js2-mode-hook 'js2-mode-hide-warnings-and-errors)
   (setq-default js2-strict-trailing-comma-warning nil))
 #+END_SRC
 
@@ -1374,6 +1384,14 @@ Run specs from emacs.
     "rtf" 'rspec-verify
     "rtm" 'rspec-verify-matching
     "rtn" 'rspec-verify-single))
+#+END_SRC
+
+Clojure cider
+
+#+BEGIN_SRC emacs-lisp
+(use-package cider
+
+)
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp
