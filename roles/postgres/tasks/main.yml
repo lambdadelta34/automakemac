@@ -1,0 +1,11 @@
+---
+- name: install postgres
+  homebrew:
+    name: postgresql
+    state: present
+
+- name: link psql config
+  file:
+    src: "{{ playbook_dir }}/roles/postgres/files/.psqlrc"
+    dest: ~/.psqlrc
+    state: link
