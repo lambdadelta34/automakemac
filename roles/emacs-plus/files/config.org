@@ -14,7 +14,7 @@ Also add melpa to package manager.
 #+BEGIN_SRC emacs-lisp
 (package-initialize)
 (require 'package)
-(setq package-archives '(("gnu" . "https://gitlab.com/d12frosted/elpa-mirror/raw/master/gnu/")
+(setq package-archives '(("gnu" . "https://elpa.gnu.org/packages/")
                          ("melpa" . "https://melpa.org/packages/")))
 #+END_SRC
 
@@ -1150,6 +1150,11 @@ Comes with [[https://github.com/emacs-lsp/lsp-ui][lsp-ui]].
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp
+(use-package lsp-ivy
+)
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
 (use-package lsp-haskell
   :init
   (setq lsp-haskell-process-path-hie "hie-wrapper")
@@ -1157,8 +1162,8 @@ Comes with [[https://github.com/emacs-lsp/lsp-ui][lsp-ui]].
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp
-(use-package company-lsp
-)
+;; (use-package company-lsp
+;; )
 #+END_SRC
 
 Try [[https://github.com/joaotavora/eglot][eglot]].
@@ -1189,6 +1194,30 @@ Try [[https://github.com/joaotavora/eglot][eglot]].
 (use-package flycheck
   :defer t
   :preface
+  (defun my/inner-fix (executable refactor-command)
+    (let ((fixing-filename (buffer-file-name)))
+      (message (concat "fixing the " fixing-filename))
+      (with-temp-buffer
+        (async-shell-command (format "%s %s" executable
+                              (concat refactor-command fixing-filename))
+                              t))))
+  (defun my/hlint-fix-buffer ()
+    (my/inner-fix flycheck-haskell-hlint-executable "--refactor --refactor-options='-i' "))
+
+  (defun my/rubocop-fix-buffer ()
+    (my/inner-fix flycheck-ruby-rubocop-executable "-a "))
+
+  (defun my/fix-buffer ()
+    (interactive)
+    (cond ((equal major-mode 'haskell-mode) (my/hlint-fix-buffer))
+          ((equal major-mode 'ruby-mode) (my/rubocop-fix-buffer))
+    ))
+
+  (defun my/rubocop-fix-file-and-revert ()
+    (interactive)
+    (my/fix-buffer))
+    ;; (revert-buffer t t))
+
   (defun my/eslint-from-node-modules ()
     "function to find eslint in project folder, not globally"
     (let ((root (locate-dominating-file
@@ -1201,7 +1230,14 @@ Try [[https://github.com/joaotavora/eglot][eglot]].
           (setq-local flycheck-javascript-eslint-executable eslint)))))
   :init
   (global-flycheck-mode)
+  (setq flycheck-ruby-rubocop-executable "rubocop"
+        flycheck-haskell-hlint-executable "hlint")
   :config
+  (general-define-key
+    :states 'normal
+    :prefix leader
+    "fx" 'my/fix-buffer
+  )
   (add-hook 'flycheck-mode-hook 'my/eslint-from-node-modules)
   (add-hook 'flycheck-mode-hook 'ggtags-mode))
 #+END_SRC
@@ -1315,29 +1351,9 @@ Oh, and this chages apply to ruby-mode.
 #+BEGIN_SRC emacs-lisp
 (use-package ruby-mode
   :ensure nil
-  :preface
-  (defun my/rubocop-fix-file ()
-    (interactive)
-    (let ((cop-filename (buffer-file-name)))
-      (message (concat "rubocop fixing the " cop-filename))
-      (with-temp-buffer
-        (async-shell-command (format "%s %s" flycheck-ruby-rubocop-executable
-                              (concat "-a " cop-filename))
-                      t))))
-
-  (defun my/rubocop-fix-file-and-revert ()
-    (interactive)
-    (my/rubocop-fix-file))
-    ;; (revert-buffer t t))
-
   :init
   (setq ruby-insert-encoding-magic-comment nil
-        flycheck-ruby-rubocop-executable "rubocop")
-
-  :general
-  (:states 'normal
-    :prefix leader
-    "rfx" 'my/rubocop-fix-file)
+  )
   :config
   (font-lock-add-keywords 'ruby-mode
         '(("\\([A-Z][a-z]*?\\)\(.*?\)" 1 font-lock-function-name-face))))
