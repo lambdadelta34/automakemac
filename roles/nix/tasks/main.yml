@@ -5,7 +5,7 @@
 - name: link nix generated profile
   file:
     src: "{{ playbook_dir }}/roles/nix/files/nix-daemon.fish"
-    dest: ~/.config/fish/nix-daemon.fish
+    dest: ~/.config/fish/config.d/nix-daemon.fish
     state: link
 
 - name: link daemon to start up
