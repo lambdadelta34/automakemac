@@ -1,3 +1,7 @@
 function ec
-  emacsclient -e '(select-frame-set-input-focus (selected-frame))' -c -a ''
+  if test (count $argv) -gt 0
+    emacsclient $argv -c -a ''
+  else
+    emacsclient -e '(select-frame-set-input-focus (selected-frame))' -c -a ''
+  end
 end
