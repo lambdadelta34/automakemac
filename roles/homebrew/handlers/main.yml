@@ -8,9 +8,9 @@
     - ripgrep
     - httpie
     - stack
-    - yarn
+    # - yarn
     - tmux
     - ctags
     - global
-    - cmake
-    - automake
+    # - cmake
+    # - automake
