@@ -736,7 +736,8 @@ Meh, decided not to. Breaks projectile hooks.
   :diminish 'ggtags-mode
   :general
   (:states 'normal
-    "C-]" 'ggtags-find-tag-dwim))
+    "C-]" 'ggtags-find-tag-dwim)
+)
 #+END_SRC
 
 ** Search
@@ -1228,6 +1229,16 @@ Try [[https://github.com/joaotavora/eglot][eglot]].
       (when root
         (let ((eslint (expand-file-name "node_modules/.bin/eslint" root)))
           (setq-local flycheck-javascript-eslint-executable eslint)))))
+  (defun my/tslint-from-node-modules ()
+    "function to find tslint in project folder, not globally"
+    (let ((root (locate-dominating-file
+                 (or (buffer-file-name) default-directory)
+                 (lambda (dir)
+                   (let ((tslint (expand-file-name "node_modules/.bin/tslint" dir)))
+                     (and tslint (file-executable-p tslint)))))))
+      (when root
+        (let ((tslint (expand-file-name "node_modules/.bin/tslint" root)))
+          (setq-local flycheck-typescript-tslint-executable tslint)))))
   :init
   (global-flycheck-mode)
   (setq flycheck-ruby-rubocop-executable "rubocop"
@@ -1239,6 +1250,7 @@ Try [[https://github.com/joaotavora/eglot][eglot]].
     "fx" 'my/fix-buffer
   )
   (add-hook 'flycheck-mode-hook 'my/eslint-from-node-modules)
+  (add-hook 'flycheck-mode-hook 'my/tslint-from-node-modules)
   (add-hook 'flycheck-mode-hook 'ggtags-mode))
 #+END_SRC
 
