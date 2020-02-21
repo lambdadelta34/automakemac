@@ -74,6 +74,14 @@ Removes unnecessary window docaration.
 (menu-bar-mode -1)
 #+END_SRC
 
+Glasses mode for readable camelCase
+
+#+BEGIN_SRC emacs-lisp
+(setq glasses-face '(:background "#bd93f9"))
+(add-hook 'prog-mode-hook 'glasses-mode)
+(add-hook 'org-mode-hook 'glasses-mode)
+#+END_SRC
+
 Disable startup menu.
 
 #+BEGIN_SRC emacs-lisp
@@ -125,7 +133,10 @@ Autorefresh buffers when file changes on disk.
 Remove useless whitespace before saving a file.
 
 #+BEGIN_SRC emacs-lisp
-(add-hook 'before-save-hook 'delete-trailing-whitespace)
+(add-hook 'before-save-hook 'd-trailing-whitespace)
+(defun d-trailing-whitespace ()
+  (unless (derived-mode-p 'markdown-mode)
+    (delete-trailing-whitespace)))
 #+END_SRC
 
 Stop creating annoying backup~ files.
@@ -1290,6 +1301,17 @@ Try [[https://github.com/joaotavora/eglot][eglot]].
 ;;           emacs-lisp-mode ;;           lisp-mode) . aggressive-indent-mode)
 ;;   :defer t)
 #+END_SRC
+
+Rust.
+
+#+BEGIN_SRC emacs-lisp
+(use-package rust-mode
+  :init
+  (setq rust-format-on-save t
+  )
+)
+#+END_SRC
+
 
 Becuse i'm interested in haskell.
 

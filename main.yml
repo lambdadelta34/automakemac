@@ -3,7 +3,7 @@
   roles:
     - osx
     - homebrew
-    - iterm2
+    # - iterm2
     - git
     - fish
     - rbenv
@@ -13,5 +13,5 @@
     - nvim
     - kitty
     - tmux
-    - nix
-    - postgres
+    # - nix
+    # - postgres
