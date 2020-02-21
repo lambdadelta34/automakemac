@@ -77,7 +77,9 @@ Removes unnecessary window docaration.
 Glasses mode for readable camelCase
 
 #+BEGIN_SRC emacs-lisp
-(setq glasses-face '(:background "#bd93f9"))
+(setq glasses-face '(:background "#bd93f9")
+      glasses-separate-parentheses-p nil
+)
 (add-hook 'prog-mode-hook 'glasses-mode)
 (add-hook 'org-mode-hook 'glasses-mode)
 #+END_SRC
