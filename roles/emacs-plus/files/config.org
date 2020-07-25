@@ -77,11 +77,11 @@ Removes unnecessary window docaration.
 Glasses mode for readable camelCase
 
 #+BEGIN_SRC emacs-lisp
-(setq glasses-face '(:background "#bd93f9")
-      glasses-separate-parentheses-p nil
-)
-(add-hook 'prog-mode-hook 'glasses-mode)
-(add-hook 'org-mode-hook 'glasses-mode)
+;; (setq glasses-face '(:background "#bd93f9")
+;;       glasses-separate-parentheses-p nil
+;; )
+;; (add-hook 'prog-mode-hook 'glasses-mode)
+;; (add-hook 'org-mode-hook 'glasses-mode)
 #+END_SRC
 
 Disable startup menu.
@@ -480,6 +480,18 @@ Code [[https://github.com/redguardtoo/evil-nerd-commenter][commentary]].
     :states 'normal
     :prefix leader
     "x" 'er/expand-region))
+#+END_SRC
+
+Folding.
+
+#+BEGIN_SRC emacs-lisp
+(use-package vimish-fold
+  :config
+  (general-define-key
+    :states 'normal
+    "za" 'vimish-fold-avy)
+  (vimish-fold-global-mode 1)
+)
 #+END_SRC
 
 ** Jumping
@@ -1272,13 +1284,17 @@ Try [[https://github.com/joaotavora/eglot][eglot]].
 [[https://github.com/joaotavora/yasnippet][Snippets]].
 
 #+BEGIN_SRC emacs-lisp
-(use-package yasnippet
-  :config
-  (yas-global-mode 1)
-)
+;; (use-package yasnippet
+;;   :config
+;;   (yas-global-mode 1)
+;; )
 
-(use-package yasnippet-snippets
-)
+;; (use-package yasnippet-snippets
+;; )
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+(use-package protobuf-mode)
 #+END_SRC
 
 [[https://github.com/yoshiki/yaml-mode][Yaml]] mode.
@@ -1466,6 +1482,25 @@ Clojure cider
 ;;     :prefix leader
 ;;     "rtn" 'ruby-test-run-at-point
 ;;     "rtf" 'ruby-test-run))
+#+END_SRC
+
+** Writing
+
+[[https://github.com/bnbeckwith/writegood-mode][Write Good]].
+
+#+BEGIN_SRC emacs-lisp
+(use-package writegood-mode
+  :config
+  (add-hook 'org-mode-hook 'writegood-mode)
+)
+#+END_SRC
+
+
+#+BEGIN_SRC emacs-lisp
+;; (use-package flyspell
+;;   :config
+;;   (add-hook 'org-mode-hook 'flyspell-mode)
+;; )
 #+END_SRC
 
 * Fun
