@@ -1,65 +1,7 @@
-" set lang
-" let $LANG = 'en'
 set fileencoding=utf-8
 
 call plug#begin('~/.local/share/nvim/plugged')
-" Plug 'dracula/vim' " theme
-" Plug 'scrooloose/nerdtree' " navigation tree
-" Plug 'Xuyuanp/nerdtree-git-plugin' " git info for nerdtree
-Plug 'vim-airline/vim-airline' " status bar
-Plug 'vim-airline/vim-airline-themes' " status bar themes
-Plug 'tpope/vim-surround' " vim surround
-Plug 'tpope/vim-commentary' " comment code
-" Plug 'jiangmiao/auto-pairs' " paired symbols
-Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' } " fuzzy search
-Plug 'junegunn/fzf.vim' " fuzzy for vim
-" Plug 'dyng/ctrlsf.vim' " code search and view
-Plug 'terryma/vim-multiple-cursors' " multiple cursors
-" Plug 'airblade/vim-rooter' " project root
-Plug 'tpope/vim-fugitive' " git
-" Plug 'airblade/vim-gitgutter' " git st in files
-Plug 'tpope/vim-repeat' " better .
-Plug 'wellle/targets.vim' " new text objects
-
-" autocomplete
-" Plug 'ncm2/ncm2' " lib
-" Plug 'roxma/nvim-yarp' " remote plugin framework
-" Plug 'ncm2/ncm2-path' " path
-" Plug 'ncm2/ncm2-tern' " js
-" Plug 'ncm2/ncm2-tmux' " tmux
-" Plug 'ncm2/ncm2-vim' " vimscript
-"""""""""""
-Plug 'iamcco/markdown-preview.nvim', { 'do': { -> mkdp#util#install() }}
-"""""""""""
-
-" lsp
-" Plug 'w0rp/ale' " linter and lsp client
-" Plug 'autozimu/LanguageClient-neovim', { 'branch': 'next', 'do': 'bash install.sh' } " lsp client
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
-"""""""
-Plug 'vim-ruby/vim-ruby', { 'for': 'ruby' } " ruby support
-Plug 'tpope/vim-rails', { 'for': 'ruby' } " rails support
-Plug 'tpope/vim-dispatch', { 'for': 'ruby' } " async support for ruby
-Plug 'tpope/vim-endwise', { 'for': 'ruby' } " block autocomplete
-" Plug 'slim-template/vim-slim', { 'for': 'slim' } " slim support
-Plug 'janko-m/vim-test' " vim test support
-" Plug 'rgrinberg/vim-ocaml' " ocaml
-" Plug 'reasonml-editor/vim-reason-plus' " reason support
-" Plug 'pangloss/vim-javascript', { 'for': 'javascript' } " js support
-" Plug 'mxw/vim-jsx', { 'for': 'javascript' } " jsx support
-Plug 'elzr/vim-json', { 'for': 'json' } " better json
-" Plug 'jparise/vim-graphql' " graphql support
-" Plug 'moll/vim-node', { 'for': 'javascript' } " node support
-" Plug 'neovimhaskell/haskell-vim', { 'for': 'haskell' }
-" Plug 'sheerun/vim-polyglot'
-"""""""""""""""""""
-
-" Plug 'ryanoasis/vim-devicons' " icons stuff
-" Plug 'joshdick/onedark.vim'
-Plug 'liuchengxu/space-vim-dark'
-" Plug 'jdsimcoe/abstract.vim'
-" Plug 'whatyouhide/vim-gotham'
-" Plug 'nanotech/jellybeans.vim'
 call plug#end()
 
 " settings
@@ -91,56 +33,6 @@ if has('mouse')
   set mouse=a
 endif
 
-" forbid overriding syntax items on re-sourcing
-if !exists('g:syntax_on')
-	syntax enable
-  syntax on
-endif
-
-" theme
-" colorscheme jellybeans
-" color dracula
-" let g:airline_theme='dracula'
-
-let g:airline_theme='violet'
-colorscheme space-vim-dark
-" http://www.calmar.ws/vim/256-xterm-24bit-rgb-color-chart.html
-hi Comment cterm=italic
-hi Normal ctermbg=NONE
-hi LineNr ctermbg=NONE
-hi SignColumn ctermbg=NONE
-" Ale
-hi ALEInfo cterm=underline
-" ruby hi
-hi rubySymbol ctermfg=41
-hi rubyString ctermfg=229
-hi rubyCapitalizedMethod ctermfg=213
-hi rubyBlockParameter ctermfg=87
-hi rubyConditional ctermfg=50
-hi rubyMethodExceptional ctermfg=9
-""""""
-
-" let g:onedark_terminal_italics = 1
-" let g:airline_theme='onedark'
-" colorscheme onedark
-
-" colorscheme abstract
-
-" let g:airline_theme='gotham256'
-" let g:gotham_airline_emphasised_insert = 0
-" colorscheme gotham256
-
-" persistent undo
-if has('persistent_undo')
-  silent !mkdir ~/.vim/backups > /dev/null 2>&1
-  set undodir=~/.vim/backups
-  set undofile
-endif
-
-" multicursor
-let g:multi_cursor_select_all_word_key = '<C-a>'
-let g:multi_cursor_select_all_key = 'g<C-a>'
-
 " file manipulations
 nmap <leader>fs :w!<CR>
 nmap <leader>r :e<CR>
@@ -148,11 +40,6 @@ nmap [e ddp
 nmap ]e ddkP
 vmap [e dp
 vmap ]e dkP
-
-" airline conf
-let g:airline#extensions#tabline#enabled = 1
-let g:airline#extensions#tabline#formatter = 'unique_tail'
-let g:airline_enable_fugitive=1
 
 " buffer manipulation
 nmap <leader>bn :bn<CR>
@@ -162,15 +49,6 @@ nmap <leader>bx :%bd\|e#\|bd#<CR>
 
 nmap <leader>bl :bl<CR>
 nmap <leader>bd :bd!<CR>
-nmap <leader>1 :b1<CR>
-nmap <leader>2 :b2<CR>
-nmap <leader>3 :b3<CR>
-nmap <leader>4 :b4<CR>
-nmap <leader>5 :b5<CR>
-nmap <leader>6 :b6<CR>
-nmap <leader>7 :b7<CR>
-nmap <leader>8 :b8<CR>
-nmap <leader>9 :b9<CR>
 
 " window manipulation
 nmap <leader>wd <C-w>c
@@ -185,37 +63,3 @@ nmap <leader>feR :so $MYVIMRC<CR>
 
 " quit nvim
 nmap <leader>qq :q!<CR>
-
-" ctrlsf settings
-" nmap <leader>pf <Plug>CtrlSFPrompt
-" nmap <leader>* <Plug>CtrlSFCwordPath<CR>
-" vmap <leader>* <Plug>CtrlSFVwordExec<CR>
-
-" git gutter keys
-nmap ]h <Plug>GitGutterNextHunk
-nmap [h <Plug>GitGutterPrevHunk
-
-" search settings
-" nmap <leader>ff :FZF<CR>
-" nmap <leader>/ :Ag!<CR>
-" nmap <leader>/w :Ag! <C-R><C-W><CR>
-" let $FZF_DEFAULT_COMMAND = 'ag --ignore assets'
-nmap // :nohlsearch<CR>
-
-" dev icons config
-let g:WebDevIconsOS = 'Darwin'
-
-" tests
-" let test#strategy = "dispatch"
-" let g:test#preserve_screen = 1
-nmap <leader>gtt :A<CR>
-nmap <leader>rtn :TestNearest<CR>
-nmap <leader>rtf :TestFile<CR>
-nmap <leader>rts :TestSuite<CR>
-nmap <leader>rtl :TestLast<CR>
-
-" git shortcuts
-" nmap <leader>gb :Gblame<CR>
-" nmap <leader>gs :Gstatus<CR>
-" nmap <leader>gd :Gdiff<CR>
-" nmap <leader>gp :Gpull<CR>
