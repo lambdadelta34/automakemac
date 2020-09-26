@@ -22,3 +22,4 @@
  '(font-lock-type-face ((t :foreground "DarkRed")))
  '(sp-show-pair-match-content-face ((t :foreground "#00ffff" :background "#6700D4")) t)
  '(sp-show-pair-match-face ((t :foreground "#00ffff" :background "#6700D4"))))
+(put 'narrow-to-region 'disabled nil)

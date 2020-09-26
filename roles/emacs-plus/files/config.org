@@ -1275,17 +1275,20 @@ Try [[https://github.com/joaotavora/eglot][eglot]].
   :defer t
   :preface
   (defun my/inner-fix (executable refactor-command)
-    (let ((fixing-filename (buffer-file-name)))
+    (let* (
+           (fixing-filename (buffer-file-name))
+           (my-shell-command (format "%s %s %s" executable refactor-command fixing-filename))
+      )
       (message (concat "fixing the " fixing-filename))
+      (message (concat "with " my-shell-command))
       (with-temp-buffer
-        (async-shell-command (format "%s %s" executable
-                              (concat refactor-command fixing-filename))
-                              t))))
+        (async-shell-command my-shell-command))))
+
   (defun my/hlint-fix-buffer ()
     (my/inner-fix flycheck-haskell-hlint-executable "--refactor --refactor-options='-i' "))
 
   (defun my/rubocop-fix-buffer ()
-    (my/inner-fix flycheck-ruby-rubocop-executable "-a "))
+    (my/inner-fix flycheck-ruby-rubocop-executable "-a"))
 
   (defun my/fix-buffer ()
     (interactive)
