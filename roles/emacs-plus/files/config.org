@@ -341,7 +341,9 @@ Just functionality to go to last chages. Nothing fancy here.
   :init
   (setq evil-motion-state-modes nil
         evil-shift-width 2
-        evil-want-keybinding nil)
+        evil-undo-system 'undo-tree
+        evil-want-keybinding nil
+  )
   :config
   (evil-mode 1)
   (general-define-key
@@ -395,9 +397,10 @@ Just functionality to go to last chages. Nothing fancy here.
     flycheck
     ibuffer
     info
-    ivy
+    ;; ivy
     help
     man
+    magit
     outline
     (package-menu package)))
     ;; process-menu
@@ -520,10 +523,7 @@ Folding.
 
 #+BEGIN_SRC emacs-lisp
 (use-package emojify
-  :init
-  (setq emojify-emoji-style 'unicode)
-  :config
-  (global-emojify-mode))
+)
 #+END_SRC
 
 ** Info
@@ -754,6 +754,7 @@ Try [[https://github.com/raxod502/selectrum][selectrum]] & [[https://github.com/
   (general-define-key
     :states 'normal
     "M-g g" 'consult-goto-line
+    "/" 'consult-line
   )
   (general-define-key
     :states 'normal
@@ -886,13 +887,6 @@ I heard [[https://github.com/magit/magit][magit]] to be best git client. Let's s
     :states 'normal
     "C-b" 'magit-blame-addition))
 
-#+END_SRC
-
-And, surely, [[https://github.com/emacs-evil/evil-magit][evil-magit]].
-
-#+BEGIN_SRC emacs-lisp
-(use-package evil-magit
-  :after magit)
 #+END_SRC
 
 Gitgutter
@@ -1253,6 +1247,13 @@ Experimenting with [[https://github.com/emacs-lsp/lsp-mode][lsp-mode]].
 )
 #+END_SRC
 
+#+BEGIN_SRC emacs-lisp
+(use-package dap-mode
+  :init
+  (dap-auto-configure-mode 1)
+)
+#+END_SRC
+
 Comes with [[https://github.com/emacs-lsp/lsp-ui][lsp-ui]].
 
 #+BEGIN_SRC emacs-lisp
@@ -1493,7 +1494,7 @@ Becuse i'm interested in haskell.
   (add-hook 'haskell-mode-hook 'interactive-haskell-mode)
 )
 
-(use-package company-ghc)
+;; (use-package company-ghc)
 #+END_SRC
 
 Irony for C.
