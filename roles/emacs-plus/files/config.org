@@ -562,6 +562,12 @@ and then recompiling it ~(byte-recompile-directory package-user-dir nil 'force)~
 ;;   (powerline-center-evil-theme))
 #+END_SRC
 
+#+BEGIN_SRC emacs-lisp
+(use-package hl-todo
+  :config (global-hl-todo-mode)
+)
+#+END_SRC
+
 Try [[https://github.com/tarsius/moody][moody]].
 
 #+BEGIN_SRC emacs-lisp
@@ -587,123 +593,192 @@ Try [[https://github.com/tarsius/moody][moody]].
 
 ** IVY & Search
 
-Everybody looks for something. I do this with swiper and ag.
-[[https://github.com/abo-abo/swiper][ivy/swiper]]
+# Everybody searches something. I do this with swiper and ag.
+# [[https://github.com/abo-abo/swiper][ivy/swiper]]
 
-Ivy has a nice function `ivy-read` which does most of the job.
-So, when you iterate over ivy candidates via `-and-call` functions you can call action, binded to called command, which, for grep commands, is to preview file.
+# Ivy has a nice function `ivy-read` which does most of the job.
+# So, when you iterate over ivy candidates via `-and-call` functions you can call action, binded to called command, which, for grep commands, is to preview file.
+
+# #+BEGIN_SRC emacs-lisp
+#   (use-package ivy
+#     :defer t
+#     :diminish (ivy-mode . "")
+#     :init
+#     :preface
+#     (defun my/kill-other-buffers ()
+#       (interactive)
+#       (mapc 'kill-buffer (delq (current-buffer) (buffer-list))))
+#     ;; (defun quick-look (filename)
+#     ;;   (if filename
+#     ;;       (pcase (split-string filename ":")
+#     ;;         (
+#     ;;          `("")
+#     ;;          (message "No file provided")
+#     ;;          )
+#     ;;         (
+#     ;;          `(,filename)
+#     ;;          (view-file filename))
+#     ;;         (
+#     ;;          `(,filename ,line)
+#     ;;          (view-file filename)
+#     ;;          (goto-line (string-to-number line)))
+#     ;;         (
+#     ;;          `(,filename ,line ,column)
+#     ;;          (view-file filename)
+#     ;;          (goto-line (string-to-number line))
+#     ;;          (move-to-column (string-to-number column))))
+#     ;;     (message "No file provided"))
+#     ;;   )
+#     :general
+#     (:keymaps 'ivy-minibuffer-map
+#       "C-M-j" '(ivy-next-line-and-call :which-key "next line")
+#       "C-M-k" '(ivy-previous-line-and-call :which-key "prev line")
+#       "C-j" '(ivy-next-line :which-key "next line")
+#       "C-k" '(ivy-previous-line :which-key "prev line")
+#       "C-h" '(ivy-beginning-of-buffer :which-key "beginning of ivy minibuffer")
+#       ;; "C-l" '(ivy-end-of-buffer :which-key "end if ivy mini buffer")
+#       "C-l" '(ivy-immediate-done :which-key "exits from ivy search without selecting curent item")
+#       "C-v" '(ivy-scroll-up-command :which-key "page up ivy buffer")
+#       "M-v" '(ivy-scroll-down-command :which-key "page down ivy buffer"))
+#     (:keymaps 'ivy-switch-buffer-map
+#       "M-k" '(ivy-switch-buffer-kill :which-key "ivy kill buffer in switch mode")
+#       "C-k" '(ivy-previous-line :which-key "prev line")
+#     )
+#     (:states 'normal
+#       :prefix leader
+#       "bs" 'ivy-switch-buffer)
+#       ;; "bn" 'next-buffer
+#       ;; "bd" 'kill-this-buffer
+#       ;; "bp" 'previous-buffer
+#       ;; "bx" 'my/kill-other-buffers)
+#     :config
+#     (ivy-mode 1)
+#     ;; (setcdr (assoc 'counsel-M-x ivy-initial-inputs-alist) "")
+#     (setq ivy-use-virtual-buffers t
+#           ;; ivy-re-builders-alist
+#           ;;   '((swiper           . ivy--regex-plus)
+#           ;;     (counsel-rg       . ivy--regex-plus)
+#           ;;     (t                . ivy--regex-fuzzy))
+#           magit-completing-read-function 'ivy-completing-read
+#           ivy-height 10
+#           ivy-count-format "(%d/%d)")
+#   )
+# #+END_SRC
+
+# Wrapper around some emacs commands.
+
+# #+BEGIN_SRC emacs-lisp
+# (use-package counsel
+#   :defer t
+#   :preface
+#   (defun my/rg-word-visual ()
+#     (interactive)
+#     (counsel-rg (buffer-substring
+#                   (evil-range-beginning (evil-visual-range))
+#                   (evil-range-end (evil-visual-range)))))
+#   (defun my/rg-word ()
+#     (interactive)
+#     (counsel-rg (thing-at-point 'word)))
+#   :general
+#   ("M-x" 'counsel-M-x)
+#   (:states 'normal
+#     :prefix leader
+#     "*" 'my/rg-word)
+#   (:states 'visual
+#     :prefix leader
+#     "*" 'my/rg-word-visual)
+#   (:states 'normal
+#     :prefix leader
+#     "/" 'counsel-rg)
+#   :config
+#   (ivy-configure 'counsel-M-x
+#       :initial-input "")
+# )
+# #+END_SRC
+
+# Search for ivy.
+
+# #+BEGIN_SRC emacs-lisp
+# (use-package swiper
+#   :defer t
+#   :preface
+#   (defun my/s-word()
+#     (interactive)
+#     (swiper (thing-at-point 'symbol)))
+#   :general
+#   (:states 'normal
+#     "*" 'my/s-word
+#     "/" 'swiper))
+# #+END_SRC
+
+** Selectrum
+
+Try [[https://github.com/raxod502/selectrum][selectrum]] & [[https://github.com/minad/consult][consult]].
 
 #+BEGIN_SRC emacs-lisp
-  (use-package ivy
-    :defer t
-    :diminish (ivy-mode . "")
-    :init
-    :preface
-    (defun my/kill-other-buffers ()
-      (interactive)
-      (mapc 'kill-buffer (delq (current-buffer) (buffer-list))))
-    ;; (defun quick-look (filename)
-    ;;   (if filename
-    ;;       (pcase (split-string filename ":")
-    ;;         (
-    ;;          `("")
-    ;;          (message "No file provided")
-    ;;          )
-    ;;         (
-    ;;          `(,filename)
-    ;;          (view-file filename))
-    ;;         (
-    ;;          `(,filename ,line)
-    ;;          (view-file filename)
-    ;;          (goto-line (string-to-number line)))
-    ;;         (
-    ;;          `(,filename ,line ,column)
-    ;;          (view-file filename)
-    ;;          (goto-line (string-to-number line))
-    ;;          (move-to-column (string-to-number column))))
-    ;;     (message "No file provided"))
-    ;;   )
-    :general
-    (:keymaps 'ivy-minibuffer-map
-      "C-M-j" '(ivy-next-line-and-call :which-key "next line")
-      "C-M-k" '(ivy-previous-line-and-call :which-key "prev line")
-      "C-j" '(ivy-next-line :which-key "next line")
-      "C-k" '(ivy-previous-line :which-key "prev line")
-      "C-h" '(ivy-beginning-of-buffer :which-key "beginning of ivy minibuffer")
-      ;; "C-l" '(ivy-end-of-buffer :which-key "end if ivy mini buffer")
-      "C-l" '(ivy-immediate-done :which-key "exits from ivy search without selecting curent item")
-      "C-v" '(ivy-scroll-up-command :which-key "page up ivy buffer")
-      "C-v" '(ivy-scroll-up-command :which-key "page up ivy buffer")
-      "M-v" '(ivy-scroll-down-command :which-key "page down ivy buffer"))
-    (:keymaps 'ivy-switch-buffer-map
-      "M-k" '(ivy-switch-buffer-kill :which-key "ivy kill buffer in switch mode")
-      "C-k" '(ivy-previous-line :which-key "prev line")
-    )
-    (:states 'normal
-      :prefix leader
-      "bs" 'ivy-switch-buffer)
-      ;; "bn" 'next-buffer
-      ;; "bd" 'kill-this-buffer
-      ;; "bp" 'previous-buffer
-      ;; "bx" 'my/kill-other-buffers)
-    :config
-    (ivy-mode 1)
-    ;; (setcdr (assoc 'counsel-M-x ivy-initial-inputs-alist) "")
-    (setq ivy-use-virtual-buffers t
-          ;; ivy-re-builders-alist
-          ;;   '((swiper           . ivy--regex-plus)
-          ;;     (counsel-rg       . ivy--regex-plus)
-          ;;     (t                . ivy--regex-fuzzy))
-          magit-completing-read-function 'ivy-completing-read
-          ivy-height 10
-          ivy-count-format "(%d/%d)")
-  )
-#+END_SRC
-
-Wrapper around some emacs commands.
-
-#+BEGIN_SRC emacs-lisp
-(use-package counsel
-  :defer t
-  :preface
-  (defun my/rg-word-visual ()
-    (interactive)
-    (counsel-rg (buffer-substring
-                  (evil-range-beginning (evil-visual-range))
-                  (evil-range-end (evil-visual-range)))))
-  (defun my/rg-word ()
-    (interactive)
-    (counsel-rg (thing-at-point 'word)))
-  :general
-  ("M-x" 'counsel-M-x)
-  (:states 'normal
-    :prefix leader
-    "*" 'my/rg-word)
-  (:states 'visual
-    :prefix leader
-    "*" 'my/rg-word-visual)
-  (:states 'normal
-    :prefix leader
-    "/" 'counsel-rg)
-  :config
-  (ivy-configure 'counsel-M-x
-      :initial-input "")
+(use-package prescient
 )
 #+END_SRC
 
-Search for ivy.
+#+BEGIN_SRC emacs-lisp
+(use-package selectrum-prescient
+)
+#+END_SRC
 
 #+BEGIN_SRC emacs-lisp
-(use-package swiper
-  :defer t
-  :preface
-  (defun my/s-word()
-    (interactive)
-    (swiper (thing-at-point 'symbol)))
+(use-package selectrum
+  :init
+  (selectrum-mode +1)
+  (selectrum-prescient-mode +1)
+  (prescient-persist-mode +1)
+  :config
+  (general-define-key
+    :keymaps 'selectrum-minibuffer-map
+    "C-j" '(selectrum-next-candidate :which-key "next line")
+    "C-k" '(selectrum-previous-candidate :which-key "prev line")
+    "C-l" '(selectrum-submit-exact-input :which-key "submit exact input")
+  )
+)
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+(use-package consult
+  :init
+  (setq register-preview-delay 0
+        register-preview-function #'consult-register-format)
+  (advice-add #'register-preview :override #'consult-register-window)
+  :config
+  ;;(general-define-key
+  ;;  :keymaps 'isearch-mode-map
+  ;;)
+  (general-define-key
+    :states 'normal
+    "M-g g" 'consult-goto-line
+  )
+  (general-define-key
+    :states 'normal
+    :prefix leader
+    "/" 'consult-line
+    "bs" 'consult-buffer
+    "*" 'consult-ripgrep
+    "M-y" 'consult-yank-pop
+  )
+  (general-define-key
+    :states 'visual
+    "*" 'consult-ripgrep
+  )
+  (setq consult-preview-key 'any)
+  (autoload 'projectile-project-root "projectile")
+  (setq consult-project-root-function #'projectile-project-root)
+)
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+(use-package consult-flycheck
   :general
-  (:states 'normal
-    "*" 'my/s-word
-    "/" 'swiper))
+  (:keymaps 'flycheck-command-map
+    "!" 'consult-flycheck)
+)
 #+END_SRC
 
 ** Org stuff
@@ -739,7 +814,7 @@ Pretty bullets.
   :init
   (projectile-mode +1)
   :config
-  (setq projectile-completion-system 'ivy
+  (setq projectile-completion-system 'default
         projectile-require-project-root nil
         projectile-switch-project-action 'my/projectile-ranger)
   ;; (counsel-projectile-mode)
@@ -1042,7 +1117,7 @@ Author doesn't like melpa, so I have to git clone that stuff and update by pulli
   (general-define-key
     :states 'normal
     :prefix leader
-    "bg" 'awesome-tab-counsel-switch-group
+    "bg" 'awesome-tab-switch-group
     "bn" 'awesome-tab-forward
     "bp" 'awesome-tab-backward
     "bl" 'awesome-tab-select-end-tab
