@@ -800,6 +800,50 @@ Try [[https://github.com/raxod502/selectrum][selectrum]] & [[https://github.com/
 )
 #+END_SRC
 
+#+BEGIN_SRC emacs-lisp
+;; (use-package keycast
+;;   :config
+;;   (keycast-mode)
+;; )
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+(use-package marginalia
+  :config
+  (marginalia-mode)
+)
+(use-package embark
+  :init
+  (setq embark-action-indicator
+    (lambda (map &optional _target)
+      (which-key--show-keymap "Embark" map nil nil 'no-paging)
+      #'which-key--hide-popup-ignore-command)
+    embark-become-indicator embark-action-indicator)
+  (defun refresh-selectrum ()
+    (setq selectrum--previous-input-string nil))
+  ;; (defun store-action-key+cmd (cmd)
+  ;;   (setq keycast--this-command-keys (this-single-command-keys)
+  ;;         keycast--this-command cmd))
+  ;; (defun force-keycast-update (&rest _)
+  ;;   (force-mode-line-update t))
+  :config
+  ;; (advice-add 'embark-keymap-prompter :filter-return #'store-action-key+cmd)
+  ;; (dolist (cmd '(embark-act embark-act-noexit embark-become))
+  ;;   (advice-add cmd :before #'force-keycast-update))
+  (add-hook 'embark-pre-action-hook #'refresh-selectrum)
+  (general-define-key
+    "C-s-a" 'embark-act
+  )
+)
+
+(use-package embark-consult
+  :after (embark consult)
+  :demand t
+  :hook
+  (embark-collect-mode . embark-consult-preview-minor-mode)
+)
+#+END_SRC
+
 ** Org stuff
 
 Just for org-mode config.
@@ -863,29 +907,6 @@ Meh, decided not to. Breaks projectile hooks.
   (:states 'normal
     "C-]" 'ggtags-find-tag-dwim)
 )
-#+END_SRC
-
-** Search
-
-I use [[https://github.com/Wilfred/ag.el][ag]].
-
-#+BEGIN_SRC emacs-lisp
-;; (use-package ag
-;;   :defer t
-;;   :config
-;;   (setq ag-highlight-search t)
-;;   (add-hook 'ag-mode-hook 'wgrep-change-to-wgrep-mode))
-#+END_SRC
-
-Or [[https://github.com/Wilfred/deadgrep][ripgrep]].
-
-#+BEGIN_SRC emacs-lisp
-(use-package deadgrep
-  :defer t)
-#+END_SRC
-
-#+BEGIN_SRC emacs-lisp
-;; (use-package wgrep-ag)
 #+END_SRC
 
 ** Magit
