@@ -743,10 +743,23 @@ Try [[https://github.com/raxod502/selectrum][selectrum]] & [[https://github.com/
 
 #+BEGIN_SRC emacs-lisp
 (use-package consult
+  :preface
+  (defun my/rg-word-visual ()
+    (interactive)
+    (consult-ripgrep (projectile-project-root) (buffer-substring
+      (evil-range-beginning (evil-visual-range))
+      (evil-range-end (evil-visual-range)))))
+  (defun my/rg-word ()
+    (interactive)
+    (consult-ripgrep (projectile-project-root) (thing-at-point 'word)))
   :init
   (setq register-preview-delay 0
-        register-preview-function #'consult-register-format)
+        register-preview-function #'consult-register-format
+        consult-ripgrep-command "rg --null --smart-case --line-buffered --color=always --max-columns=500\
+   --no-heading --line-number . -e ARG OPTS"
+  )
   (advice-add #'register-preview :override #'consult-register-window)
+
   :config
   ;;(general-define-key
   ;;  :keymaps 'isearch-mode-map
@@ -759,14 +772,15 @@ Try [[https://github.com/raxod502/selectrum][selectrum]] & [[https://github.com/
   (general-define-key
     :states 'normal
     :prefix leader
-    "/" 'consult-line
+    "/" 'consult-ripgrep
     "bs" 'consult-buffer
-    "*" 'consult-ripgrep
+    "*" 'my/rg-word
     "M-y" 'consult-yank-pop
   )
   (general-define-key
     :states 'visual
-    "*" 'consult-ripgrep
+    :prefix leader
+    "*" 'my/rg-word-visual
   )
   (setq consult-preview-key 'any)
   (autoload 'projectile-project-root "projectile")
