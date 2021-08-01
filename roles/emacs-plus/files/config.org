@@ -880,6 +880,12 @@ Pretty bullets.
   (setq projectile-completion-system 'default
         projectile-require-project-root nil
         projectile-switch-project-action 'my/projectile-ranger)
+  ;; (projectile-register-project-type 'npm '("package.json")
+  ;;                                   :project-file "package.json"
+  ;;                                   :compile "npm install"
+  ;;                                   :test "npm test"
+  ;;                                   :run "npm run start_dev"
+  ;;                                   :test-suffix ".spec")
   ;; (counsel-projectile-mode)
   (general-define-key
     :states 'normal
@@ -1267,23 +1273,24 @@ Term extra info.
 Experimenting with [[https://github.com/emacs-lsp/lsp-mode][lsp-mode]].
 
 #+BEGIN_SRC emacs-lisp
-(use-package lsp-mode
-  :hook
-  (
-    (typescript-mode . lsp)
-    (rust-mode . lsp)
-    (lsp-mode . lsp-enable-which-key-integration)
+  (use-package lsp-mode
+    :hook
+    (
+      (typescript-mode . lsp)
+      (rust-mode . lsp)
+      (lsp-mode . lsp-enable-which-key-integration)
+    )
+    :init
+    (setq lsp-enable-snippet nil
+          lsp-auto-guess-root t
+          lsp-completion-provider :capf
+          lsp-modeline-diagnostics-enable t
+          lsp-before-save-edits t
+          lsp-disabled-clients '(eslint)
+          lsp-modeline-diagnostics-scope :project
+          ;; lsp-auto-configure nil
+    )
   )
-  :init
-  (setq lsp-enable-snippet nil
-        lsp-auto-guess-root t
-        lsp-completion-provider :capf
-        lsp-modeline-diagnostics-enable t
-        lsp-before-save-edits t
-        lsp-modeline-diagnostics-scope :project
-        ;; lsp-auto-configure nil
-  )
-)
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp
@@ -1498,8 +1505,8 @@ Rust.
 #+BEGIN_SRC emacs-lisp
 (use-package rust-mode
   :init
-  (setq rust-format-on-save t
-  )
+  ;; (setq rust-format-on-save t
+  ;; )
 )
 #+END_SRC
 
@@ -1627,6 +1634,10 @@ Run specs from emacs.
 
 #+BEGIN_SRC emacs-lisp
 (use-package rspec-mode
+  :init
+  (setq rspec-use-spring-when-possible nil
+        rspec-use-zeus-when-possible nil
+  )
   :config
   (add-hook 'after-init-hook 'inf-ruby-switch-setup)
   (general-define-key
@@ -1643,6 +1654,17 @@ Clojure cider
 #+BEGIN_SRC emacs-lisp
 (use-package cider
 
+)
+#+END_SRC
+
+Prettierjs
+
+#+BEGIN_SRC emacs-lisp
+(use-package prettier-js
+  :hook ((typescript-mode
+          rjsx-mode
+          js2-mode) . prettier-js-mode)
+  :defer t
 )
 #+END_SRC
 

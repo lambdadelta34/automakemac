@@ -1,65 +1,150 @@
-set fileencoding=utf-8
-
 call plug#begin('~/.local/share/nvim/plugged')
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
+Plug 'tpope/vim-surround'
+Plug 'tpope/vim-repeat'
+Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
+Plug 'junegunn/fzf.vim'
+Plug 'ntpeters/vim-better-whitespace'
+Plug 'preservim/nerdcommenter'
+Plug 'mg979/vim-visual-multi', {'branch': 'master'}
+Plug 'AndrewRadev/splitjoin.vim'
+Plug 'wellle/targets.vim'
+Plug 'vim-airline/vim-airline'
+Plug 'vim-airline/vim-airline-themes'
+Plug 'andymass/vim-matchup'
+Plug 'airblade/vim-rooter'
+Plug 'ryanoasis/vim-devicons'
+Plug 'liuchengxu/space-vim-theme'
 call plug#end()
 
 " settings
+if has('persistent_undo')
+  silent !mkdir ~/.vim/backups > /dev/null 2>&1
+  set undodir=~/.vim/backups
+  set undofile
+endif
+
+set viminfo='1000
 set number
 set cindent
 set tabstop=2
 set softtabstop=2
 set shiftwidth=2
 set expandtab
-set hlsearch
 set incsearch
 set splitright
 set clipboard=unnamedplus
+set shortmess+=c
+set signcolumn=number
 set hidden
 set noswapfile
+set nohlsearch
 set nobackup
 set nowritebackup
 set nowb
 set encoding=utf-8
 set lazyredraw
 set ttyfast
-set updatetime=500
+set timeoutlen=400
+set updatetime=400
+set cmdheight=2
+set termguicolors
+set matchpairs+=<:>
 filetype plugin indent on
+filetype plugin on
+set background=dark
+colorscheme space_vim_theme
 
+let g:airline_theme='violet'
 let mapleader = "\<Space>"
-
 " mouse mode
 if has('mouse')
   set mouse=a
 endif
-
 " file manipulations
 nmap <leader>fs :w!<CR>
 nmap <leader>r :e<CR>
 nmap [e ddp
 nmap ]e ddkP
-vmap [e dp
-vmap ]e dkP
-
+xmap [e dp
+xmap ]e dkP
 " buffer manipulation
 nmap <leader>bn :bn<CR>
 nmap <leader>bp :bp<CR>
 nmap <leader>bf :bf<CR>
 nmap <leader>bx :%bd\|e#\|bd#<CR>
-
 nmap <leader>bl :bl<CR>
 nmap <leader>bd :bd!<CR>
-
 " window manipulation
 nmap <leader>wd <C-w>c
+nmap <leader>wc :on<CR>
 nmap <C-l> <C-w><Right>
 nmap <C-h> <C-w><Left>
 nmap <C-k> <C-w><Up>
 nmap <C-j> <C-w><Down>
-
 " vimrc manipulation
 nmap <leader>fed :e $MYVIMRC<CR>
 nmap <leader>feR :so $MYVIMRC<CR>
-
 " quit nvim
 nmap <leader>qq :q!<CR>
+nmap <silent> // :nohlsearch<CR>
+xmap gy <plug>NERDCommenterToggle
+nmap gy <plug>NERDCommenterToggle
+nnoremap <leader>d :CocCommand explorer<CR>
+noremap <C-g> <C-[>
+imap <expr> <C-j> pumvisible() ? "\<C-n>" : "\<C-j>"
+imap <expr> <C-k> pumvisible() ? "\<C-p>" : "\<C-k>"
+cmap <expr> <C-j> pumvisible() ? "\<C-n>" : "\<C-j>"
+cmap <expr> <C-k> pumvisible() ? "\<C-p>" : "\<C-k>"
+nmap <leader>ff :Files<CR>
+nmap <leader>* :Rg <C-R><C-W><CR>
+nmap <leader>bs :Buffers<CR>
+nmap <leader>/ :BLines <C-R><C-W><CR>
+nmap / :BLines <CR>
+" nnoremap <silent><leader>y :<C-u>CocList -A --normal yank<cr>
+
+command! -bang -nargs=? -complete=dir Files
+    \ call fzf#vim#files(<q-args>, fzf#vim#with_preview(), <bang>0)
+
+command! -bang -nargs=* Rg
+  \ call fzf#vim#grep(
+  \   'rg --column --line-number --no-heading --color=always --smart-case -- '.shellescape(<q-args>), 1,
+  \   fzf#vim#with_preview(), <bang>0)
+
+command! -nargs=0 Prettier :CocCommand prettier.formatFile
+
+let g:coc_global_extensions = [
+      \ 'coc-highlight',
+      \ 'coc-explorer',
+      \ 'coc-tsserver',
+      \ 'coc-prettier',
+      \ 'coc-css',
+      \ 'coc-json',
+      \ 'coc-eslint',
+      \ 'coc-jest',
+      \ 'coc-solargraph',
+      \ 'coc-rls',
+      \ 'coc-lists',
+      \ 'coc-yank',
+      \ 'coc-git'
+      \]
+let g:strip_whitespace_on_save=1
+let g:strip_whitelines_at_eof=1
+let g:strip_whitespace_confirm=0
+let g:matchup_surround_enabled = 1
+let g:matchup_matchparen_deferred = 1
+let g:matchup_matchparen_deferred_show_delay = 100
+let g:matchup_matchparen_deferred_hide_delay = 300
+let g:matchup_matchparen_hi_surround_always = 1
+let g:NERDDefaultAlign = 'left'
+let g:NERDSpaceDelims = 1
+let g:rooter_silent_chdir = 1
+let g:rooter_resolve_links = 1
+let g:rooter_patterns = ['.git', 'Makefile', 'Cargo.toml', 'package.json', 'Gemfile']
+let g:airline#extensions#tabline#enabled = 1
+let g:airline#extensions#tabline#formatter = 'unique_tail'
+let $FZF_DEFAULT_COMMAND = 'rg --files --hidden --follow --no-messages -g !.git'
+
+if exists("g:loaded_webdevicons")
+  call webdevicons#refresh()
+endif

@@ -22,9 +22,15 @@
     dest: ~/.config/nvim/init.vim
     state: link
 
+- name: link coc config
+  file:
+    src: "{{ playbook_dir }}/roles/nvim/files/coc-settings.json"
+    dest: ~/.config/nvim/coc-settings.json
+    state: link
+
 - name: tap fonts
   homebrew_tap:
-    name: caskroom/fonts
+    name: homebrew/cask-fonts
     state: present
 
 - name: install nerd fonts
