@@ -2,6 +2,7 @@ call plug#begin('~/.local/share/nvim/plugged')
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
 Plug 'tpope/vim-surround'
 Plug 'tpope/vim-repeat'
+Plug 'tpope/vim-fugitive'
 Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
 Plug 'junegunn/fzf.vim'
 Plug 'ntpeters/vim-better-whitespace'
@@ -15,6 +16,8 @@ Plug 'andymass/vim-matchup'
 Plug 'airblade/vim-rooter'
 Plug 'ryanoasis/vim-devicons'
 Plug 'liuchengxu/space-vim-theme'
+Plug 'easymotion/vim-easymotion'
+Plug 'vim-test/vim-test'
 call plug#end()
 
 " settings
@@ -35,7 +38,7 @@ set incsearch
 set splitright
 set clipboard=unnamedplus
 set shortmess+=c
-set signcolumn=number
+set signcolumn=yes
 set hidden
 set noswapfile
 set nohlsearch
@@ -98,11 +101,46 @@ cmap <expr> <C-j> pumvisible() ? "\<C-n>" : "\<C-j>"
 cmap <expr> <C-k> pumvisible() ? "\<C-p>" : "\<C-k>"
 nmap <leader>ff :Files<CR>
 nmap <leader>* :Rg <C-R><C-W><CR>
+nmap * :Rg<CR>
 nmap <leader>bs :Buffers<CR>
 nmap <leader>/ :BLines <C-R><C-W><CR>
 nmap / :BLines <CR>
 " nnoremap <silent><leader>y :<C-u>CocList -A --normal yank<cr>
+nmap gc <Plug>(easymotion-overwin-f)
+nmap <silent> <leader>rtn :TestNearest<CR>
+nmap <silent> <leader>rtf :TestFile<CR>
+tmap <C-[> <C-\><C-n>
+nmap <leader>g :Git<CR>
+nmap <silent><leader>sd <Plug>(coc-definition)
+nmap <silent><leader>sy <Plug>(coc-type-definition)
+nmap <silent><leader>si <Plug>(coc-implementation)
+nmap <silent><leader>gr <Plug>(coc-references)
+nnoremap <silent> K :call <SID>show_documentation()<CR>
+function! s:show_documentation()
+  if (index(['vim','help'], &filetype) >= 0)
+    execute 'h '.expand('<cword>')
+  elseif (coc#rpc#ready())
+    call CocActionAsync('doHover')
+  else
+    execute '!' . &keywordprg . " " . expand('<cword>')
+  endif
+endfunction
+inoremap <silent> <Tab> <C-r>=<SID>coc_confirm()<CR>
+function! s:coc_confirm() abort
+  if pumvisible()
+    return coc#_select_confirm()
+  else
+    return "\<Tab>"
+  endif
+endfunction
+nmap <leader>qf <Plug>(coc-fix-current)
 
+" Add `:Format` command to format current buffer.
+command! -nargs=0 Format :call CocAction('format')
+" Add `:Fold` command to fold current buffer.
+command! -nargs=? Fold :call CocAction('fold', <f-args>)
+" Add `:OR` command for organize imports of the current buffer.
+command! -nargs=0 OR   :call CocAction('runCommand', 'editor.action.organizeImport')
 command! -bang -nargs=? -complete=dir Files
     \ call fzf#vim#files(<q-args>, fzf#vim#with_preview(), <bang>0)
 
@@ -112,21 +150,24 @@ command! -bang -nargs=* Rg
   \   fzf#vim#with_preview(), <bang>0)
 
 command! -nargs=0 Prettier :CocCommand prettier.formatFile
+autocmd CursorHold * silent call CocActionAsync('highlight')
 
 let g:coc_global_extensions = [
+      \ 'coc-fzf-preview',
       \ 'coc-highlight',
       \ 'coc-explorer',
       \ 'coc-tsserver',
       \ 'coc-prettier',
+      \ 'coc-marketplace',
       \ 'coc-css',
       \ 'coc-json',
       \ 'coc-eslint',
-      \ 'coc-jest',
       \ 'coc-solargraph',
-      \ 'coc-rls',
+      \ 'coc-rust-analyzer',
       \ 'coc-lists',
       \ 'coc-yank',
-      \ 'coc-git'
+      \ 'coc-git',
+      \ 'coc-tabnine',
       \]
 let g:strip_whitespace_on_save=1
 let g:strip_whitelines_at_eof=1
@@ -144,6 +185,22 @@ let g:rooter_patterns = ['.git', 'Makefile', 'Cargo.toml', 'package.json', 'Gemf
 let g:airline#extensions#tabline#enabled = 1
 let g:airline#extensions#tabline#formatter = 'unique_tail'
 let $FZF_DEFAULT_COMMAND = 'rg --files --hidden --follow --no-messages -g !.git'
+let $FZF_DEFAULT_OPTS='-e --height 40% --layout=reverse --bind up:preview-up,down:preview-down'
+let g:EasyMotion_do_mapping = 0
+let g:EasyMotion_smartcase = 1
+let g:fzf_history_dir = '~/.local/share/fzf-history'
+set shell=/bin/zsh
+let $SHELL = "/bin/zsh"
+nmap <leader>fo :CocCommand fzf-preview.ProjectOldFiles<CR>
+nmap <leader>fm :CocCommand fzf-preview.ProjectMruFiles<CR>
+let g:fzf_preview_filelist_command = 'rg --files --hidden --follow --no-messages -g !.git'
+let g:fzf_preview_history_dir = '~/.local/share/fzf-history'
+let test#neovim#term_position = "vert"
+let g:test#preserve_screen = 1
+let test#strategy = {
+  \ 'nearest': 'neovim',
+  \ 'file':    'neovim',
+\}
 
 if exists("g:loaded_webdevicons")
   call webdevicons#refresh()
