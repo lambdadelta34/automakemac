@@ -1404,7 +1404,7 @@ Try [[https://github.com/joaotavora/eglot][eglot]].
     (my/inner-fix flycheck-haskell-hlint-executable "--refactor --refactor-options='-i' "))
 
   (defun my/rubocop-fix-buffer ()
-    (my/inner-fix flycheck-ruby-rubocop-executable "-a"))
+    (my/inner-fix flycheck-ruby-rubocop-executable "-A"))
 
   (defun my/fix-buffer ()
     (interactive)
