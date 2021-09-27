@@ -1,65 +1,207 @@
-set fileencoding=utf-8
-
 call plug#begin('~/.local/share/nvim/plugged')
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
+Plug 'tpope/vim-surround'
+Plug 'tpope/vim-repeat'
+Plug 'tpope/vim-fugitive'
+Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
+Plug 'junegunn/fzf.vim'
+Plug 'ntpeters/vim-better-whitespace'
+Plug 'preservim/nerdcommenter'
+Plug 'mg979/vim-visual-multi', {'branch': 'master'}
+Plug 'AndrewRadev/splitjoin.vim'
+Plug 'wellle/targets.vim'
+Plug 'vim-airline/vim-airline'
+Plug 'vim-airline/vim-airline-themes'
+Plug 'andymass/vim-matchup'
+Plug 'airblade/vim-rooter'
+Plug 'ryanoasis/vim-devicons'
+Plug 'liuchengxu/space-vim-theme'
+Plug 'easymotion/vim-easymotion'
+Plug 'vim-test/vim-test'
 call plug#end()
 
 " settings
+if has('persistent_undo')
+  silent !mkdir ~/.vim/backups > /dev/null 2>&1
+  set undodir=~/.vim/backups
+  set undofile
+endif
+
+set viminfo='1000
 set number
 set cindent
 set tabstop=2
 set softtabstop=2
 set shiftwidth=2
 set expandtab
-set hlsearch
 set incsearch
 set splitright
 set clipboard=unnamedplus
+set shortmess+=c
+set signcolumn=yes
 set hidden
 set noswapfile
+set nohlsearch
 set nobackup
 set nowritebackup
 set nowb
 set encoding=utf-8
 set lazyredraw
 set ttyfast
-set updatetime=500
+set timeoutlen=400
+set updatetime=400
+set cmdheight=2
+set termguicolors
+set matchpairs+=<:>
 filetype plugin indent on
+filetype plugin on
+set background=dark
+colorscheme space_vim_theme
 
+let g:airline_theme='violet'
 let mapleader = "\<Space>"
-
 " mouse mode
 if has('mouse')
   set mouse=a
 endif
-
 " file manipulations
 nmap <leader>fs :w!<CR>
 nmap <leader>r :e<CR>
 nmap [e ddp
 nmap ]e ddkP
-vmap [e dp
-vmap ]e dkP
-
+xmap [e dp
+xmap ]e dkP
 " buffer manipulation
 nmap <leader>bn :bn<CR>
 nmap <leader>bp :bp<CR>
 nmap <leader>bf :bf<CR>
 nmap <leader>bx :%bd\|e#\|bd#<CR>
-
 nmap <leader>bl :bl<CR>
 nmap <leader>bd :bd!<CR>
-
 " window manipulation
 nmap <leader>wd <C-w>c
+nmap <leader>wc :on<CR>
 nmap <C-l> <C-w><Right>
 nmap <C-h> <C-w><Left>
 nmap <C-k> <C-w><Up>
 nmap <C-j> <C-w><Down>
-
 " vimrc manipulation
 nmap <leader>fed :e $MYVIMRC<CR>
 nmap <leader>feR :so $MYVIMRC<CR>
-
 " quit nvim
 nmap <leader>qq :q!<CR>
+nmap <silent> // :nohlsearch<CR>
+xmap gy <plug>NERDCommenterToggle
+nmap gy <plug>NERDCommenterToggle
+nnoremap <leader>d :CocCommand explorer<CR>
+noremap <C-g> <C-[>
+imap <expr> <C-j> pumvisible() ? "\<C-n>" : "\<C-j>"
+imap <expr> <C-k> pumvisible() ? "\<C-p>" : "\<C-k>"
+cmap <expr> <C-j> pumvisible() ? "\<C-n>" : "\<C-j>"
+cmap <expr> <C-k> pumvisible() ? "\<C-p>" : "\<C-k>"
+nmap <leader>ff :Files<CR>
+nmap <leader>* :Rg <C-R><C-W><CR>
+nmap * :Rg<CR>
+nmap <leader>bs :Buffers<CR>
+nmap <leader>/ :BLines <C-R><C-W><CR>
+nmap / :BLines <CR>
+" nnoremap <silent><leader>y :<C-u>CocList -A --normal yank<cr>
+nmap gc <Plug>(easymotion-overwin-f)
+nmap <silent> <leader>rtn :TestNearest<CR>
+nmap <silent> <leader>rtf :TestFile<CR>
+tmap <C-[> <C-\><C-n>
+nmap <leader>g :Git<CR>
+nmap <silent><leader>sd <Plug>(coc-definition)
+nmap <silent><leader>sy <Plug>(coc-type-definition)
+nmap <silent><leader>si <Plug>(coc-implementation)
+nmap <silent><leader>gr <Plug>(coc-references)
+nnoremap <silent> K :call <SID>show_documentation()<CR>
+function! s:show_documentation()
+  if (index(['vim','help'], &filetype) >= 0)
+    execute 'h '.expand('<cword>')
+  elseif (coc#rpc#ready())
+    call CocActionAsync('doHover')
+  else
+    execute '!' . &keywordprg . " " . expand('<cword>')
+  endif
+endfunction
+inoremap <silent> <Tab> <C-r>=<SID>coc_confirm()<CR>
+function! s:coc_confirm() abort
+  if pumvisible()
+    return coc#_select_confirm()
+  else
+    return "\<Tab>"
+  endif
+endfunction
+nmap <leader>qf <Plug>(coc-fix-current)
+
+" Add `:Format` command to format current buffer.
+command! -nargs=0 Format :call CocAction('format')
+" Add `:Fold` command to fold current buffer.
+command! -nargs=? Fold :call CocAction('fold', <f-args>)
+" Add `:OR` command for organize imports of the current buffer.
+command! -nargs=0 OR   :call CocAction('runCommand', 'editor.action.organizeImport')
+command! -bang -nargs=? -complete=dir Files
+    \ call fzf#vim#files(<q-args>, fzf#vim#with_preview(), <bang>0)
+
+command! -bang -nargs=* Rg
+  \ call fzf#vim#grep(
+  \   'rg --column --line-number --no-heading --color=always --smart-case -- '.shellescape(<q-args>), 1,
+  \   fzf#vim#with_preview(), <bang>0)
+
+command! -nargs=0 Prettier :CocCommand prettier.formatFile
+autocmd CursorHold * silent call CocActionAsync('highlight')
+
+let g:coc_global_extensions = [
+      \ 'coc-fzf-preview',
+      \ 'coc-highlight',
+      \ 'coc-explorer',
+      \ 'coc-tsserver',
+      \ 'coc-prettier',
+      \ 'coc-marketplace',
+      \ 'coc-css',
+      \ 'coc-json',
+      \ 'coc-eslint',
+      \ 'coc-solargraph',
+      \ 'coc-rust-analyzer',
+      \ 'coc-lists',
+      \ 'coc-yank',
+      \ 'coc-git',
+      \ 'coc-tabnine',
+      \]
+let g:strip_whitespace_on_save=1
+let g:strip_whitelines_at_eof=1
+let g:strip_whitespace_confirm=0
+let g:matchup_surround_enabled = 1
+let g:matchup_matchparen_deferred = 1
+let g:matchup_matchparen_deferred_show_delay = 100
+let g:matchup_matchparen_deferred_hide_delay = 300
+let g:matchup_matchparen_hi_surround_always = 1
+let g:NERDDefaultAlign = 'left'
+let g:NERDSpaceDelims = 1
+let g:rooter_silent_chdir = 1
+let g:rooter_resolve_links = 1
+let g:rooter_patterns = ['.git', 'Makefile', 'Cargo.toml', 'package.json', 'Gemfile']
+let g:airline#extensions#tabline#enabled = 1
+let g:airline#extensions#tabline#formatter = 'unique_tail'
+let $FZF_DEFAULT_COMMAND = 'rg --files --hidden --follow --no-messages -g !.git'
+let $FZF_DEFAULT_OPTS='-e --height 40% --layout=reverse --bind up:preview-up,down:preview-down'
+let g:EasyMotion_do_mapping = 0
+let g:EasyMotion_smartcase = 1
+let g:fzf_history_dir = '~/.local/share/fzf-history'
+set shell=/bin/zsh
+let $SHELL = "/bin/zsh"
+nmap <leader>fo :CocCommand fzf-preview.ProjectOldFiles<CR>
+nmap <leader>fm :CocCommand fzf-preview.ProjectMruFiles<CR>
+let g:fzf_preview_filelist_command = 'rg --files --hidden --follow --no-messages -g !.git'
+let g:fzf_preview_history_dir = '~/.local/share/fzf-history'
+let test#neovim#term_position = "vert"
+let g:test#preserve_screen = 1
+let test#strategy = {
+  \ 'nearest': 'neovim',
+  \ 'file':    'neovim',
+\}
+
+if exists("g:loaded_webdevicons")
+  call webdevicons#refresh()
+endif

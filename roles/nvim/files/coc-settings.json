@@ -1,0 +1,25 @@
+{
+  "suggest.enablePreview": true,
+  "suggest.enablePreselect": false,
+  "codeLens.enable": true,
+  "languageserver": {
+    "dockerfile": {
+      "command": "docker-langserver",
+      "filetypes": ["dockerfile"],
+      "args": ["--stdio"]
+    }
+  },
+  "list.source.files.args": ["--hidden", "--files"],
+  "coc.preferences.extensionUpdateCheck": "weekly",
+  "coc.preferences.formatOnSaveFiletypes": ["typescript", "javascript", "rust", "ruby"],
+  "diagnostic.virtualText": true,
+  "rust-analyzer.lens.methodReferences": true,
+  "rust-analyzer.hoverActions.enable": true,
+  "diagnostic.virtualTextPrefix": "# ",
+  "solargraph.diagnostics": true,
+  "solargraph.autoformat": true,
+  "solargraph.formatting": true,
+  "explorer.previewAction.onHover": "content",
+  "explorer.icon.enableNerdfont": true,
+  "prettier.stylelintIntegration": true
+}

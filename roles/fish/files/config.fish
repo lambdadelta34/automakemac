@@ -6,3 +6,6 @@ set NIX_REMOTE daemon
 
 # opam configuration
 source ~/.opam/opam-init/init.fish > /dev/null 2> /dev/null; or true
+fish_add_path /usr/local/sbin
+
+source /usr/local/opt/asdf/asdf.fish
