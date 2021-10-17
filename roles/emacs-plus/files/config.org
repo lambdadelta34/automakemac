@@ -1278,6 +1278,7 @@ Experimenting with [[https://github.com/emacs-lsp/lsp-mode][lsp-mode]].
     (
       (typescript-mode . lsp)
       (rust-mode . lsp)
+      (ruby-mode . lsp)
       (lsp-mode . lsp-enable-which-key-integration)
     )
     :init
