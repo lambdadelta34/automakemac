@@ -255,8 +255,8 @@ Pretty symbols.
           ("." . 8729)                  ; ∘
           ("undefined" . 8869)          ; ⊥
           )))
-(add-hook 'haskell-mode-hook 'prettify-symbols-mode)
-(add-hook 'haskell-mode-hook 'my/pretty-syms-hask)
+;; (add-hook 'haskell-mode-hook 'prettify-symbols-mode)
+;; (add-hook 'haskell-mode-hook 'my/pretty-syms-hask)
 #+END_SRC
 
 * Packages
@@ -311,73 +311,76 @@ Just functionality to go to last chages. Nothing fancy here.
 [[https://github.com/emacs-evil/evil][Evil]] itself.
 
 #+BEGIN_SRC emacs-lisp
-(use-package evil
-  :defer t
-  :preface
-  (defun my/_as-word ()
-    (modify-syntax-entry ?_ "w"))
-  (defun my/tab2 ()
-    (setq evil-shift-width 2))
-  (defun my/copy-to-clipboard ()
-    (interactive)
-    (if (display-graphic-p)
-        (progn
-          (call-interactively 'clipboard-kill-ring-save))
-      (if (region-active-p)
+  (use-package evil
+    :defer t
+    :preface
+    (defun my/_as-word ()
+      (modify-syntax-entry ?_ "w"))
+    (defun my/tab2 ()
+      (setq evil-shift-width 2))
+    (defun my/tab4 ()
+      (setq evil-shift-width 4))
+    (defun my/copy-to-clipboard ()
+      (interactive)
+      (if (display-graphic-p)
           (progn
-            (shell-command-on-region (region-beginning) (region-end) "pbcopy")
-            (deactivate-mark)))))
+            (call-interactively 'clipboard-kill-ring-save))
+        (if (region-active-p)
+            (progn
+              (shell-command-on-region (region-beginning) (region-end) "pbcopy")
+              (deactivate-mark)))))
 
-  (defun my/move-line-up ()
-    (interactive)
-    (transpose-lines 1)
-    (forward-line -2))
+    (defun my/move-line-up ()
+      (interactive)
+      (transpose-lines 1)
+      (forward-line -2))
 
-  (defun my/move-line-down ()
-    (interactive)
-    (forward-line 1)
-    (transpose-lines 1)
-    (forward-line -1))
-  :init
-  (setq evil-motion-state-modes nil
-        evil-shift-width 2
-        evil-undo-system 'undo-tree
-        evil-want-keybinding nil
-  )
-  :config
-  (evil-mode 1)
-  (general-define-key
-    :states '(normal insert)
-    "C-k" 'evil-window-up
-    "C-j" 'evil-window-down
-    "C-h" 'evil-window-left
-    "C-l" 'evil-window-right)
+    (defun my/move-line-down ()
+      (interactive)
+      (forward-line 1)
+      (transpose-lines 1)
+      (forward-line -1))
+    :init
+    (setq evil-motion-state-modes nil
+          evil-shift-width 2
+          evil-undo-system 'undo-tree
+          evil-want-keybinding nil
+    )
+    :config
+    (evil-mode 1)
+    (general-define-key
+      :states '(normal insert)
+      "C-k" 'evil-window-up
+      "C-j" 'evil-window-down
+      "C-h" 'evil-window-left
+      "C-l" 'evil-window-right)
 
-  (general-define-key
-    :states 'normal
-    "Q" 'quit-window
-    "[e" 'my/move-line-down
-    "]e" 'my/move-line-up)
+    (general-define-key
+      :states 'normal
+      "Q" 'quit-window
+      "[e" 'my/move-line-down
+      "]e" 'my/move-line-up)
 
-  (general-define-key
-    :states '(normal visual)
-    "[e" 'my/move-line-down
-    "]e" 'my/move-line-up)
+    (general-define-key
+      :states '(normal visual)
+      "[e" 'my/move-line-down
+      "]e" 'my/move-line-up)
 
-  (general-define-key
-    :states 'visual
-    "y" 'my/copy-to-clipboard
-    "gs" 'sort-lines)
+    (general-define-key
+      :states 'visual
+      "y" 'my/copy-to-clipboard
+      "gs" 'sort-lines)
 
-  (general-define-key
-    :states 'normal
-    :prefix leader
-    "wn" 'evil-window-split
-    "w/" 'evil-window-vsplit)
-  (add-hook 'view-mode-hook 'evil-motion-state)
-  (add-hook 'ruby-mode-hook 'my/tab2)
-  (add-hook 'js2-mode-hook 'my/tab2)
-  (add-hook 'prog-mode-hook 'my/_as-word))
+    (general-define-key
+      :states 'normal
+      :prefix leader
+      "wn" 'evil-window-split
+      "w/" 'evil-window-vsplit)
+    (add-hook 'view-mode-hook 'evil-motion-state)
+    (add-hook 'ruby-mode-hook 'my/tab2)
+    (add-hook 'rust-mode-hook 'my/tab4)
+    (add-hook 'js2-mode-hook 'my/tab2)
+    (add-hook 'prog-mode-hook 'my/_as-word))
 #+END_SRC
 
 [[https://github.com/emacs-evil/evil-collection][Evil-colletion]] replaces keys for some modes.
@@ -435,10 +438,9 @@ Code [[https://github.com/redguardtoo/evil-nerd-commenter][commentary]].
 (use-package evil-nerd-commenter
   :defer t
   :general
-  (:states 'normal
+  (:states '(normal visual)
     "gy" 'evilnc-comment-or-uncomment-lines)
-  (:states 'visual
-    "gc" 'evilnc-comment-or-uncomment-lines))
+  )
 #+END_SRC
 
 *** Evil-daemon problem.
@@ -1044,7 +1046,7 @@ Evil [[https://github.com/gabesoft/evil-mc][multicursor]].
 
 I'm not sure yet if i need it. We'll see.
 
-There is no alternatives to [[http://company-mode.github.io/][company-mode]].
+There are no alternatives to [[http://company-mode.github.io/][company-mode]].
 
 #+BEGIN_SRC emacs-lisp
 (use-package company
@@ -1057,17 +1059,22 @@ There is no alternatives to [[http://company-mode.github.io/][company-mode]].
         company-selection-wrap-around t)
   :config
   ;; (add-to-list 'company-backends 'company-yasnippet)
+  (add-to-list 'company-backends '(company-tabnine :separate company-capf))
+  ;; (setq company-backends '(company-bbdb))
   (general-define-key
     :keymaps 'company-active-map
     "C-j" 'company-select-next
     "C-k" 'company-select-previous
     "C-p" 'company-other-backend
     "C-l" 'company-complete-selection)
-
   (general-define-key
     :states '(normal insert)
     :keymaps 'company-mode-map
-    "C-p" 'company-complete))
+    "C-p" 'company-complete)
+)
+
+(use-package company-tabnine
+)
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp
@@ -1285,6 +1292,7 @@ Experimenting with [[https://github.com/emacs-lsp/lsp-mode][lsp-mode]].
           lsp-auto-guess-root t
           lsp-completion-provider :capf
           lsp-modeline-diagnostics-enable t
+          lsp-dired-mode t
           lsp-before-save-edits t
           lsp-disabled-clients '(eslint)
           lsp-modeline-diagnostics-scope :project
@@ -1321,6 +1329,18 @@ Comes with [[https://github.com/emacs-lsp/lsp-ui][lsp-ui]].
 (use-package lsp-ivy
   :commands lsp-ivy-workspace-symbol
 )
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+  (use-package consult-lsp
+    :config
+    (general-define-key
+      :states 'normal
+      :prefix leader
+      "ss" 'consult-lsp-symbols
+      "sf" 'consult-lsp-file-symbols
+      )
+  )
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp
@@ -1503,11 +1523,12 @@ Try [[https://github.com/joaotavora/eglot][eglot]].
 Rust.
 
 #+BEGIN_SRC emacs-lisp
-(use-package rust-mode
-  :init
-  ;; (setq rust-format-on-save t
-  ;; )
-)
+  (use-package rust-mode
+    :init
+    (setq rust-format-on-save t
+          rust-indent-offset 4
+    )
+  )
 #+END_SRC
 
 
