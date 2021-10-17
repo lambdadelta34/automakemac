@@ -311,76 +311,76 @@ Just functionality to go to last chages. Nothing fancy here.
 [[https://github.com/emacs-evil/evil][Evil]] itself.
 
 #+BEGIN_SRC emacs-lisp
-  (use-package evil
-    :defer t
-    :preface
-    (defun my/_as-word ()
-      (modify-syntax-entry ?_ "w"))
-    (defun my/tab2 ()
-      (setq evil-shift-width 2))
-    (defun my/tab4 ()
-      (setq evil-shift-width 4))
-    (defun my/copy-to-clipboard ()
-      (interactive)
-      (if (display-graphic-p)
+(use-package evil
+  :defer t
+  :preface
+  (defun my/_as-word ()
+    (modify-syntax-entry ?_ "w"))
+  (defun my/tab2 ()
+    (setq evil-shift-width 2))
+  (defun my/tab4 ()
+    (setq evil-shift-width 4))
+  (defun my/copy-to-clipboard ()
+    (interactive)
+    (if (display-graphic-p)
+        (progn
+          (call-interactively 'clipboard-kill-ring-save))
+      (if (region-active-p)
           (progn
-            (call-interactively 'clipboard-kill-ring-save))
-        (if (region-active-p)
-            (progn
-              (shell-command-on-region (region-beginning) (region-end) "pbcopy")
-              (deactivate-mark)))))
+            (shell-command-on-region (region-beginning) (region-end) "pbcopy")
+            (deactivate-mark)))))
 
-    (defun my/move-line-up ()
-      (interactive)
-      (transpose-lines 1)
-      (forward-line -2))
+  (defun my/move-line-up ()
+    (interactive)
+    (transpose-lines 1)
+    (forward-line -2))
 
-    (defun my/move-line-down ()
-      (interactive)
-      (forward-line 1)
-      (transpose-lines 1)
-      (forward-line -1))
-    :init
-    (setq evil-motion-state-modes nil
-          evil-shift-width 2
-          evil-undo-system 'undo-tree
-          evil-want-keybinding nil
-    )
-    :config
-    (evil-mode 1)
-    (general-define-key
-      :states '(normal insert)
-      "C-k" 'evil-window-up
-      "C-j" 'evil-window-down
-      "C-h" 'evil-window-left
-      "C-l" 'evil-window-right)
+  (defun my/move-line-down ()
+    (interactive)
+    (forward-line 1)
+    (transpose-lines 1)
+    (forward-line -1))
+  :init
+  (setq evil-motion-state-modes nil
+        evil-shift-width 2
+        evil-undo-system 'undo-tree
+        evil-want-keybinding nil
+  )
+  :config
+  (evil-mode 1)
+  (general-define-key
+    :states '(normal insert)
+    "C-k" 'evil-window-up
+    "C-j" 'evil-window-down
+    "C-h" 'evil-window-left
+    "C-l" 'evil-window-right)
 
-    (general-define-key
-      :states 'normal
-      "Q" 'quit-window
-      "[e" 'my/move-line-down
-      "]e" 'my/move-line-up)
+  (general-define-key
+    :states 'normal
+    "Q" 'quit-window
+    "[e" 'my/move-line-down
+    "]e" 'my/move-line-up)
 
-    (general-define-key
-      :states '(normal visual)
-      "[e" 'my/move-line-down
-      "]e" 'my/move-line-up)
+  (general-define-key
+    :states '(normal visual)
+    "[e" 'my/move-line-down
+    "]e" 'my/move-line-up)
 
-    (general-define-key
-      :states 'visual
-      "y" 'my/copy-to-clipboard
-      "gs" 'sort-lines)
+  (general-define-key
+    :states 'visual
+    "y" 'my/copy-to-clipboard
+    "gs" 'sort-lines)
 
-    (general-define-key
-      :states 'normal
-      :prefix leader
-      "wn" 'evil-window-split
-      "w/" 'evil-window-vsplit)
-    (add-hook 'view-mode-hook 'evil-motion-state)
-    (add-hook 'ruby-mode-hook 'my/tab2)
-    (add-hook 'rust-mode-hook 'my/tab4)
-    (add-hook 'js2-mode-hook 'my/tab2)
-    (add-hook 'prog-mode-hook 'my/_as-word))
+  (general-define-key
+    :states 'normal
+    :prefix leader
+    "wn" 'evil-window-split
+    "w/" 'evil-window-vsplit)
+  (add-hook 'view-mode-hook 'evil-motion-state)
+  (add-hook 'ruby-mode-hook 'my/tab2)
+  (add-hook 'rust-mode-hook 'my/tab4)
+  (add-hook 'js2-mode-hook 'my/tab2)
+  (add-hook 'prog-mode-hook 'my/_as-word))
 #+END_SRC
 
 [[https://github.com/emacs-evil/evil-collection][Evil-colletion]] replaces keys for some modes.
@@ -852,7 +852,10 @@ Just for org-mode config.
 
 #+BEGIN_SRC emacs-lisp
 (use-package org
-  :ensure nil)
+  :ensure nil
+  :init
+  (setq org-src-tab-acts-natively nil)
+)
 #+END_SRC
 
 Pretty bullets.
@@ -1710,10 +1713,28 @@ Prettierjs
   :config
   (add-hook 'org-mode-hook 'writegood-mode)
 )
-#+END_SRC
 
+(use-package fountain-mode
+  :init
+  (setq fountain-mode-hook '(visual-line-mode
+          which-function-mode
+          fountain-pagination-update
+          )
+  )
+  :custom-face
+  (fountain ((t :family "Courier Prime"
+                :height 1.2
+                )))
+)
 
-#+BEGIN_SRC emacs-lisp
+(use-package olivetti
+  :init
+  (setq olivetti-style 'fancy
+  )
+  :config
+  (add-hook 'fountain-mode-hook 'olivetti-mode)
+)
+
 ;; (use-package flyspell
 ;;   :config
 ;;   (add-hook 'org-mode-hook 'flyspell-mode)
