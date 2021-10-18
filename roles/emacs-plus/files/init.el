@@ -18,6 +18,7 @@
  '(awesome-tab-selected ((t :background "#bd93f9")))
  '(awesome-tab-unselected ((t :background "#8BE9FD")))
  '(font-lock-type-face ((t :foreground "DarkRed")))
+ '(fountain ((t :family "Courier Prime" :height 1.2)))
  '(sp-show-pair-match-content-face ((t :foreground "#00ffff" :background "#6700D4")) t)
  '(sp-show-pair-match-face ((t :foreground "#00ffff" :background "#6700D4"))))
 (put 'narrow-to-region 'disabled nil)

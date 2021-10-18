@@ -260,7 +260,7 @@ Pretty symbols.
 #+END_SRC
 
 * Packages
-** Genaral(general.el, not general config)
+** General(general.el, not general config)
 
 [[https://github.com/noctuid/general.el][General]] is very convenient way to bind keys.
 
@@ -400,6 +400,7 @@ Just functionality to go to last chages. Nothing fancy here.
     flycheck
     ibuffer
     info
+    ;; imenu-list
     ;; ivy
     help
     man
@@ -567,6 +568,19 @@ and then recompiling it ~(byte-recompile-directory package-user-dir nil 'force)~
 #+BEGIN_SRC emacs-lisp
 (use-package hl-todo
   :config (global-hl-todo-mode)
+)
+
+(use-package imenu-list
+  :config
+  (general-define-key
+    :states 'normal
+    :keymaps 'imenu-list-major-mode-map
+    "k" 'previous-line
+    "j" 'next-line
+    "TAB" 'hs-toggle-hiding
+    "RET" 'imenu-list-ret-dwim
+    "q" 'imenu-list-quit-window
+  )
 )
 #+END_SRC
 
