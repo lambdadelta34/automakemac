@@ -378,6 +378,7 @@ Just functionality to go to last chages. Nothing fancy here.
     "w/" 'evil-window-vsplit)
   (add-hook 'view-mode-hook 'evil-motion-state)
   (add-hook 'ruby-mode-hook 'my/tab2)
+  (add-hook 'css-mode-hook 'my/tab2)
   (add-hook 'rust-mode-hook 'my/tab4)
   (add-hook 'js2-mode-hook 'my/tab2)
   (add-hook 'prog-mode-hook 'my/_as-word))
@@ -1315,6 +1316,12 @@ Experimenting with [[https://github.com/emacs-lsp/lsp-mode][lsp-mode]].
           lsp-before-save-edits t
           lsp-disabled-clients '(eslint)
           lsp-modeline-diagnostics-scope :project
+          lsp-rust-analyzer-cargo-watch-command "clippy"
+          lsp-rust-analyzer-display-chaining-hints t
+          lsp-rust-analyzer-display-closure-return-type-hints t
+          lsp-rust-analyzer-display-reborrow-hints t
+          lsp-rust-analyzer-display-lifetime-elision-hints-enable "skip_trivial"
+          lsp-rust-analyzer-server-display-inlay-hints t
           ;; lsp-auto-configure nil
     )
   )
@@ -1622,7 +1629,7 @@ And ts
 #+BEGIN_SRC emacs-lisp
 (use-package typescript-mode
   :defer t
-  :mode "\\.ts\\'"
+  :mode "\\.tsx?\\'"
   :init
   (setq typescript-indent-level 2)
   )

@@ -17,7 +17,7 @@ Plug 'andymass/vim-matchup'
 Plug 'airblade/vim-rooter'
 Plug 'ryanoasis/vim-devicons'
 Plug 'liuchengxu/space-vim-theme'
-Plug 'easymotion/vim-easymotion'
+Plug 'phaazon/hop.nvim'
 Plug 'vim-test/vim-test'
 Plug 'chrisbra/NrrwRgn'
 Plug 'mbbill/undotree'
@@ -109,7 +109,8 @@ nmap <leader>bs :Buffers<CR>
 nmap <leader>/ :BLines <C-R><C-W><CR>
 nmap / :BLines <CR>
 " nnoremap <silent><leader>y :<C-u>CocList -A --normal yank<cr>
-nmap gc <Plug>(easymotion-overwin-f)
+nmap gc :HopChar1<CR>
+nmap gw :HopWord<CR>
 nmap <silent> <leader>rtn :TestNearest<CR>
 nmap <silent> <leader>rtf :TestFile<CR>
 tmap <C-[> <C-\><C-n>
@@ -192,8 +193,6 @@ let g:airline#extensions#tabline#enabled = 1
 let g:airline#extensions#tabline#formatter = 'unique_tail'
 let $FZF_DEFAULT_COMMAND = 'rg --files --hidden --follow --no-messages -g !.git'
 let $FZF_DEFAULT_OPTS='-e --height 40% --layout=reverse --bind up:preview-up,down:preview-down'
-let g:EasyMotion_do_mapping = 0
-let g:EasyMotion_smartcase = 1
 let g:fzf_history_dir = '~/.local/share/fzf-history'
 set shell=/bin/zsh
 let $SHELL = "/bin/zsh"
@@ -207,6 +206,8 @@ let test#strategy = {
   \ 'nearest': 'neovim',
   \ 'file':    'neovim',
 \}
+
+lua require'hop'.setup()
 
 if exists("g:loaded_webdevicons")
   call webdevicons#refresh()
