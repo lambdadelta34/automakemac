@@ -15,8 +15,8 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(awesome-tab-selected ((t :background "#bd93f9")))
- '(awesome-tab-unselected ((t :background "#8BE9FD")))
+ '(awesome-tab-selected ((t :background "#bd93f9")) t)
+ '(awesome-tab-unselected ((t :background "#8BE9FD")) t)
  '(font-lock-type-face ((t :foreground "DarkRed")))
  '(fountain ((t :family "Courier Prime" :height 1.2)))
  '(sp-show-pair-match-content-face ((t :foreground "#00ffff" :background "#6700D4")) t)
