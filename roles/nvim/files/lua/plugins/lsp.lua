@@ -2,8 +2,8 @@ local M = {}
 
 function M.run(use)
   use {
-    "SmiteshP/nvim-navic",
-    requires = "neovim/nvim-lspconfig"
+    'SmiteshP/nvim-navic',
+    requires = 'neovim/nvim-lspconfig'
   }
   use {
     'VonHeikemen/lsp-zero.nvim',
@@ -37,15 +37,15 @@ function M.run(use)
         -- local opts = { buffer = bufnr, remap = false }
         -- local bind = vim.keymap.set
 
-        -- bind("n", "<leader>f", vim.lsp.buf.formatting, opts)
-        -- bind('n', "gr", "<cmd>TroubleToggle quickfix<cr>", opts)
+        -- bind('n', '<leader>f', vim.lsp.buf.formatting, opts)
+        -- bind('n', 'gr', '<cmd>TroubleToggle quickfix<cr>', opts)
         -- bind('n', '<space>rn', vim.lsp.buf.rename, opts)
         -- bind('n', '<leader>ca', vim.lsp.buf.code_action, opts)
         -- bind('n', '<leader>r', '<cmd>lua vim.lsp.buf.rename()<cr>', noremap)
       end)
 
-      local navic = require("nvim-navic")
-      require("lspconfig").clangd.setup {
+      local navic = require('nvim-navic')
+      require('lspconfig').clangd.setup {
         on_attach = function(client, bufnr)
           navic.attach(client, bufnr)
         end
@@ -61,6 +61,8 @@ function M.run(use)
         mapping = {
           ['<C-k>'] = cmp.mapping.select_prev_item(cmp_select),
           ['<C-j>'] = cmp.mapping.select_next_item(cmp_select),
+          ['<C-g>'] = cmp.mapping.abort(),
+          ['<C-l>'] = cmp.mapping.confirm({ select = true }),
         },
       })
 

@@ -1,14 +1,14 @@
 local options = {
-  background = "dark",
-  clipboard      = "unnamed,unnamedplus",   --- Copy-paste between vim and everything else
+  background = 'dark',
+  clipboard      = 'unnamed,unnamedplus',   --- Copy-paste between vim and everything else
   cmdheight      = 2,                       --- Give more space for displaying messages
   cindent      = true,
-  -- completeopt    = "menu,menuone,noselect", --- Better autocompletion
+  -- completeopt    = 'menu,menuone,noselect', --- Better autocompletion
   -- cursorline     = true,                    --- Highlight of current line
   -- emoji          = false,                   --- Fix emoji display
   expandtab      = true,                    --- Use spaces instead of tabs
   hlsearch = false,
-  -- foldcolumn     = "0",
+  -- foldcolumn     = '0',
   -- foldnestmax    = 0,
   -- foldlevel      = 99,                      --- Using ufo provider need a large value
   -- foldlevelstart = 99,                      --- Expand all folds by default
@@ -22,7 +22,7 @@ local options = {
   -- scrolloff      = 4,                       --- Always keep space when scrolling to bottom/top edge
   shiftwidth     = 2,                       --- Change a number of space characeters inseted for indentation
   -- showtabline    = 2,                       --- Always show tabs
-  signcolumn = "yes:1", --- Add extra sign column next to line number
+  signcolumn = 'yes:1', --- Add extra sign column next to line number
   -- ignorecase = true,
   -- smartcase  = true, --- Uses case in search
   -- smartindent    = true,                    --- Makes indenting smart
@@ -36,10 +36,10 @@ local options = {
   termguicolors  = true,                    --- Correct terminal colors
   timeoutlen = 400,                     --- Faster completion (cannot be lower than 200 because then commenting doesn't work)
   undofile = true, --- Sets undo to file
-  undodir = os.getenv("HOME") .. "/.vim/backups",
+  undodir = os.getenv('HOME') .. '/.vim/backups',
   updatetime     = 400,                     --- Faster completion
-  viminfo        = "'1000",                 --- Increase the size of file history
-  wildignore     = "*node_modules/**",      --- Don't search inside Node.js modules (works for gutentag)
+  viminfo        = [['1000]],                 --- Increase the size of file history
+  wildignore     = '*node_modules/**',      --- Don't search inside Node.js modules (works for gutentag)
   -- wrap           = true,                   --- Display long lines as just one line
   writebackup = false,                   --- Not needed
   wb = false,
@@ -47,12 +47,12 @@ local options = {
 
   -- Neovim defaults
   -- autoindent     = true,                    --- Good auto indent
-  -- backspace      = "indent,eol,start",      --- Making sure backspace works
+  -- backspace      = 'indent,eol,start',      --- Making sure backspace works
   backup         = false,                   --- Recommended by coc
   -- conceallevel   = 0,                       --- Show `` in markdown files
-  encoding       = "utf-8",                 --- The encoding displayed
+  encoding       = 'utf-8',                 --- The encoding displayed
   -- errorbells     = false,                   --- Disables sound effect for errors
-  fileencoding   = "utf-8",                 --- The encoding written to file
+  fileencoding   = 'utf-8',                 --- The encoding written to file
   incsearch      = true,                    --- Start searching before pressing enter
   -- showmode       = false,                   --- Don't show things like -- INSERT -- anymore
 }
@@ -66,7 +66,7 @@ local globals = {
   matchup_matchparen_deferred = 1,
   matchup_matchparen_deferred_show_delay = 100,
   matchup_matchparen_deferred_hide_delay = 300,
-  matchup_matchparen_hi_surround_always = 1
+  matchup_matchparen_hi_surround_always = 1,
   -- loaded = 1,
   -- loaded_netrw = 1,
   -- loaded_netrwPlugin = 1,
@@ -79,8 +79,8 @@ end
 
 vim.opt.shortmess:append('c')
 vim.opt.matchpairs:append('<:>')
-vim.opt.listchars:append "space:⋅"
-vim.opt.listchars:append "eol:↴"
+vim.opt.listchars:append 'space:⋅'
+vim.opt.listchars:append 'eol:↴'
 
 for k, v in pairs(globals) do
   vim.g[k] = v

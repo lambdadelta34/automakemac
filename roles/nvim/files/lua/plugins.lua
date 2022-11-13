@@ -7,7 +7,7 @@ end
 return require('packer').startup({
   function(use)
     local lua_path = function(name)
-      return string.format("require'plugins.%s'", name)
+      return string.format([[require'plugins.%s']], name)
     end
 
     use { 'wbthomason/packer.nvim' }
@@ -22,8 +22,15 @@ return require('packer').startup({
     use { 'kyazdani42/nvim-web-devicons' }
     use { 'ntpeters/vim-better-whitespace' }
     use {
-      "windwp/nvim-autopairs",
-      config = function() require("nvim-autopairs").setup {} end
+      'windwp/nvim-autopairs',
+      config = function() require('nvim-autopairs').setup {} end
+    }
+    use {
+      'folke/which-key.nvim',
+      config = function()
+        require('which-key').setup()
+        require('plugins.keymappings').run()
+      end
     }
     use {
       'TimUntersberger/neogit',
@@ -36,7 +43,7 @@ return require('packer').startup({
     use {
       'numToStr/Comment.nvim',
       config = function()
-          require('Comment').setup()
+        require('Comment').setup()
       end
     }
     use { 'AndrewRadev/splitjoin.vim' }
@@ -55,9 +62,9 @@ return require('packer').startup({
     use {
       'akinsho/bufferline.nvim',
       config = function()
-        require("bufferline").setup{}
+        require('bufferline').setup{}
       end,
-      tag = "v3.*",
+      tag = 'v3.*',
       requires = 'kyazdani42/nvim-web-devicons',
     }
     use {
@@ -96,59 +103,83 @@ return require('packer').startup({
     use {
       'mfussenegger/nvim-dap',
       config = function()
-        require("dapui").setup()
+        require('dapui').setup()
       end
     }
-    use { "rcarriga/nvim-dap-ui", requires = { "mfussenegger/nvim-dap" } }
+    use { 'rcarriga/nvim-dap-ui', requires = { 'mfussenegger/nvim-dap' } }
     use {
       'nvim-telescope/telescope.nvim',
       config = function()
-        local telescope = require("telescope")
-        local actions = require("telescope.actions")
-        local action_layout = require("telescope.actions.layout")
-        local trouble = require("trouble.providers.telescope")
+        local telescope = require('telescope')
+        local actions = require('telescope.actions')
+        local action_layout = require('telescope.actions.layout')
+        local trouble = require('trouble.providers.telescope')
+
+        local transform_mod = require('telescope.actions.mt').transform_mod
+        local custom_actions = transform_mod {
+          file_path = function(prompt_bufnr)
+            -- Get selected entry and the file full path
+            local content = require('telescope.actions.state').get_selected_entry()
+            local full_path = content.cwd .. require('plenary.path').path.sep .. content.value
+
+            -- Yank the path to unnamed register
+            vim.fn.setreg('"', full_path)
+
+            -- Close the popup
+            require('notify')('File path is yanked')
+            actions.close(prompt_bufnr)
+          end,
+        }
 
         telescope.setup {
           defaults = {
-            sorting_strategy = "ascending",
-            layout_strategy = "vertical",
+            sorting_strategy = 'ascending',
+            layout_strategy = 'vertical',
             layout_config = {
               vertical = { width = 0.9 }
             },
             mappings = {
               -- restore default behavior
               i = {
-                ["<C-u>"] = false,
-                ["<C-d>"] = false,
-                ["<C-t>"] = trouble.open_with_trouble,
-                ["<C-k>"] = actions.move_selection_previous,
-                ["<C-j>"] = actions.move_selection_next,
-                ["<M-p>"] = action_layout.toggle_preview
+                ['<C-u>'] = false,
+                ['<C-d>'] = false,
+                ['<C-t>'] = trouble.open_with_trouble,
+                ['<C-k>'] = actions.move_selection_previous,
+                ['<C-j>'] = actions.move_selection_next,
+                ['<M-p>'] = action_layout.toggle_preview
               },
               n = {
-                ["<C-k>"] = actions.move_selection_previous,
-                ["<C-j>"] = actions.move_selection_next,
-                ["<M-p>"] = action_layout.toggle_preview,
-                ["<C-t>"] = trouble.open_with_trouble
+                ['<C-k>'] = actions.move_selection_previous,
+                ['<C-j>'] = actions.move_selection_next,
+                ['<M-p>'] = action_layout.toggle_preview,
+                ['<C-t>'] = trouble.open_with_trouble
               }
             },
           },
           pickers = {
             find_files = {
-              theme = "ivy",
+              -- find_command = { 'rg', '--files', '-g' },
+              theme = 'ivy',
+              mappings = {
+                n = {
+                  ['y'] = custom_actions.file_path,
+                },
+                i = {
+                  ['<C-y>'] = custom_actions.file_path,
+                },
+              },
             },
             live_grep = {
-              theme = "ivy",
+              theme = 'ivy',
             },
             grep_string = {
-              theme = "ivy",
+              theme = 'ivy',
             },
             current_buffer_fuzzy_find = {
-              theme = "ivy",
+              theme = 'ivy',
             },
             buffers = {
-              theme = "ivy",
-              ignore_current_buffer = true,
+              theme = 'ivy',
               sort_mru = true
             }
           },
@@ -164,7 +195,7 @@ return require('packer').startup({
         dressing.setup({
           input = {
             get_config = function()
-              if vim.api.nvim_buf_get_option(0, "filetype") == "NvimTree" then
+              if vim.api.nvim_buf_get_option(0, 'filetype') == 'NvimTree' then
                 return { enabled = false }
               end
             end,
@@ -192,12 +223,12 @@ return require('packer').startup({
         require('indent_blankline').setup {
           space_char_blankline = " ",
           char_highlight_list = {
-            "IndentBlanklineIndent1",
-            "IndentBlanklineIndent2",
-            "IndentBlanklineIndent3",
-            "IndentBlanklineIndent4",
-            "IndentBlanklineIndent5",
-            "IndentBlanklineIndent6",
+            'IndentBlanklineIndent1',
+            'IndentBlanklineIndent2',
+            'IndentBlanklineIndent3',
+            'IndentBlanklineIndent4',
+            'IndentBlanklineIndent5',
+            'IndentBlanklineIndent6',
           },
         }
       end
@@ -212,34 +243,34 @@ return require('packer').startup({
     use {
       'rcarriga/nvim-notify',
       config = function()
-        require("notify").setup({})
+        require('notify').setup({})
       end
     }
-    use { "MunifTanjim/nui.nvim" }
+    use { 'MunifTanjim/nui.nvim' }
     use {
-      "folke/noice.nvim",
+      'folke/noice.nvim',
       config = function()
-        require("noice").setup()
+        require('noice').setup()
       end,
       requires = {
-        "MunifTanjim/nui.nvim",
-        "rcarriga/nvim-notify",
+        'MunifTanjim/nui.nvim',
+        'rcarriga/nvim-notify',
       }
     }
     use {
       'feline-nvim/feline.nvim',
-      after = "nvim-web-devicons",
-      config = lua_path"feline"
+      after = 'nvim-web-devicons',
+      config = lua_path'feline'
       -- config = function()
       --   require('feline').setup({
       --   })
       -- end
     }
     use {
-      "folke/trouble.nvim",
-      requires = "kyazdani42/nvim-web-devicons",
+      'folke/trouble.nvim',
+      requires = 'kyazdani42/nvim-web-devicons',
       config = function()
-        require("trouble").setup {
+        require('trouble').setup {
         }
       end
     }

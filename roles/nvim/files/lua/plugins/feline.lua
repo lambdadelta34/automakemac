@@ -1,6 +1,6 @@
 local lsp = require('feline.providers.lsp')
 local vi_mode_utils = require('feline.providers.vi_mode')
-local gps = require("nvim-navic")
+local gps = require('nvim-navic')
 
 local force_inactive = {
   filetypes = {},
@@ -51,35 +51,35 @@ local catppuccin = {
 }
 
 local onedarkpro = {
-  bg = "#282c34",
-  black = "#282c34",
-  yellow = "#e5c07b",
-  cyan = "#56b6c2",
-  oceanblue = "#61afef",
-  green = "#98c379",
-  orange = "#d19a66",
-  violet = "#c678dd",
-  magenta = "#c678dd",
-  white = "#abb2bf",
-  fg = "#abb2bf",
-  skyblue = "#61afef",
-  red = "#e06c75",
+  bg = '#282c34',
+  black = '#282c34',
+  yellow = '#e5c07b',
+  cyan = '#56b6c2',
+  oceanblue = '#61afef',
+  green = '#98c379',
+  orange = '#d19a66',
+  violet = '#c678dd',
+  magenta = '#c678dd',
+  white = '#abb2bf',
+  fg = '#abb2bf',
+  skyblue = '#61afef',
+  red = '#e06c75',
 }
 
 local tokyonightstorm = {
-  bg = "#24283b",
-  black = "#24283b",
-  yellow = "#e0af68",
-  cyan = "#7dcfff",
-  oceanblue = "#7aa2f7",
-  green = "#9ece6a",
-  orange = "#e0af68",
-  violet = "#bb9af7",
-  magenta = "#bb9af7",
-  white = "#c0caf5",
-  fg = "#c0caf5",
-  skyblue = "#7dcfff",
-  red = "#f7768e",
+  bg = '#24283b',
+  black = '#24283b',
+  yellow = '#e0af68',
+  cyan = '#7dcfff',
+  oceanblue = '#7aa2f7',
+  green = '#9ece6a',
+  orange = '#e0af68',
+  violet = '#bb9af7',
+  magenta = '#bb9af7',
+  white = '#c0caf5',
+  fg = '#c0caf5',
+  skyblue = '#7dcfff',
+  red = '#f7768e',
 }
 
 local vi_mode_colors = {
@@ -182,7 +182,7 @@ components.active[1][2] = {
 -- filename
 components.active[1][3] = {
   provider = function()
-    return vim.fn.expand("%:F")
+    return vim.fn.expand('%:F')
   end,
   hl = {
     fg = 'white',
