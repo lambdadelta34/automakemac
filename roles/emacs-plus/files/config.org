@@ -925,13 +925,13 @@ Meh, decided not to. Breaks projectile hooks.
 [[https://github.com/leoliu/ggtags][ggtags]] for code navigation.
 
 #+BEGIN_SRC emacs-lisp
-(use-package ggtags
-  :defer t
-  :diminish 'ggtags-mode
-  :general
-  (:states 'normal
-    "C-]" 'ggtags-find-tag-dwim)
-)
+;; (use-package ggtags
+;;   :defer t
+;;   :diminish 'ggtags-mode
+;;   :general
+;;   (:states 'normal
+;;     "C-]" 'ggtags-find-tag-dwim)
+;; )
 #+END_SRC
 
 ** Magit
@@ -1076,13 +1076,14 @@ There are no alternatives to [[http://company-mode.github.io/][company-mode]].
         company-selection-wrap-around t)
   :config
   ;; (add-to-list 'company-backends 'company-yasnippet)
-  (add-to-list 'company-backends '(company-tabnine :separate company-capf))
+  ;; (add-to-list 'company-backends '(company-tabnine :separate company-capf))
   ;; (setq company-backends '(company-bbdb))
   (general-define-key
     :keymaps 'company-active-map
     "C-j" 'company-select-next
     "C-k" 'company-select-previous
     "C-p" 'company-other-backend
+    "<return>" 'newline
     "C-l" 'company-complete-selection)
   (general-define-key
     :states '(normal insert)
@@ -1090,8 +1091,8 @@ There are no alternatives to [[http://company-mode.github.io/][company-mode]].
     "C-p" 'company-complete)
 )
 
-(use-package company-tabnine
-)
+;; (use-package company-tabnine
+;; )
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp
@@ -1308,7 +1309,7 @@ Experimenting with [[https://github.com/emacs-lsp/lsp-mode][lsp-mode]].
     :init
     (setq lsp-enable-snippet nil
           lsp-auto-guess-root t
-          lsp-completion-provider :capf
+          ;; lsp-completion-provider :capf
           lsp-modeline-diagnostics-enable t
           lsp-dired-mode t
           lsp-before-save-edits t
@@ -1376,8 +1377,11 @@ Comes with [[https://github.com/emacs-lsp/lsp-ui][lsp-ui]].
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp
-;; (use-package company-lsp
-;; )
+(use-package company-lsp
+  :init
+  (setq company-lsp-cache-candidates 'auto
+        company-lsp-async t)
+)
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp
@@ -1494,7 +1498,8 @@ Try [[https://github.com/joaotavora/eglot][eglot]].
   )
   (add-hook 'flycheck-mode-hook 'my/eslint-from-node-modules)
   (add-hook 'flycheck-mode-hook 'my/tslint-from-node-modules)
-  (add-hook 'flycheck-mode-hook 'ggtags-mode))
+  ;; (add-hook 'flycheck-mode-hook 'ggtags-mode)
+  )
 #+END_SRC
 
 ** Programming
@@ -1515,6 +1520,16 @@ Try [[https://github.com/joaotavora/eglot][eglot]].
 (use-package protobuf-mode)
 #+END_SRC
 
+MD mode
+
+#+BEGIN_SRC emacs-lisp
+(use-package markdown-mode
+  :ensure t
+  :mode ("\\.md\\'" . gfm-mode)
+  :init
+  (setq markdown-command "pandoc")
+)
+#+END_SRC
 [[https://github.com/yoshiki/yaml-mode][Yaml]] mode.
 
 #+BEGIN_SRC emacs-lisp
