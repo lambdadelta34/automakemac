@@ -38,6 +38,24 @@ function M.run()
     nowait = false,
   }
 
+  local c_opts = {
+    mode = 'c',
+    prefix = '',
+    buffer = nil,
+    silent = false,
+    noremap = false,
+    nowait = false,
+  }
+
+  local i_opts = {
+    mode = 'i',
+    prefix = '',
+    buffer = nil,
+    silent = false,
+    noremap = false,
+    nowait = false,
+  }
+
   local n_opts_silent = {
     mode = 'n',
     prefix = '',
@@ -134,7 +152,7 @@ function M.run()
         R = { ':so $MYVIMRC<cr>', 'reload conf' },
       },
       f = { '<cmd>Telescope find_files<cr>', 'find file' },
-      s = { ':w!<cr>', 'save file' },
+      s = { '<cmd>StripWhitespace<cr><cmd>w!<cr>', 'save file' },
     },
     q = {
       q = { ':q!<cr>', 'quit' },
@@ -161,14 +179,16 @@ function M.run()
       f = { '<cmd>TroubleToggle quickfix<cr>', 'trouble quickfix' },
       t = { '<cmd>TroubleToggle<cr>', 'toggle trouble' },
     },
-    ['C-b'] = { '<cmd>Gitsigns toggle_current_line_blame<cr>', 'toggle git blame' },
+    ['<C-b>'] = { '<cmd>Gitsigns toggle_current_line_blame<cr>', 'toggle git blame' },
   }, leader_nnoremap_opts)
 
   wk.register({
     r = {
       t = {
-        f = { [[<cmd>lua require('neotest').run.run(vim.fn.expand('%'))<cr>]] , 'run test file' },
-        n = { [[<cmd>lua require('neotest').run.run()<cr>]], 'run nearest test' },
+        f = { '<cmd>TestFile<cr>' , 'run test file' },
+        n = { '<cmd>TestNearest<cr>', 'run nearest test' },
+        -- f = { [[<cmd>lua require('neotest').run.run(vim.fn.expand('%'))<cr>]] , 'run test file' },
+        -- n = { [[<cmd>lua require('neotest').run.run()<cr>]], 'run nearest test' },
       },
     },
   }, leader_n_opts_silent)
@@ -183,6 +203,7 @@ function M.run()
     g = {
       C = { ':HopChar1<cr>', 'go to char' },
       w = { ':HopWord<cr>', 'go to word' },
+      d = { '<cmd>lua vim.lsp.buf.definition()<cr>', 'go to definition' },
     },
     ['*'] = { '<cmd>Telescope live_grep<cr>', 'grep live' },
     ['/'] = { '<cmd>Telescope current_buffer_fuzzy_find<cr>', 'grep current buffer' },
@@ -192,6 +213,7 @@ function M.run()
     ['<C-h>'] = { '<C-w>h', 'left window' },
     ['<C-j>'] = { '<C-w>j', 'lower window' },
     ['<C-k>'] = { '<C-w>k', 'upper window' },
+    ['<C-g>'] = { '<C-[>', 'emacs cancel' },
   }, n_opts)
 
   wk.register({
@@ -208,8 +230,12 @@ function M.run()
   }, x_opts)
 
   wk.register({
-    ['C-g'] = { 'C-[', 'emacs cancel' },
-  }, nnoremap_opts)
+    ['<C-g>'] = { '<C-[>', 'emacs cancel' },
+  }, i_opts)
+
+  wk.register({
+    ['<C-g>'] = { '<C-[>', 'emacs cancel' },
+  }, c_opts)
 
   local minibuffer = {}
 

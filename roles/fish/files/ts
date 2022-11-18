@@ -1,0 +1,7 @@
+function ts
+  if tmux has -t $argv
+    tmux attach -t $argv
+  else
+    tmux new -t $argv
+  end
+end

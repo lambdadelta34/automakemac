@@ -59,9 +59,10 @@ local options = {
 
 local globals = {
   mapleader = ' ', --- Map leader key to SPC
-  strip_whitespace_on_save=1,
-  strip_whitelines_at_eof=1,
-  strip_whitespace_confirm=0,
+  better_whitespace_enabled = 1,
+  strip_whitespace_on_save = 1,
+  strip_whitelines_at_eof = 1,
+  strip_whitespace_confirm = 0,
   matchup_surround_enabled = 1,
   matchup_matchparen_deferred = 1,
   matchup_matchparen_deferred_show_delay = 100,
@@ -82,20 +83,29 @@ vim.opt.matchpairs:append('<:>')
 vim.opt.listchars:append 'space:⋅'
 vim.opt.listchars:append 'eol:↴'
 
+vim.diagnostic.config({
+  virtual_text = true,
+  signs = true,
+  underline = true,
+  update_in_insert = true,
+  severity_sort = false,
+})
+
 for k, v in pairs(globals) do
   vim.g[k] = v
 end
 
 vim.cmd([[
-colorscheme space_vim_theme
 filetype plugin indent on
 filetype plugin on
-highlight IndentBlanklineIndent1 guifg=#E06C75 gui=nocombine
-highlight IndentBlanklineIndent2 guifg=#E5C07B gui=nocombine
-highlight IndentBlanklineIndent3 guifg=#98C379 gui=nocombine
-highlight IndentBlanklineIndent4 guifg=#56B6C2 gui=nocombine
-highlight IndentBlanklineIndent5 guifg=#61AFEF gui=nocombine
-highlight IndentBlanklineIndent6 guifg=#C678DD gui=nocombine
+let test#neovim#term_position = "vert"
+let g:test#preserve_screen = 1
+let test#strategy = {
+  \ 'nearest': 'neovim',
+  \ 'file':    'neovim',
+\}
+let g:test#neovim#start_normal = 1
+" autocmd! CursorHold,CursorHoldI * lua vim.diagnostic.open_float(nil, {focus=false, scope="cursor"})
 ]])
 
 if vim.fn.has('mouse') == 1 then

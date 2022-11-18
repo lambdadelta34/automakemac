@@ -72,6 +72,30 @@ function M.run(use)
       lsp.setup()
     end
   }
+  use {
+    'neovim/nvim-lspconfig',
+    requires = {
+      'williamboman/mason.nvim',
+      'williamboman/mason-lspconfig.nvim',
+      'kosayoda/nvim-lightbulb',
+    },
+    config = function ()
+      vim.api.nvim_create_autocmd({ 'CursorHold', 'CursorHoldI' }, {
+        pattern = '*',
+        callback = function()
+          local opts = {
+            focusable = false,
+            close_events = { 'CursorMoved', 'FocusLost' },
+            border = 'rounded',
+            source = 'always',
+            prefix = ' ',
+            scope = 'cursor',
+          }
+          vim.diagnostic.open_float(nil, opts)
+        end
+      })
+    end
+  }
 end
 
 return M

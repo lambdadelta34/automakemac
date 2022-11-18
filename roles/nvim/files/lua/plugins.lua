@@ -15,10 +15,37 @@ return require('packer').startup({
     use { 'lewis6991/impatient.nvim' }
     use { 'nathom/filetype.nvim' }
     --
+    -- use { "alexghergh/nvim-tmux-navigation" }
     use { 'tpope/vim-sensible' }
     use { 'tpope/vim-surround' }
     use { 'tpope/vim-repeat' }
     use { 'tpope/vim-endwise' }
+    use {
+      'folke/tokyonight.nvim',
+      config = function()
+        require('tokyonight').setup {
+          style = 'moon',
+          light_style = 'moon',
+          styles = {
+            comments = { italic = false },
+            keywords = { italic = false },
+            functions = { italic = false },
+            variables = { italic = false },
+            sidebars = "dark",
+            floats = "dark",
+          },
+        }
+        vim.cmd([[
+        colorscheme tokyonight
+        highlight IndentBlanklineIndent1 guifg=#E06C75 gui=nocombine
+        highlight IndentBlanklineIndent2 guifg=#E5C07B gui=nocombine
+        highlight IndentBlanklineIndent3 guifg=#98C379 gui=nocombine
+        highlight IndentBlanklineIndent4 guifg=#56B6C2 gui=nocombine
+        highlight IndentBlanklineIndent5 guifg=#61AFEF gui=nocombine
+        highlight IndentBlanklineIndent6 guifg=#C678DD gui=nocombine
+        ]])
+      end
+    }
     use { 'kyazdani42/nvim-web-devicons' }
     use { 'ntpeters/vim-better-whitespace' }
     use {
@@ -32,6 +59,7 @@ return require('packer').startup({
         require('plugins.keymappings').run()
       end
     }
+    use { 'nvim-telescope/telescope-fzf-native.nvim', run = 'make' }
     use {
       'TimUntersberger/neogit',
       config = function()
@@ -57,7 +85,6 @@ return require('packer').startup({
         }
       end
     }
-    use { 'liuchengxu/space-vim-theme' }
     use { 'mg979/vim-visual-multi', branch = 'master' }
     use {
       'akinsho/bufferline.nvim',
@@ -73,7 +100,71 @@ return require('packer').startup({
         'kyazdani42/nvim-web-devicons'
       },
       config = function()
+        local lib = require("nvim-tree.lib")
+        local view = require("nvim-tree.view")
+
+
+        local function collapse_all()
+          require("nvim-tree.actions.tree-modifiers.collapse-all").fn()
+        end
+
+        local function edit_or_open()
+          -- open as vsplit on current node
+          local action = "edit"
+          local node = lib.get_node_at_cursor()
+
+          -- Just copy what's done normally with vsplit
+          if node.link_to and not node.nodes then
+            require('nvim-tree.actions.node.open-file').fn(action, node.link_to)
+            view.close() -- Close the tree if file was opened
+
+          elseif node.nodes ~= nil then
+            lib.expand_or_collapse(node)
+
+          else
+            require('nvim-tree.actions.node.open-file').fn(action, node.absolute_path)
+            view.close() -- Close the tree if file was opened
+          end
+
+        end
+
+        local function vsplit_preview()
+          -- open as vsplit on current node
+          local action = "vsplit"
+          local node = lib.get_node_at_cursor()
+
+          -- Just copy what's done normally with vsplit
+          if node.link_to and not node.nodes then
+            require('nvim-tree.actions.node.open-file').fn(action, node.link_to)
+
+          elseif node.nodes ~= nil then
+            lib.expand_or_collapse(node)
+
+          else
+            require('nvim-tree.actions.node.open-file').fn(action, node.absolute_path)
+
+          end
+
+          -- Finally refocus on tree if it was lost
+          view.focus()
+        end
+
         require('nvim-tree').setup {
+          view = {
+            mappings = {
+              custom_only = false,
+              list = {
+                { key = "l", action = "edit", action_cb = edit_or_open },
+                { key = "L", action = "vsplit_preview", action_cb = vsplit_preview },
+                { key = "h", action = "close_node" },
+              }
+            },
+          },
+          actions = {
+            open_file = {
+              quit_on_open = false
+            }
+          },
           update_cwd = true,
           update_focused_file = {
             enable = true,
@@ -114,7 +205,7 @@ return require('packer').startup({
         local actions = require('telescope.actions')
         local action_layout = require('telescope.actions.layout')
         local trouble = require('trouble.providers.telescope')
-
+        local sorters = require('telescope.sorters')
         local transform_mod = require('telescope.actions.mt').transform_mod
         local custom_actions = transform_mod {
           file_path = function(prompt_bufnr)
@@ -130,8 +221,16 @@ return require('packer').startup({
             actions.close(prompt_bufnr)
           end,
         }
-
+        telescope.load_extension('fzf')
         telescope.setup {
+          extensions = {
+            fzf = {
+              fuzzy = true,                    -- false will only do exact matching
+              override_generic_sorter = true,  -- override the generic sorter
+              override_file_sorter = true,     -- override the file sorter
+              case_mode = "smart_case",        -- or "ignore_case" or "respect_case"
+            }
+          },
           defaults = {
             sorting_strategy = 'ascending',
             layout_strategy = 'vertical',
@@ -176,6 +275,8 @@ return require('packer').startup({
               theme = 'ivy',
             },
             current_buffer_fuzzy_find = {
+              fuzzy = false,
+              case_mode='ignore_case',
               theme = 'ivy',
             },
             buffers = {
@@ -250,7 +351,8 @@ return require('packer').startup({
     use {
       'folke/noice.nvim',
       config = function()
-        require('noice').setup()
+        require('noice').setup {
+        }
       end,
       requires = {
         'MunifTanjim/nui.nvim',
@@ -271,6 +373,7 @@ return require('packer').startup({
       requires = 'kyazdani42/nvim-web-devicons',
       config = function()
         require('trouble').setup {
+          use_diagnostic_signs = true,
         }
       end
     }

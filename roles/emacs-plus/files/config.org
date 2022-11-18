@@ -22,6 +22,7 @@ This little dude here is enables lazy loading.
 
 #+BEGIN_SRC emacs-lisp
 (setq package-enable-at-startup nil)
+(setq native-comp-async-report-warnings-errors nil)
 #+END_SRC
 
 ** use-package
@@ -200,16 +201,18 @@ Org-mode for *scratch* file.
 Dracula, hocho, just a little bite.
 
 #+BEGIN_SRC emacs-lisp
-;; (use-package dracula-theme
-;;   :config
-;;   (load-theme 'dracula t))
-;; (load-theme 'dichromacy)
-(use-package color-theme-modern
-  :custom-face
-  (font-lock-type-face ((t :foreground "DarkRed"
-                           )))
-  :config
-  (load-theme 'snowish t))
+  ;; (use-package dracula-theme
+  ;;   :config
+  ;;   (load-theme 'dracula t))
+  ;; (load-theme 'dichromacy)
+  ;; (use-package color-theme-modern
+  ;;   :custom-face
+  ;;   (font-lock-type-face ((t :foreground "DarkRed"
+  ;;                            )))
+  ;;   :config
+  ;;   (load-theme 'snowish t))
+
+(use-package autothemer)
 #+END_SRC
 
 Pretty symbols.
@@ -349,7 +352,7 @@ Just functionality to go to last chages. Nothing fancy here.
   :config
   (evil-mode 1)
   (general-define-key
-    :states '(normal insert)
+    :states '(normal)
     "C-k" 'evil-window-up
     "C-j" 'evil-window-down
     "C-h" 'evil-window-left
@@ -393,7 +396,9 @@ Just functionality to go to last chages. Nothing fancy here.
   (setq evil-collection-mode-list nil)
   (setq evil-collection-mode-list '(
     (buff-menu "buff-menu")
-    company
+    ;; company
+    consult
+    corfu
     debug
     doc-view
     eshell
@@ -409,7 +414,7 @@ Just functionality to go to last chages. Nothing fancy here.
     outline
     (package-menu package)))
     ;; process-menu
-    ;;simple))
+    ;; simple))
     ;; view))
   :config
   (evil-collection-init))
@@ -493,13 +498,13 @@ Code [[https://github.com/redguardtoo/evil-nerd-commenter][commentary]].
 Folding.
 
 #+BEGIN_SRC emacs-lisp
-(use-package vimish-fold
-  :config
-  (general-define-key
-    :states 'normal
-    "za" 'vimish-fold-avy)
-  (vimish-fold-global-mode 1)
-)
+;; (use-package vimish-fold
+;;   :config
+;;   (general-define-key
+;;     :states 'normal
+;;     "za" 'vimish-fold-avy)
+;;   (vimish-fold-global-mode 1)
+;; )
 #+END_SRC
 
 ** Jumping
@@ -738,75 +743,94 @@ Try [[https://github.com/raxod502/selectrum][selectrum]] & [[https://github.com/
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp
-(use-package selectrum-prescient
-)
+;; (use-package selectrum-prescient
+;; )
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp
-(use-package selectrum
-  :init
-  (selectrum-mode +1)
-  (selectrum-prescient-mode +1)
-  (prescient-persist-mode +1)
-  :config
-  (general-define-key
-    :keymaps 'selectrum-minibuffer-map
-    "C-j" '(selectrum-next-candidate :which-key "next line")
-    "C-k" '(selectrum-previous-candidate :which-key "prev line")
-    "C-l" '(selectrum-submit-exact-input :which-key "submit exact input")
-  )
-)
+;; (use-package selectrum
+;;   :init
+;;   (selectrum-mode +1)
+;;   (selectrum-prescient-mode +1)
+;;   (prescient-persist-mode +1)
+;;   :config
+;;   (general-define-key
+;;     :keymaps 'selectrum-minibuffer-map
+;;     "C-j" '(selectrum-next-candidate :which-key "next line")
+;;     "C-k" '(selectrum-previous-candidate :which-key "prev line")
+;;     "C-l" '(selectrum-submit-exact-input :which-key "submit exact input")
+;;   )
+;; )
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp
-(use-package consult
-  :preface
-  (defun my/grep-word-visual ()
-    (interactive)
-    (consult-ripgrep (projectile-project-root) (buffer-substring
-      (evil-range-beginning (evil-visual-range))
-      (evil-range-end (evil-visual-range)))))
-  (defun my/grep-word ()
-    (interactive)
-    (consult-ripgrep (projectile-project-root) (thing-at-point 'word)))
-  (defun my/consult-word ()
-    (interactive)
-    (consult-line (thing-at-point 'word)))
-  :init
-  (setq register-preview-delay 0
-        register-preview-function #'consult-register-format
-        consult-ripgrep-command "rg --null --smart-case --line-buffered --color=always --max-columns=500\
-   --no-heading --line-number . -e ARG OPTS"
+  (use-package vertico
+    :init
+    (vertico-mode)
+    (vertico-prescient-mode +1)
+    (prescient-persist-mode +1)
+    :config
+    (general-define-key
+      :keymaps 'vertico-map
+      "C-j" '(vertico-next :which-key "next line")
+      "C-k" '(vertico-previous :which-key "prev line")
+      ;; "C-l" '(vertico-submit-exact-input :which-key "submit exact input")
+    )
   )
-  (advice-add #'register-preview :override #'consult-register-window)
+  (use-package vertico-prescient
+  )
+  (use-package savehist
+    :init
+    (savehist-mode))
 
-  :config
-  ;;(general-define-key
-  ;;  :keymaps 'isearch-mode-map
-  ;;)
-  (general-define-key
-    :states 'normal
-    "M-g g" 'consult-goto-line
-    "/" 'consult-line
-    "*" 'consult-ripgrep
+  (use-package consult
+    :preface
+    (defun my/grep-word-visual ()
+      (interactive)
+      (consult-ripgrep (projectile-project-root) (buffer-substring
+        (evil-range-beginning (evil-visual-range))
+        (evil-range-end (evil-visual-range)))))
+    (defun my/grep-word ()
+      (interactive)
+      (consult-ripgrep (projectile-project-root) (thing-at-point 'word)))
+    (defun my/consult-word ()
+      (interactive)
+      (consult-line (thing-at-point 'word)))
+    :init
+    (setq register-preview-delay 0
+          register-preview-function #'consult-register-format
+          consult-ripgrep-command "rg --null --smart-case --line-buffered --color=always --max-columns=500\
+     --no-heading --line-number . -e ARG OPTS"
+    )
+    (advice-add #'register-preview :override #'consult-register-window)
+
+    :config
+    ;;(general-define-key
+    ;;  :keymaps 'isearch-mode-map
+    ;;)
+    (general-define-key
+      :states 'normal
+      "M-g g" 'consult-goto-line
+      "/" 'consult-line
+      "*" 'consult-ripgrep
+    )
+    (general-define-key
+      :states 'normal
+      :prefix leader
+      "/" 'my/consult-word
+      "bs" 'consult-buffer
+      "*" 'my/grep-word
+      "M-y" 'consult-yank-pop
+    )
+    (general-define-key
+      :states 'visual
+      :prefix leader
+      "*" 'my/grep-word-visual
+    )
+    (setq consult-preview-key 'any)
+    (autoload 'projectile-project-root "projectile")
+    (setq consult-project-root-function #'projectile-project-root)
   )
-  (general-define-key
-    :states 'normal
-    :prefix leader
-    "/" 'my/consult-word
-    "bs" 'consult-buffer
-    "*" 'my/grep-word
-    "M-y" 'consult-yank-pop
-  )
-  (general-define-key
-    :states 'visual
-    :prefix leader
-    "*" 'my/grep-word-visual
-  )
-  (setq consult-preview-key 'any)
-  (autoload 'projectile-project-root "projectile")
-  (setq consult-project-root-function #'projectile-project-root)
-)
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp
@@ -870,6 +894,12 @@ Just for org-mode config.
   :ensure nil
   :init
   (setq org-src-tab-acts-natively nil)
+  :config
+  (general-define-key
+    :states '(normal)
+    :keymaps 'org-mode-map
+    "TAB" 'org-cycle)
+
 )
 #+END_SRC
 
@@ -951,6 +981,21 @@ I heard [[https://github.com/magit/magit][magit]] to be best git client. Let's s
     :prefix leader
     :states 'normal
     "C-b" 'magit-blame-addition))
+
+(use-package git-timemachine
+  :init
+  (general-define-key
+    :states 'normal
+    :prefix leader
+    "h" 'git-timemachine-toggle)
+  (general-define-key
+    :keymaps 'git-timemachine-mode-map
+    :states 'normal
+    "q" 'git-timemachine-quit
+    "p" 'git-timemachine-show-previous-revision
+    "n" 'git-timemachine-show-next-revision
+    "c" 'git-timemachine-show-current-revision
+    ))
 
 #+END_SRC
 
@@ -1066,34 +1111,56 @@ I'm not sure yet if i need it. We'll see.
 
 There are no alternatives to [[http://company-mode.github.io/][company-mode]].
 
-#+BEGIN_SRC emacs-lisp
-(use-package company
-  :defer t
-  :init
-  (global-company-mode)
-  (setq company-idle-delay 0.1
-        company-show-numbers t
-        company-tooltip-align-annotations t
-        company-selection-wrap-around t)
-  :config
-  ;; (add-to-list 'company-backends 'company-yasnippet)
-  ;; (add-to-list 'company-backends '(company-tabnine :separate company-capf))
-  ;; (setq company-backends '(company-bbdb))
-  (general-define-key
-    :keymaps 'company-active-map
-    "C-j" 'company-select-next
-    "C-k" 'company-select-previous
-    "C-p" 'company-other-backend
-    "<return>" 'newline
-    "C-l" 'company-complete-selection)
-  (general-define-key
-    :states '(normal insert)
-    :keymaps 'company-mode-map
-    "C-p" 'company-complete)
-)
+[[https://github.com/minad/corfu][Corfu]] seems like one.
 
-;; (use-package company-tabnine
-;; )
+#+BEGIN_SRC emacs-lisp
+  (use-package vertico-prescient
+  )
+  (use-package corfu
+    :custom
+    (corfu-auto t)
+    (corfu-auto-prefix 0)
+    (corfu-auto-delay 0.1)
+    (corfu-echo-documentation 0.25)
+    :init
+    (global-corfu-mode)
+    (corfu-prescient-mode 1)
+    :config
+    (general-define-key
+      :keymaps 'corfu-map
+      "C-j" 'corfu-next
+      "C-k" 'corfu-previous
+      "<return>" 'newline
+      "C-l" 'corfu-complete)
+  )
+
+  ;; (use-package company
+  ;;   :defer t
+  ;;   :init
+  ;;   (global-company-mode)
+  ;;   (setq company-idle-delay 0.1
+  ;;         company-show-numbers t
+  ;;         company-tooltip-align-annotations t
+  ;;         company-selection-wrap-around t)
+  ;;   :config
+  ;;   ;; (add-to-list 'company-backends 'company-yasnippet)
+  ;;   ;; (add-to-list 'company-backends '(company-tabnine :separate company-capf))
+  ;;   ;; (setq company-backends '(company-bbdb))
+  ;;   (general-define-key
+  ;;     :keymaps 'company-active-map
+  ;;     "C-j" 'company-select-next
+  ;;     "C-k" 'company-select-previous
+  ;;     "C-p" 'company-other-backend
+  ;;     "<return>" 'newline
+  ;;     "C-l" 'company-complete-selection)
+  ;;   (general-define-key
+  ;;     :states '(normal insert)
+  ;;     :keymaps 'company-mode-map
+  ;;     "C-p" 'company-complete)
+  ;; )
+
+  ;; (use-package company-tabnine
+  ;; )
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp
@@ -1114,8 +1181,8 @@ Quickhelp too.
 Why not irony.
 
 #+BEGIN_SRC emacs-lisp
-(use-package company-irony
-  :defer t)
+;; (use-package company-irony
+;;   :defer t)
 #+END_SRC
 
 ** Parentheses
@@ -1306,11 +1373,15 @@ Experimenting with [[https://github.com/emacs-lsp/lsp-mode][lsp-mode]].
       (rust-mode . lsp)
       (ruby-mode . lsp)
       (lsp-mode . lsp-enable-which-key-integration)
+      (lsp-completion-mode . my/lsp-mode-setup-completion)
     )
     :init
+    (defun my/lsp-mode-setup-completion ()
+      (setf (alist-get 'styles (alist-get 'lsp-capf completion-category-defaults))
+        '(flex)))
     (setq lsp-enable-snippet nil
           lsp-auto-guess-root t
-          ;; lsp-completion-provider :capf
+          lsp-completion-provider :none
           lsp-modeline-diagnostics-enable t
           lsp-dired-mode t
           lsp-before-save-edits t
@@ -1370,10 +1441,10 @@ Comes with [[https://github.com/emacs-lsp/lsp-ui][lsp-ui]].
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp
-(use-package lsp-treemacs
-  :config
-  (lsp-treemacs-sync-mode 1)
-)
+;; (use-package lsp-treemacs
+;;   :config
+;;   (lsp-treemacs-sync-mode 1)
+;; )
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp
@@ -1384,38 +1455,40 @@ Comes with [[https://github.com/emacs-lsp/lsp-ui][lsp-ui]].
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp
-(use-package company-lsp
-  :init
-  (setq company-lsp-cache-candidates 'auto
-        company-lsp-async t)
-)
+;; (use-package company-lsp
+;;   :init
+;;   (push 'company-lsp company-backends)
+;;   (setq company-lsp-cache-candidates 'auto
+;;         company-lsp-async t
+;;         company-lsp-enable-recompletion t)
+;; )
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp
-(use-package treemacs
-  :defer t
-  :config
-  (setq
-    treemacs-file-event-delay 2000
-  )
-  (general-define-key
-    :keymaps 'treemacs-mode-map
-    "C-l" 'evil-window-right)
-)
+;; (use-package treemacs
+;;   :defer t
+;;   :config
+;;   (setq
+;;     treemacs-file-event-delay 2000
+;;   )
+;;   (general-define-key
+;;     :keymaps 'treemacs-mode-map
+;;     "C-l" 'evil-window-right)
+;; )
 
-(use-package treemacs-evil
-  :after treemacs evil
-  :config
-  (general-define-key
-    :states '(normal visual)
-    :prefix leader
-    "t" 'treemacs
-  )
-)
+;; (use-package treemacs-evil
+;;   :after treemacs evil
+;;   :config
+;;   (general-define-key
+;;     :states '(normal visual)
+;;     :prefix leader
+;;     "t" 'treemacs
+;;   )
+;; )
 
-(use-package treemacs-projectile
-  :after treemacs projectile
-)
+;; (use-package treemacs-projectile
+;;   :after treemacs projectile
+;; )
 #+END_SRC
 
 Try [[https://github.com/joaotavora/eglot][eglot]].
@@ -1579,9 +1652,9 @@ Becuse i'm interested in haskell.
   :defer t
   :mode
     ("\\.l?hs\\'" . haskell-mode)
-  :preface
-  (defun my/autocomplete ()
-    (add-to-list 'company-backends 'company-ghc))
+  ;; :preface
+  ;; (defun my/autocomplete ()
+  ;;   (add-to-list 'company-backends 'company-ghc))
   :init
   (setq haskell-tags-on-save t
         tags-revert-without-query t
@@ -1595,7 +1668,7 @@ Becuse i'm interested in haskell.
     :keymaps 'haskell-mode-map
     "C-]" 'haskell-mode-tag-find
   )
-  (add-hook 'haskell-mode-hook 'my/autocomplete)
+  ;; (add-hook 'haskell-mode-hook 'my/autocomplete)
   ;; (add-hook 'haskell-mode-hook 'turn-on-haskell-unicode-input-method) ;; nope
   (add-hook 'haskell-mode-hook 'haskell-auto-insert-module-template)
   (add-hook 'haskell-mode-hook 'interactive-haskell-mode)
