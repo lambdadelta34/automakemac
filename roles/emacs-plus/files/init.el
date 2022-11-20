@@ -9,7 +9,7 @@
  '(custom-safe-themes
    '("4e7e04c4b161dd04dc671fb5288e3cc772d9086345cb03b7f5ed8538905e8e27" default))
  '(package-selected-packages
-   '(protobuf-mode yasnippet-snippets yasnippet ruby-end slim-mode magit powerline which-key use-package tuareg smartparens rjsx-mode reason-mode projectile neotree haskell-mode ggtags general flycheck flx evil-surround evil-nerd-commenter evil-args dumb-jump dracula-theme counsel company-quickhelp all-the-icons ag))
+   '())
  '(warning-suppress-types '((emacs) (emacs) (emacs) (use-package))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
