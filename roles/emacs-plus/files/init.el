@@ -8,9 +8,7 @@
  ;; If there is more than one, they won't work right.
  '(custom-safe-themes
    '("4e7e04c4b161dd04dc671fb5288e3cc772d9086345cb03b7f5ed8538905e8e27" default))
- '(package-selected-packages
-   '())
- '(warning-suppress-types '((emacs) (emacs) (emacs) (use-package))))
+ )
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.

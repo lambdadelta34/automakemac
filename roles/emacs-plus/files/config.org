@@ -766,9 +766,9 @@ Try [[https://github.com/raxod502/selectrum][selectrum]] & [[https://github.com/
 #+BEGIN_SRC emacs-lisp
 ;; (use-package selectrum
 ;;   :init
-;;   (selectrum-mode +1)
-;;   (selectrum-prescient-mode +1)
-;;   (prescient-persist-mode +1)
+;;   (selectrum-mode)
+;;   ;; (selectrum-prescient-mode)
+;;   ;; (prescient-persist-mode)
 ;;   :config
 ;;   (general-define-key
 ;;     :keymaps 'selectrum-minibuffer-map
@@ -783,10 +783,12 @@ Try [[https://github.com/raxod502/selectrum][selectrum]] & [[https://github.com/
   (use-package vertico-prescient
   )
   (use-package vertico
+    :custom
+    (vertico-cycle t)
     :config
     (vertico-mode)
-    (vertico-prescient-mode +1)
-    (prescient-persist-mode +1)
+    (vertico-prescient-mode)
+    (prescient-persist-mode)
     (general-define-key
       :keymaps 'vertico-map
       "C-j" '(vertico-next :which-key "next line")
@@ -798,10 +800,10 @@ Try [[https://github.com/raxod502/selectrum][selectrum]] & [[https://github.com/
     :config
     (savehist-mode))
 
-(use-package embark-consult
-  :hook
-  (embark-collect-mode . embark-consult-preview-minor-mode)
-)
+  (use-package embark-consult
+    :hook
+    (embark-collect-mode . embark-consult-preview-minor-mode)
+  )
   (use-package consult
     :preface
     (defun my/grep-word-visual ()
@@ -986,7 +988,6 @@ Pretty bullets.
 
 #+BEGIN_SRC emacs-lisp
 (use-package projectile
-  :defer 2
   :preface
   (defun my/projectile-ranger ()
     "Use ranger instead of dired"
