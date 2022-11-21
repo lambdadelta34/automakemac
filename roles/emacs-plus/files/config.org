@@ -214,9 +214,38 @@ Org-mode for *scratch* file.
 
 * Theme
 
-Dracula, hocho, just a little bite.
+Themes block.
 
 #+BEGIN_SRC emacs-lisp
+(use-package emacs
+  :custom
+  (modus-themes-italic-constructs t)
+  (modus-themes-bold-constructs t)
+  ;; (modus-themes-tabs-accented t)
+  (modus-themes-paren-match '(bold intense))
+  (modus-themes-prompts '(bold intense))
+  (modus-themes-org-blocks 'tinted-background)
+  (modus-themes-region '(bg-only accented))
+  (modus-themes-mode-line '(accented borderless moody))
+  (modus-themes-hl-line '(underline accented intense))
+  (modus-themes-completions '((matches . (extrabold background intense))
+                              (selection . (semibold accented intense))
+                              (popup . (accented intense)))
+                              )
+  (modus-themes-headings
+    '(
+     (1 . (rainbow overline background variable-pitch 1.4))
+     (2 . (rainbow background 1.3))
+     (3 . (rainbow bold 1.2))
+     (t . (semilight 1.1))
+    ))
+  (modus-themes-scale-headings t)
+  (modus-themes-variable-pitch-ui t)
+  (modus-themes-subtle-line-numbers t)
+  :config
+  (load-theme 'modus-operandi)
+  :bind ("<f5>" . modus-themes-toggle)
+)
   ;; (use-package dracula-theme
   ;;   :config
   ;;   (load-theme 'dracula t))
@@ -228,7 +257,7 @@ Dracula, hocho, just a little bite.
   ;;   :config
   ;;   (load-theme 'snowish t))
 
-(use-package autothemer)
+;; (use-package autothemer)
 #+END_SRC
 
 Pretty symbols.
@@ -582,6 +611,20 @@ Nyan compatibility achieved by patching source theme with
 and then recompiling it ~(byte-recompile-directory package-user-dir nil 'force)~.
 
 #+BEGIN_SRC emacs-lisp
+;; (use-package awesome-tray
+;;   :straight (:host github :repo "manateelazycat/awesome-tray")
+;;   :custom
+;;   (awesome-tray-active-modules '("evil" "git" "file-path" "mode-name" "last-command" "awesome-tab" "location" "date"))
+;;   (awesome-tray-essential-modules '("evil" "git" "mode-name"))
+;;   (awesome-tray-mode-line-active-color "#d0d6ff")
+;;   (awesome-tray-mode-line-inactive-color "#a9b4f6")
+;;   (awesome-tray-update-interval 0.5)
+;;   (awesome-tray-date-format "%d-%m %H:%M %a")
+;;   (awesome-tray-separator "||")
+;;   :config
+;;   (awesome-tray-mode)
+;;  )
+
 ;; (use-package powerline
 ;;   :config
 ;;   (powerline-center-evil-theme))
@@ -610,14 +653,21 @@ Try [[https://github.com/tarsius/moody][moody]].
 
 #+BEGIN_SRC emacs-lisp
 (use-package moody
-  ;; :config
-  ;; (setq x-underline-at-descent-line t)
-  ;; (moody-replace-mode-line-buffer-identification)
-  ;; (moody-replace-vc-mode)
+  :custom
+  (x-underline-at-descent-line t)
+  :config
+  (moody-replace-mode-line-buffer-identification)
+  (moody-replace-vc-mode)
 )
 
 (use-package minions
-  :config (minions-mode 1))
+  :custom
+  (minions-mode-line-lighter ">>>")
+  (minions-prominent-modes '(flycheck-mode projectile-mode lsp-mode))
+  (minions-available-modes nil)
+  :config
+  (minions-mode 1)
+)
 #+END_SRC
 
 [[https://github.com/elpa-host/goto-line-preview][Goto-line]] preview.
@@ -994,11 +1044,12 @@ Pretty bullets.
     (interactive)
     (ranger (projectile-ensure-project (projectile-project-root))))
   :custom
+  (projectile-enable-caching t)
   (projectile-completion-system 'default)
   (projectile-require-project-root nil)
   (projectile-switch-project-action 'my/projectile-ranger)
   :config
-  (projectile-mode +1)
+  (projectile-mode)
   ;; (projectile-register-project-type 'npm '("package.json")
   ;;                                   :project-file "package.json"
   ;;                                   :compile "npm install"
@@ -1923,11 +1974,11 @@ Prettierjs
 [[https://github.com/TeMPOraL/nyan-mode][Nyan cat]] in the tray.
 
 #+BEGIN_SRC emacs-lisp
-(use-package nyan-mode
+;; (use-package nyan-mode
   ;; (setq nyan-wavy-trail t
   ;;       nyan-animate-nyancat t)
-  :config
-  (nyan-mode))
+  ;; :config
+  ;; (nyan-mode))
 #+END_SRC
 
 * TODOs
