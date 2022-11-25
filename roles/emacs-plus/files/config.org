@@ -61,10 +61,10 @@ Check out for [[https://github.com/raxod502/straight.el][straight.el]] instead o
 Mac os use PATH set by user shell. Just in case.
 
 #+BEGIN_SRC emacs-lisp
-(use-package exec-path-from-shell
-  :if (memq window-system '(mac ns))
-  :config
-  (exec-path-from-shell-initialize))
+;; (use-package exec-path-from-shell
+;;   :if (memq window-system '(mac ns))
+;;   :config
+;;   (exec-path-from-shell-initialize))
 #+END_SRC
 
 * Preferences
@@ -226,7 +226,7 @@ Themes block.
   (modus-themes-prompts '(bold intense))
   (modus-themes-org-blocks 'tinted-background)
   (modus-themes-region '(bg-only accented))
-  (modus-themes-mode-line '(accented borderless moody))
+  (modus-themes-mode-line '(accented borderless))
   (modus-themes-hl-line '(underline accented intense))
   (modus-themes-completions '((matches . (extrabold background intense))
                               (selection . (semibold accented intense))
@@ -388,11 +388,12 @@ Just functionality to go to last chages. Nothing fancy here.
     (forward-line 1)
     (transpose-lines 1)
     (forward-line -1))
+  :init
+  (setq evil-want-keybinding nil)
   :custom
   (evil-motion-state-modes nil)
   (evil-shift-width 2)
   (evil-undo-system 'undo-tree)
-  (evil-want-keybinding nil)
   :config
   (evil-mode 1)
   (general-define-key
@@ -453,10 +454,12 @@ Just functionality to go to last chages. Nothing fancy here.
     ;; imenu-list
     ;; ivy
     help
+    helpful
     man
     magit
     outline
-    (package-menu package)))
+    (package-menu package)
+    ))
     ;; process-menu
     ;; simple))
     ;; view))
@@ -468,6 +471,7 @@ Just functionality to go to last chages. Nothing fancy here.
 
 #+BEGIN_SRC emacs-lisp
 (use-package evil-surround
+  :after evil
   :config
   (global-evil-surround-mode 1))
 #+END_SRC
@@ -476,6 +480,7 @@ Adds [[https://github.com/wcsmith/evil-arg][args]] motions and text object.
 
 #+BEGIN_SRC emacs-lisp
 (use-package evil-args
+  :after evil
   :general
   (:keymaps 'evil-inner-text-objects-map
     "a" 'evil-inner-arg)
@@ -652,13 +657,40 @@ and then recompiling it ~(byte-recompile-directory package-user-dir nil 'force)~
 Try [[https://github.com/tarsius/moody][moody]].
 
 #+BEGIN_SRC emacs-lisp
-(use-package moody
+(use-package doom-modeline
   :custom
-  (x-underline-at-descent-line t)
+  (doom-modeline-buffer-file-name-style 'relative-to-project)
+  ;; (doom-modeline-minor-modes t)
+  (doom-modeline-enable-word-count t)
+  (doom-modeline-default-eol-type 2)
+  ;; (doom-modeline-indent-info t)
+  (doom-modeline-vcs-max-length 15)
+  (doom-modeline-modal-icon nil)
+  :init
+  (doom-modeline-mode)
+ )
+
+(use-package keycast
+  :after doom-modeline
+  :commands keycast-mode
   :config
-  (moody-replace-mode-line-buffer-identification)
-  (moody-replace-vc-mode)
-)
+  (define-minor-mode keycast-mode
+    "Show current command and its key binding in the mode line."
+    :global t
+    (if keycast-mode
+        (progn
+          (add-hook 'pre-command-hook 'keycast--update t)
+          (add-to-list 'global-mode-string '("" keycast-mode-line " ")))
+      (remove-hook 'pre-command-hook 'keycast--update)
+      (setq global-mode-string (remove '("" keycast-mode-line " ") global-mode-string))))
+  (keycast-mode)
+  );; (use-package moody
+;;   :custom
+;;   (x-underline-at-descent-line t)
+;;   :config
+;;   (moody-replace-mode-line-buffer-identification)
+;;   (moody-replace-vc-mode)
+;; )
 
 (use-package minions
   :custom
@@ -800,6 +832,11 @@ Try [[https://github.com/tarsius/moody][moody]].
 # #+END_SRC
 
 ** Selectrum
+
+#+BEGIN_SRC emacs-lisp
+(use-package helpful
+)
+#+END_SRC
 
 Try [[https://github.com/raxod502/selectrum][selectrum]] & [[https://github.com/minad/consult][consult]].
 
@@ -1239,6 +1276,11 @@ There are no alternatives to [[http://company-mode.github.io/][company-mode]].
   (use-package corfu-prescient
   )
   (use-package corfu
+    :init
+    (defun corfu-enable-always-in-minibuffer ()
+    "Enable Corfu in the minibuffer if Vertico is not active."
+    (unless (bound-and-true-p vertico--input)
+      (corfu-mode 1)))
     :custom
     (corfu-auto t)
     (corfu-auto-prefix 0)
@@ -1249,6 +1291,7 @@ There are no alternatives to [[http://company-mode.github.io/][company-mode]].
     (global-corfu-mode)
     (corfu-prescient-mode 1)
     :config
+    (add-hook 'minibuffer-setup-hook #'corfu-enable-always-in-minibuffer 1)
     (general-define-key
       :keymaps 'corfu-map
       "C-j" 'corfu-next
@@ -1367,16 +1410,16 @@ Author doesn't like melpa, so I have to git clone that stuff and update by pulli
   (awesome-tab-selected ((t :background "#bd93f9")))
   :config
   (awesome-tab-mode t)
-  (general-define-key
-    :states 'normal
-    :prefix leader
-    "bg" 'awesome-tab-switch-group
-    "bn" 'awesome-tab-forward
-    "bp" 'awesome-tab-backward
-    "bl" 'awesome-tab-select-end-tab
-    "bf" 'awesome-tab-select-beg-tab
-    "bd" 'kill-this-buffer
-    "bx" 'awesome-tab-kill-other-buffers-in-current-group)
+  ;; (general-define-key
+  ;;   :states 'normal
+  ;;   :prefix leader
+  ;;   "bg" 'awesome-tab-switch-group
+  ;;   "bn" 'awesome-tab-forward
+  ;;   "bp" 'awesome-tab-backward
+  ;;   "bl" 'awesome-tab-select-end-tab
+  ;;   "bf" 'awesome-tab-select-beg-tab
+  ;;   "bd" 'kill-this-buffer
+  ;;   "bx" 'awesome-tab-kill-other-buffers-in-current-group)
   )
 #+END_SRC
 
@@ -1546,9 +1589,9 @@ Comes with [[https://github.com/emacs-lsp/lsp-ui][lsp-ui]].
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp
-(use-package lsp-ivy
-  :commands lsp-ivy-workspace-symbol
-)
+;; (use-package lsp-ivy
+;;   :commands lsp-ivy-workspace-symbol
+;; )
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp
@@ -1966,6 +2009,49 @@ Prettierjs
 ;;   :config
 ;;   (add-hook 'org-mode-hook 'flyspell-mode)
 ;; )
+#+END_SRC
+
+** Keybindings
+
+Hydra.
+
+#+BEGIN_SRC emacs-lisp
+    (use-package hydra
+      :config
+      (defhydra hydra-tabs-select (:timeout 4)
+        "Select tabs"
+        ("n" awesome-tab-forward "next")
+        ("p" awesome-tab-backward "previous")
+        ("l" awesome-tab-select-end-tab "last")
+        ("f" awesome-tab-select-beg-tab "first")
+        ("q" nil "quit" :exit t)
+      )
+    )
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+  (general-create-definer my/global-leader
+     :states '(normal insert emacs)
+     :prefix leader
+    )
+
+   (general-create-definer my/normal-leader
+     :states '(normal)
+     :prefix leader
+    )
+
+   (my/normal-leader
+     "b" '(:ignore t :which-key "buffers/tabs")
+     "bg" '(awesome-tab-switch-group :which-key "Show groups")
+     "bn" '(awesome-tab-forward :which-key "Select next tab")
+     "bp" '(awesome-tab-backward :which-key "Select previous tab")
+     "bl" '(awesome-tab-select-end-tab :which-key "Select last tab")
+     "bf" '(awesome-tab-select-beg-tab :which-key "Select first tab")
+     "bd" '(kill-this-buffer :which-key "Close current tab")
+     "bx" '(awesome-tab-kill-other-buffers-in-current-group :which-key "Close other tabs")
+     "C-h" '(helpful-at-point :which-key "Show help at point")
+     "st" '(hydra-tabs-select/body :which-key "Select tabs")
+   )
 #+END_SRC
 
 * Fun
