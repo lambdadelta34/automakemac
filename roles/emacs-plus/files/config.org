@@ -1461,9 +1461,9 @@ Hydra.
 (my/normal-map imenu-list-major-mode-map
   "j" '(next-line :wk "next line")
   "k" '(previous-line :wk "previous line")
-  "q" '(imenu-list-quit-window :wk "quit window"))
-  "TAB" '(hs-toggle-hiding :wk "toggle hiding"))
-  "RET" '(imenu-list-ret-dwim :wk "dwim select"))
+  "q" '(imenu-list-quit-window :wk "quit window")
+  "TAB" '(hs-toggle-hiding :wk "toggle hiding")
+  "RET" '(imenu-list-ret-dwim :wk "dwim select")
 )
 
 (my/normal-visual-map
