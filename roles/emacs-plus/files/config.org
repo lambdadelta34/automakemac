@@ -747,27 +747,6 @@ Evil [[https://github.com/gabesoft/evil-mc][multicursor]].
 (use-package evil-mc
   :config
   (global-evil-mc-mode)
-  (general-define-key
-    :states 'normal
-    "grm" 'evil-mc-make-all-cursors
-    "gru" 'evil-mc-undo-last-added-cursor
-    "grq" 'evil-mc-undo-all-cursors
-    "grs" 'evil-mc-pause-cursors
-    "grr" 'evil-mc-resume-cursors
-    "grf" 'evil-mc-make-and-goto-first-cursor
-    "grl" 'evil-mc-make-and-goto-last-cursor
-    "grh" 'evil-mc-make-cursor-here
-    "grj" 'evil-mc-make-cursor-move-next-line
-    "grk" 'evil-mc-make-cursor-move-prev-line
-    "M-n" 'evil-mc-make-and-goto-next-cursor
-    "grN" 'evil-mc-skip-and-goto-next-cursor
-    "M-p" 'evil-mc-make-and-goto-prev-cursor
-    "grP" 'evil-mc-skip-and-goto-prev-cursor
-    "C-n" 'evil-mc-make-and-goto-next-match
-    "grn" 'evil-mc-skip-and-goto-next-match
-    "C-t" 'evil-mc-skip-and-goto-next-match
-    "C-p" 'evil-mc-make-and-goto-prev-match
-    "grp" 'evil-mc-skip-and-goto-prev-match)
   )
 #+END_SRC
 
@@ -809,12 +788,6 @@ Cursor highlighting.
   (corfu-prescient-mode 1)
   :config
   (add-hook 'minibuffer-setup-hook #'corfu-enable-always-in-minibuffer 1)
-  (general-define-key
-    :keymaps 'corfu-map
-    "C-j" 'corfu-next
-    "C-k" 'corfu-previous
-    "<return>" 'newline
-    "C-l" 'corfu-complete)
 )
 #+END_SRC
 
@@ -876,15 +849,6 @@ He also created [[https://github.com/manateelazycat/awesome-pair][awesome pair]]
                 'ruby-mode-hook
                 ))
     (add-hook modes #'(lambda () (awesome-pair-mode 1))))
-  (general-define-key
-    :keymaps 'awesome-pair-mode-map
-    "(" 'awesome-pair-open-round
-    "[" 'awesome-pair-open-bracket
-    "{" 'awesome-pair-open-curly
-    "=" 'awesome-pair-equal
-    ;; "%" 'awesome-pair-match-paren
-    "C-'" 'awesome-pair-unwrap
-  )
 )
 #+END_SRC
 
@@ -908,9 +872,7 @@ Eshell config.
   ;; (general-define-key
   ;;   :states '(normal insert)
   ;;   "M-q" ) ;; eshell/exit
-  (general-define-key
-    :states '(normal insert)
-    "C-," 'my/eshell))
+)
     ;; "C-," 'eshell)) ;; "C-i" causes starting eshell with TAB too. crazy stuff
 #+END_SRC
 
@@ -941,14 +903,6 @@ Term extra info.
 (use-package browse-kill-ring
   :config
   (add-hook 'browse-kill-ring-hook 'evil-normal-state)
-  (general-define-key
-    :states 'normal
-    :keymaps 'browse-kill-ring-mode-map
-    "q" 'browse-kill-ring-quit
-    "RET" 'browse-kill-ring-insert-and-quit)
-  (general-define-key
-    :states '(normal insert)
-    "M-y" 'browse-kill-ring)
 )
 #+END_SRC
 
@@ -1013,13 +967,6 @@ Comes with [[https://github.com/emacs-lsp/lsp-ui][lsp-ui]].
 
 #+BEGIN_SRC emacs-lisp
 (use-package consult-lsp
-  :config
-  (general-define-key
-    :states 'normal
-    :prefix leader
-    "ss" 'consult-lsp-symbols
-    "sf" 'consult-lsp-file-symbols
-    )
 )
 #+END_SRC
 
@@ -1090,11 +1037,6 @@ Comes with [[https://github.com/emacs-lsp/lsp-ui][lsp-ui]].
   (flycheck-haskell-hlint-executable "hlint")
   :config
   (global-flycheck-mode)
-  (general-define-key
-    :states 'normal
-    :prefix leader
-    "fx" 'my/fix-buffer
-  )
   (add-hook 'flycheck-mode-hook 'my/eslint-from-node-modules)
   (add-hook 'flycheck-mode-hook 'my/tslint-from-node-modules)
   ;; (add-hook 'flycheck-mode-hook 'ggtags-mode)
@@ -1160,11 +1102,6 @@ Becuse i'm interested in haskell.
   (haskell-stylish-on-save t)
   (haskell-compile-cabal-build-command "stack build")
   :config
-  (general-define-key
-    ;; :prefix leader
-    :keymaps 'haskell-mode-map
-    "C-]" 'haskell-mode-tag-find
-  )
   ;; (add-hook 'haskell-mode-hook 'my/autocomplete)
   ;; (add-hook 'haskell-mode-hook 'turn-on-haskell-unicode-input-method) ;; nope
   (add-hook 'haskell-mode-hook 'haskell-auto-insert-module-template)
@@ -1240,12 +1177,6 @@ Pry.
 
 #+BEGIN_SRC emacs-lisp
 (use-package inf-ruby
-  :config
-  (general-define-key
-    :keymaps 'rspec-compilation-mode-map
-    :states 'normal
-    :prefix leader
-    "rx" 'inf-ruby-switch-from-compilation)
 )
 #+END_SRC
 
@@ -1256,13 +1187,6 @@ Pry.
   (rspec-use-zeus-when-possible nil)
   :config
   (add-hook 'after-init-hook 'inf-ruby-switch-setup)
-  (general-define-key
-    :states 'normal
-    :prefix leader
-    "rtt" 'rspec-toggle-spec-and-target
-    "rtf" 'rspec-verify
-    "rtm" 'rspec-verify-matching
-    "rtn" 'rspec-verify-single)
 )
 #+END_SRC
 
@@ -1357,17 +1281,74 @@ Hydra.
   :states '(normal visual)
 )
 
-(my/visual-map
-  "gs" '(sort-lines :wk "sort lines")
-  "y" '(my/copy-to-clipboard :wk "copy to clipboard(yank)")
-  "[e" '(my/move-line-down :wk "move line up")
-  "]e" '(my/move-line-up :wk "move line down")
+(general-create-definer my/normal-insert-map
+  :states '(normal insert)
+)
+
+(my/map
+  "C-s-a" '(embark-act :wk "embark act")
+)
+
+(my/map ranger-normal-mode-map
+  "c" '(find-file :wk "find/create file")
+  "f" '(projectile-find-file :wk "find/create file")
+)
+
+(my/map flycheck-command-map
+  "!" '(consult-flycheck :wk "consult flycheck")
+)
+
+(my/map vertico-map
+  "C-j" '(vertico-next :wk "next line")
+  "C-k" '(vertico-previous :wk "prev line")
+  ;; "C-l" '(vertico-submit-exact-input :wk "submit exact input")
+)
+
+(my/map awesome-pair-mode-map
+  "(" '(awesome-pair-open-round :wk "round parentheses pair")
+  "[" '(awesome-pair-open-bracket :wk "bracket pair")
+  "{" '(awesome-pair-open-curly :wk "curly pair")
+  "C-'" '(awesome-pair-unwrap :wk "delete pair")
+)
+
+(my/map evil-inner-text-objects-map
+  "a" '(evil-inner-arg :wk "select inner arg")
+)
+
+(my/map evil-outer-text-objects-map
+  "a" '(evil-outer-arg :wk "select outer arg")
+)
+
+(my/map corfu-map
+  "C-j" '(corfu-next :wk "next candidate")
+  "C-k" '(corfu-previous :wk "previous candidate")
+  "<return>" '(newline :wk "insert new line")
+  "C-l" '(corfu-complete :wk "complete candidate")
+)
+
+(my/normal-map browse-kill-ring-mode-map
+  "q" '(browse-kill-ring-quit :wk "quit killring")
+  "RET" '(browse-kill-ring-insert-and-quit :wk "insert and quit killring")
 )
 
 (my/normal-map
   "gc" '(avy-goto-char :wk "go to char")
   "gl" '(avy-goto-line :wk "go to line")
   "gw" '(avy-goto-word-1 :wk "go to word")
+  ;; cursors
+  "grm" '(evil-mc-make-all-cursors :wk "make all cursors")
+  "gru" '(evil-mc-undo-last-added-cursor :wk "undo last cursor")
+  "grq" '(evil-mc-undo-all-cursors :wk "undo all cursors")
+  "grs" '(evil-mc-pause-cursors :wk "pause cursors")
+  "grr" '(evil-mc-resume-cursors :wk "resume cursors")
+  "grf" '(evil-mc-make-and-goto-first-cursor :wk "make and goto f cursor")
+  "grl" '(evil-mc-make-and-goto-last-cursor :wk "make and goto l cursor")
+  "grh" '(evil-mc-make-cursor-here :wk "make cursor here")
+  "grN" '(evil-mc-skip-and-goto-next-cursor :wk "skip current and goto next cursor")
+  "grP" '(evil-mc-skip-and-goto-prev-cursor :wk "skip current and goto prev cursor")
+  "grn" '(evil-mc-skip-and-goto-next-match :wk "skip current and goto next match")
+  "grp" '(evil-mc-skip-and-goto-prev-match :wk "skip current and goto prev match")
+  ;;
   "Q" '(quit-window :wk "quit window")
   "<f5>" '(modus-themes-toggle :wk "toggle modus theme")
   "C-k" '(evil-window-up :wk "select up window")
@@ -1379,6 +1360,30 @@ Hydra.
   "M-g g" '(consult-goto-line :wk "consult go to line")
   "/" '(consult-line :wk "search buffer")
   "*" '(consult-ripgrep :wk "grep in project")
+)
+
+(my/normal-map git-timemachine-mode-map
+  "c" '(git-timemachine-show-current-revision :wk "current commit")
+  "n" '(git-timemachine-show-next-revision :wk "next commit")
+  "p" '(git-timemachine-show-previous-revision :wk "previous commit")
+  "q" '(git-timemachine-quit :wk "quit timemachine")
+)
+
+(my/normal-map org-mode-map
+  "TAB" '(org-cycle :wk "cycle org elements")
+)
+
+(my/normal-map imenu-list-major-mode-map
+  "j" '(next-line :wk "next line")
+  "k" '(previous-line :wk "previous line")
+  "q" '(imenu-list-quit-window :wk "quit window")
+  "TAB" '(hs-toggle-hiding :wk "toggle hiding")
+  "RET" '(imenu-list-ret-dwim :wk "dwim select")
+)
+
+(my/normal-insert-map
+  "C-," '(my/eshell :wk "eshell")
+  "M-y" '(browse-kill-ring :wk "show killring")
 )
 
 (my/insert-map
@@ -1400,9 +1405,16 @@ Hydra.
   "fed" '((lambda () (interactive) (find-file user-init-file)) :wk "open config")
   "feR" '(eval-buffer :wk "eval elisp file")
   "fs" '(save-buffer :wk "save file")
+  "fx" '(my/fix-buffer :wk "fix buffer errors")
   "g" '(magit-status :wk "magit status")
   "h" '(git-timemachine-toggle :wk "toggle time machine")
   "qq" '(save-buffers-kill-terminal :wk "quit emacs")
+  "rtf" '(rspec-verify :wk "rspec file")
+  "rtm" '(rspec-verify-matching :wk "rspec spec for file")
+  "rtt" '(rspec-toggle-spec-and-target :wk "toggle to spec")
+  "rtn" '(rspec-verify-single :wk "rspec nearest")
+  "ss" '(consult-lsp-symbols :wk "consult lsp symbol ??")
+  "sf" '(consult-lsp-file-symbols :wk "consult lsp file symbol ??")
   "u" '(undo-tree-visualize :wk "visualize undo")
   "st" '(hydra-tabs-select/body :wk "Select tabs")
   "w" '(:ignore t :wk "windows")
@@ -1418,64 +1430,28 @@ Hydra.
   "*" '(my/grep-word :wk "grep word in project")
 )
 
+(my/visual-map
+  "gs" '(sort-lines :wk "sort lines")
+  "y" '(my/copy-to-clipboard :wk "copy to clipboard(yank)")
+  "[e" '(my/move-line-down :wk "move line up")
+  "]e" '(my/move-line-up :wk "move line down")
+)
+
 (my/visual-leader
   "*" '(my/grep-word-visual :wk "grep word in project")
 )
 
+(my/normal-leader rspec-compilation-mode-map
+  "rx" '(inf-ruby-switch-from-compilation :wk "switch compilation mode rspec")
+)
+
 (my/normal-leader projectile-mode-map
-  "p" '(projectile-command-map :wk "")
+  "p" '(projectile-command-map :wk "projectile map")
   "ff" '(projectile-find-file :wk "find file")
-)
-
-(my/normal-map git-timemachine-mode-map
-  "c" '(git-timemachine-show-current-revision :wk "current commit")
-  "n" '(git-timemachine-show-next-revision :wk "next commit")
-  "p" '(git-timemachine-show-previous-revision :wk "previous commit")
-  "q" '(git-timemachine-quit :wk "quit timemachine")
-)
-
-(my/normal-map org-mode-map
-  "TAB" '(org-cycle :wk "cycle org elements")
-)
-
-(my/map
-  "C-s-a" '(embark-act :wk "embark act")
-)
-
-
-(my/map ranger-normal-mode-map
-  "c" '(find-file :wk "find/create file")
-  "f" '(projectile-find-file :wk "find/create file")
-)
-
-(my/map flycheck-command-map
-  "!" '(consult-flycheck :wk "consult flycheck")
-)
-
-(my/map vertico-map
-  "C-j" '(vertico-next :wk "next line")
-  "C-k" '(vertico-previous :wk "prev line")
-  ;; "C-l" '(vertico-submit-exact-input :wk "submit exact input")
-)
-
-(my/normal-map imenu-list-major-mode-map
-  "j" '(next-line :wk "next line")
-  "k" '(previous-line :wk "previous line")
-  "q" '(imenu-list-quit-window :wk "quit window")
-  "TAB" '(hs-toggle-hiding :wk "toggle hiding")
-  "RET" '(imenu-list-ret-dwim :wk "dwim select")
 )
 
 (my/normal-visual-map
   "gy" '(evilnc-comment-or-uncomment-lines :wk "toggle comment")
-)
-
-(my/map evil-inner-text-objects-map
-  "a" '(evil-inner-arg :wk "select inner arg")
-)
-
-(my/map evil-outer-text-objects-map
-  "a" '(evil-outer-arg :wk "select outer arg")
 )
 #+END_SRC
 
