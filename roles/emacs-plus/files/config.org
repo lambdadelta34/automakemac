@@ -7,9 +7,7 @@ Also, i'd like to start using org-mode, finally.
 
 ** Config initialization
 
-So, we need this to require emacs default package manager and be able to initialize them before configuring them.
-[[https://wikemacs.org/wiki/Package.el][link to the doc]]
-Also add melpa to package manager.
+Bootstrapping of [[https://github.com/radian-software/straight.el][straight.el]].
 
 #+BEGIN_SRC emacs-lisp
 (defvar bootstrap-version)
@@ -24,14 +22,9 @@ Also add melpa to package manager.
       (goto-char (point-max))
       (eval-print-last-sexp)))
   (load bootstrap-file nil 'nomessage))
-
-;; (package-initialize)
-;; (require 'package)
-;; (setq package-archives '(("gnu" . "https://elpa.gnu.org/packages/")
-;;                          ("melpa" . "https://melpa.org/packages/")))
 #+END_SRC
 
-This little dude here is enables lazy loading.
+Suppress native compilation warnings.
 
 #+BEGIN_SRC emacs-lisp
 (setq native-comp-async-report-warnings-errors nil)
@@ -39,7 +32,7 @@ This little dude here is enables lazy loading.
 
 ** use-package
 
-This is where the fun begins. It is a elisp macro which goal is to simplify package configuration.
+This is where the fun begins. It is an elisp macro which goal is to simplify package configuration.
 [[https://github.com/jwiegley/use-package][github link]]
 Some elisp code to install it if it isn't yet. And ensure that all packages would be installed automatically if they are not.
 
@@ -48,23 +41,6 @@ Some elisp code to install it if it isn't yet. And ensure that all packages woul
 (use-package straight
              :custom (straight-use-package-by-default t))
 (setq use-package-always-demand t)
-;; (unless (package-installed-p 'use-package)
-;;   (package-refresh-contents)
-;;   (package-install 'use-package))
-
-;; (require 'use-package)
-;; (setq use-package-always-ensure t)
-#+END_SRC
-
-Check out for [[https://github.com/raxod502/straight.el][straight.el]] instead of use-package.
-
-Mac os use PATH set by user shell. Just in case.
-
-#+BEGIN_SRC emacs-lisp
-;; (use-package exec-path-from-shell
-;;   :if (memq window-system '(mac ns))
-;;   :config
-;;   (exec-path-from-shell-initialize))
 #+END_SRC
 
 * Preferences
@@ -89,16 +65,6 @@ Removes unnecessary window docaration.
 (tool-bar-mode -1)
 (scroll-bar-mode -1)
 (menu-bar-mode -1)
-#+END_SRC
-
-Glasses mode for readable camelCase
-
-#+BEGIN_SRC emacs-lisp
-;; (setq glasses-face '(:background "#bd93f9")
-;;       glasses-separate-parentheses-p nil
-;; )
-;; (add-hook 'prog-mode-hook 'glasses-mode)
-;; (add-hook 'org-mode-hook 'glasses-mode)
 #+END_SRC
 
 Disable startup menu.
@@ -131,7 +97,7 @@ Force use of spaces instead of tabs, blahh. And tab width.
 (setq-default tab-width 2)
 #+END_SRC
 
-Enable line numbers. I was confused when didn't see line numbers by default.
+Enable line numbers. I was confused when i didn't see line numbers by default.
 
 #+BEGIN_SRC emacs-lisp
 (global-display-line-numbers-mode)
@@ -157,12 +123,6 @@ Remove useless whitespace before saving a file.
 (defun d-trailing-whitespace ()
   (unless (derived-mode-p 'markdown-mode)
     (delete-trailing-whitespace)))
-#+END_SRC
-
-Stop creating annoying backup~ files.
-
-#+BEGIN_SRC emacs-lisp
-;; (setq make-backup-files nil)
 #+END_SRC
 
 Not that I needed to backup, but it's better to be safe than sorry.
@@ -246,65 +206,6 @@ Themes block.
   (load-theme 'modus-operandi)
   :bind ("<f5>" . modus-themes-toggle)
 )
-  ;; (use-package dracula-theme
-  ;;   :config
-  ;;   (load-theme 'dracula t))
-  ;; (load-theme 'dichromacy)
-  ;; (use-package color-theme-modern
-  ;;   :custom-face
-  ;;   (font-lock-type-face ((t :foreground "DarkRed"
-  ;;                            )))
-  ;;   :config
-  ;;   (load-theme 'snowish t))
-
-;; (use-package autothemer)
-#+END_SRC
-
-Pretty symbols.
-
-#+BEGIN_SRC emacs-lisp
-(defun my/pretty-syms-hask ()
-  (setq prettify-symbols-alist
-        '(
-          ("lambda" . 955)              ; λ
-          ("\\" . 955)                  ; λ
-          ("->" . 8594)                 ; →
-          ("=>" . 8658)                 ; ⇒
-          ("map" . 8614)                ; ↦
-          ("forall" . 8704)             ; ∀
-          ("exists" . 8707)             ; ∃
-          ("<-" . 8592)                 ; ←
-          ("~>" . 8604)                 ; ⇝
-          ("<~" . 8605)                 ; ⇜
-          ("&&" . 8743)                 ; ∧
-          ("||" . 8744)                 ; ∨
-          ("=" . 8797)                  ; ≝
-          ("==" . 8801)                 ; ≡
-          ("//=" . 8802)                ; ≢, ≠
-          ("<=" . 8804)                 ; ≤
-          (">=" . 8805)                 ; ≥
-          ("//<" . 8814)                ; ≮
-          ("//>" . 8815)                ; ≯
-          ("*" . 8728)                  ; ⋅
-          ("`elem`" . 8712)             ; ∈
-          ("`notElem`" . 8713)          ; ∉
-          ("`member`" . 8712)           ; ∈
-          ("`notMember`" . 8713)        ; ∉
-          ("`union`" . 8746)            ; ∪
-          ("`intersection`" . 8745)     ; ∩
-          ("`isSubsetOf`" . 8838)       ; ⊆
-          ("`isProperSubsetOf`" . 8834) ; ⊂
-          ("<<<" . 8920)                ; ⋘
-          (">>>" . 8921)                ; ⋙
-          ("<|" . 8882)                 ; ⊲
-          ("|>" . 8883)                 ; ⊳
-          ("><" . 8904)                 ; ⋈
-          ("mappend" . 8853)            ; ⊕
-          ("." . 8729)                  ; ∘
-          ("undefined" . 8869)          ; ⊥
-          )))
-;; (add-hook 'haskell-mode-hook 'prettify-symbols-mode)
-;; (add-hook 'haskell-mode-hook 'my/pretty-syms-hask)
 #+END_SRC
 
 * Packages
@@ -512,7 +413,7 @@ Code [[https://github.com/redguardtoo/evil-nerd-commenter][commentary]].
 
 ** Indent guide
 
-[[https://github.com/DarthFennec/highlight-indent-guides][Indent]] guide with vertical bars.
+[[https://github.com/DarthFennec/highlight-indent-guides][Indent]] guide with vertical bars. (laggy)
 
 #+BEGIN_SRC emacs-lisp
 ;; (use-package highlight-indent-guides
@@ -542,18 +443,6 @@ Code [[https://github.com/redguardtoo/evil-nerd-commenter][commentary]].
     :states 'normal
     :prefix leader
     "x" 'er/expand-region))
-#+END_SRC
-
-Folding.
-
-#+BEGIN_SRC emacs-lisp
-;; (use-package vimish-fold
-;;   :config
-;;   (general-define-key
-;;     :states 'normal
-;;     "za" 'vimish-fold-avy)
-;;   (vimish-fold-global-mode 1)
-;; )
 #+END_SRC
 
 ** Jumping
@@ -606,35 +495,6 @@ Folding.
 (use-package rainbow-mode)
 #+END_SRC
 
-[[https://github.com/raugturi/powerline-evil][Powerline]] like in vim.
-
-Nyan compatibility achieved by patching source theme with
-#+BEGIN_SRC emacs-lisp
-;; (when (bound-and-true-p nyan-mode)
-;;   (powerline-raw (list (nyan-create)) face2 'l))
-#+END_SRC
-and then recompiling it ~(byte-recompile-directory package-user-dir nil 'force)~.
-
-#+BEGIN_SRC emacs-lisp
-;; (use-package awesome-tray
-;;   :straight (:host github :repo "manateelazycat/awesome-tray")
-;;   :custom
-;;   (awesome-tray-active-modules '("evil" "git" "file-path" "mode-name" "last-command" "awesome-tab" "location" "date"))
-;;   (awesome-tray-essential-modules '("evil" "git" "mode-name"))
-;;   (awesome-tray-mode-line-active-color "#d0d6ff")
-;;   (awesome-tray-mode-line-inactive-color "#a9b4f6")
-;;   (awesome-tray-update-interval 0.5)
-;;   (awesome-tray-date-format "%d-%m %H:%M %a")
-;;   (awesome-tray-separator "||")
-;;   :config
-;;   (awesome-tray-mode)
-;;  )
-
-;; (use-package powerline
-;;   :config
-;;   (powerline-center-evil-theme))
-#+END_SRC
-
 #+BEGIN_SRC emacs-lisp
 (use-package hl-todo
   :config (global-hl-todo-mode)
@@ -654,7 +514,7 @@ and then recompiling it ~(byte-recompile-directory package-user-dir nil 'force)~
 )
 #+END_SRC
 
-Try [[https://github.com/tarsius/moody][moody]].
+Modeline.
 
 #+BEGIN_SRC emacs-lisp
 (use-package doom-modeline
@@ -684,13 +544,7 @@ Try [[https://github.com/tarsius/moody][moody]].
       (remove-hook 'pre-command-hook 'keycast--update)
       (setq global-mode-string (remove '("" keycast-mode-line " ") global-mode-string))))
   (keycast-mode)
-  );; (use-package moody
-;;   :custom
-;;   (x-underline-at-descent-line t)
-;;   :config
-;;   (moody-replace-mode-line-buffer-identification)
-;;   (moody-replace-vc-mode)
-;; )
+ )
 
 (use-package minions
   :custom
@@ -711,233 +565,77 @@ Try [[https://github.com/tarsius/moody][moody]].
     [remap goto-line] 'goto-line-preview))
 #+END_SRC
 
-** IVY & Search
-
-# Everybody searches something. I do this with swiper and ag.
-# [[https://github.com/abo-abo/swiper][ivy/swiper]]
-
-# Ivy has a nice function `ivy-read` which does most of the job.
-# So, when you iterate over ivy candidates via `-and-call` functions you can call action, binded to called command, which, for grep commands, is to preview file.
-
-#+BEGIN_SRC emacs-lisp
-  ;; (use-package ivy
-  ;;   :defer t
-  ;;   :diminish (ivy-mode . "")
-  ;;   :init
-  ;;   :preface
-  ;;   (defun my/kill-other-buffers ()
-  ;;     (interactive)
-  ;;     (mapc 'kill-buffer (delq (current-buffer) (buffer-list))))
-    ;; (defun quick-look (filename)
-    ;;   (if filename
-    ;;       (pcase (split-string filename ":")
-    ;;         (
-    ;;          `("")
-    ;;          (message "No file provided")
-    ;;          )
-    ;;         (
-    ;;          `(,filename)
-    ;;          (view-file filename))
-    ;;         (
-    ;;          `(,filename ,line)
-    ;;          (view-file filename)
-    ;;          (goto-line (string-to-number line)))
-    ;;         (
-    ;;          `(,filename ,line ,column)
-    ;;          (view-file filename)
-    ;;          (goto-line (string-to-number line))
-    ;;          (move-to-column (string-to-number column))))
-    ;;     (message "No file provided"))
-    ;;   )
-  ;;   :general
-  ;;   (:keymaps 'ivy-minibuffer-map
-  ;;     "C-M-j" '(ivy-next-line-and-call :which-key "next line")
-  ;;     "C-M-k" '(ivy-previous-line-and-call :which-key "prev line")
-  ;;     "C-j" '(ivy-next-line :which-key "next line")
-  ;;     "C-k" '(ivy-previous-line :which-key "prev line")
-  ;;     "C-h" '(ivy-beginning-of-buffer :which-key "beginning of ivy minibuffer")
-  ;;     ;; "C-l" '(ivy-end-of-buffer :which-key "end if ivy mini buffer")
-  ;;     "C-l" '(ivy-immediate-done :which-key "exits from ivy search without selecting curent item")
-  ;;     "C-v" '(ivy-scroll-up-command :which-key "page up ivy buffer")
-  ;;     "M-v" '(ivy-scroll-down-command :which-key "page down ivy buffer"))
-  ;;   (:keymaps 'ivy-switch-buffer-map
-  ;;     "M-k" '(ivy-switch-buffer-kill :which-key "ivy kill buffer in switch mode")
-  ;;     "C-k" '(ivy-previous-line :which-key "prev line")
-  ;;   )
-  ;;   (:states 'normal
-  ;;     :prefix leader
-  ;;     "bs" 'ivy-switch-buffer)
-  ;;     ;; "bn" 'next-buffer
-  ;;     ;; "bd" 'kill-this-buffer
-  ;;     ;; "bp" 'previous-buffer
-  ;;     ;; "bx" 'my/kill-other-buffers)
-  ;;   :config
-  ;;   (ivy-mode 1)
-  ;;   ;; (setcdr (assoc 'counsel-M-x ivy-initial-inputs-alist) "")
-  ;;   (setq ivy-use-virtual-buffers t
-  ;;         ;; ivy-re-builders-alist
-  ;;         ;;   '((swiper           . ivy--regex-plus)
-  ;;         ;;     (counsel-rg       . ivy--regex-plus)
-  ;;         ;;     (t                . ivy--regex-fuzzy))
-  ;;         magit-completing-read-function 'ivy-completing-read
-  ;;         ivy-height 10
-  ;;         ivy-count-format "(%d/%d)")
-  ;; )
-#+END_SRC
-
-# Wrapper around some emacs commands.
-
-# #+BEGIN_SRC emacs-lisp
-# (use-package counsel
-#   :defer t
-#   :preface
-#   (defun my/rg-word-visual ()
-#     (interactive)
-#     (counsel-rg (buffer-substring
-#                   (evil-range-beginning (evil-visual-range))
-#                   (evil-range-end (evil-visual-range)))))
-#   (defun my/rg-word ()
-#     (interactive)
-#     (counsel-rg (thing-at-point 'word)))
-#   :general
-#   ("M-x" 'counsel-M-x)
-#   (:states 'normal
-#     :prefix leader
-#     "*" 'my/rg-word)
-#   (:states 'visual
-#     :prefix leader
-#     "*" 'my/rg-word-visual)
-#   (:states 'normal
-#     :prefix leader
-#     "/" 'counsel-rg)
-#   :config
-#   (ivy-configure 'counsel-M-x
-#       :initial-input "")
-# )
-# #+END_SRC
-
-# Search for ivy.
-
-# #+BEGIN_SRC emacs-lisp
-# (use-package swiper
-#   :defer t
-#   :preface
-#   (defun my/s-word()
-#     (interactive)
-#     (swiper (thing-at-point 'symbol)))
-#   :general
-#   (:states 'normal
-#     "*" 'my/s-word
-#     "/" 'swiper))
-# #+END_SRC
-
-** Selectrum
+** Better help
 
 #+BEGIN_SRC emacs-lisp
 (use-package helpful
 )
 #+END_SRC
 
-Try [[https://github.com/raxod502/selectrum][selectrum]] & [[https://github.com/minad/consult][consult]].
+** Search
+
+Try [[https://github.com/minad/vertico][vertico]] & [[https://github.com/minad/consult][consult]].
 
 #+BEGIN_SRC emacs-lisp
-(use-package prescient
+(use-package vertico
+  :custom
+  (vertico-cycle t)
+  :config
+  (vertico-mode)
+  (general-define-key
+    :keymaps 'vertico-map
+    "C-j" '(vertico-next :which-key "next line")
+    "C-k" '(vertico-previous :which-key "prev line")
+    ;; "C-l" '(vertico-submit-exact-input :which-key "submit exact input")
+  )
 )
-#+END_SRC
-
-#+BEGIN_SRC emacs-lisp
-;; (use-package selectrum-prescient
-;; )
-#+END_SRC
-
-#+BEGIN_SRC emacs-lisp
-;; (use-package selectrum
-;;   :init
-;;   (selectrum-mode)
-;;   ;; (selectrum-prescient-mode)
-;;   ;; (prescient-persist-mode)
-;;   :config
-;;   (general-define-key
-;;     :keymaps 'selectrum-minibuffer-map
-;;     "C-j" '(selectrum-next-candidate :which-key "next line")
-;;     "C-k" '(selectrum-previous-candidate :which-key "prev line")
-;;     "C-l" '(selectrum-submit-exact-input :which-key "submit exact input")
-;;   )
-;; )
-#+END_SRC
-
-#+BEGIN_SRC emacs-lisp
-  (use-package vertico-prescient
+(use-package consult
+  :preface
+  (defun my/grep-word-visual ()
+    (interactive)
+    (consult-ripgrep (projectile-project-root) (buffer-substring
+      (evil-range-beginning (evil-visual-range))
+      (evil-range-end (evil-visual-range)))))
+  (defun my/grep-word ()
+    (interactive)
+    (consult-ripgrep (projectile-project-root) (thing-at-point 'word)))
+  (defun my/consult-word ()
+    (interactive)
+    (consult-line (thing-at-point 'word)))
+  :custom
+  (register-preview-delay 0)
+  (register-preview-function #'consult-register-format)
+  (consult-ripgrep-command "rg --null --smart-case --line-buffered --color=always --max-columns=500\
+    --no-heading --line-number . -e ARG OPTS")
+  (consult-project-root-function #'projectile-project-root)
+  (consult-preview-key 'any)
+  :init
+  (advice-add #'register-preview :override #'consult-register-window)
+  :config
+  ;;(general-define-key
+  ;;  :keymaps 'isearch-mode-map
+  ;;)
+  (general-define-key
+    :states 'normal
+    "M-g g" 'consult-goto-line
+    "/" 'consult-line
+    "*" 'consult-ripgrep
   )
-  (use-package vertico
-    :custom
-    (vertico-cycle t)
-    :config
-    (vertico-mode)
-    (vertico-prescient-mode)
-    (prescient-persist-mode)
-    (general-define-key
-      :keymaps 'vertico-map
-      "C-j" '(vertico-next :which-key "next line")
-      "C-k" '(vertico-previous :which-key "prev line")
-      ;; "C-l" '(vertico-submit-exact-input :which-key "submit exact input")
-    )
+  (general-define-key
+    :states 'normal
+    :prefix leader
+    "/" 'my/consult-word
+    "bs" 'consult-buffer
+    "*" 'my/grep-word
+    "M-y" 'consult-yank-pop
   )
-  (use-package savehist
-    :config
-    (savehist-mode))
-
-  (use-package embark-consult
-    :hook
-    (embark-collect-mode . embark-consult-preview-minor-mode)
+  (general-define-key
+    :states 'visual
+    :prefix leader
+    "*" 'my/grep-word-visual
   )
-  (use-package consult
-    :preface
-    (defun my/grep-word-visual ()
-      (interactive)
-      (consult-ripgrep (projectile-project-root) (buffer-substring
-        (evil-range-beginning (evil-visual-range))
-        (evil-range-end (evil-visual-range)))))
-    (defun my/grep-word ()
-      (interactive)
-      (consult-ripgrep (projectile-project-root) (thing-at-point 'word)))
-    (defun my/consult-word ()
-      (interactive)
-      (consult-line (thing-at-point 'word)))
-    :custom
-    (register-preview-delay 0)
-    (register-preview-function #'consult-register-format)
-    (consult-ripgrep-command "rg --null --smart-case --line-buffered --color=always --max-columns=500\
-     --no-heading --line-number . -e ARG OPTS")
-    (consult-project-root-function #'projectile-project-root)
-    (consult-preview-key 'any)
-    :init
-    (advice-add #'register-preview :override #'consult-register-window)
-    :config
-    ;;(general-define-key
-    ;;  :keymaps 'isearch-mode-map
-    ;;)
-    (general-define-key
-      :states 'normal
-      "M-g g" 'consult-goto-line
-      "/" 'consult-line
-      "*" 'consult-ripgrep
-    )
-    (general-define-key
-      :states 'normal
-      :prefix leader
-      "/" 'my/consult-word
-      "bs" 'consult-buffer
-      "*" 'my/grep-word
-      "M-y" 'consult-yank-pop
-    )
-    (general-define-key
-      :states 'visual
-      :prefix leader
-      "*" 'my/grep-word-visual
-    )
-    (autoload 'projectile-project-root "projectile")
-  )
+  (autoload 'projectile-project-root "projectile")
+)
 
 (use-package orderless
   :custom
@@ -947,22 +645,35 @@ Try [[https://github.com/raxod502/selectrum][selectrum]] & [[https://github.com/
 )
 #+END_SRC
 
+*** Enhancements
+
 #+BEGIN_SRC emacs-lisp
+(use-package prescient
+)
+
+(use-package vertico-prescient
+  :after (vertico prescient)
+  :config
+  (prescient-persist-mode)
+  (vertico-prescient-mode)
+)
+
+(use-package savehist
+  :config
+  (savehist-mode))
+
+(use-package embark-consult
+  :after (consult embark)
+  :hook
+  (embark-collect-mode . embark-consult-preview-minor-mode)
+)
+
 (use-package consult-flycheck
   :general
   (:keymaps 'flycheck-command-map
     "!" 'consult-flycheck)
 )
-#+END_SRC
 
-#+BEGIN_SRC emacs-lisp
-;; (use-package keycast
-;;   :config
-;;   (keycast-mode)
-;; )
-#+END_SRC
-
-#+BEGIN_SRC emacs-lisp
 (use-package marginalia
   :config
   (marginalia-mode)
@@ -974,18 +685,15 @@ Try [[https://github.com/raxod502/selectrum][selectrum]] & [[https://github.com/
       (which-key--show-keymap "Embark" map nil nil 'no-paging)
       #'which-key--hide-popup-ignore-command)
     embark-become-indicator embark-action-indicator)
-  ;; (defun refresh-selectrum ()
-  ;;   (setq selectrum--previous-input-string nil))
-  ;; (defun store-action-key+cmd (cmd)
-  ;;   (setq keycast--this-command-keys (this-single-command-keys)
-  ;;         keycast--this-command cmd))
-  ;; (defun force-keycast-update (&rest _)
-  ;;   (force-mode-line-update t))
+  (defun store-action-key+cmd (cmd)
+    (setq keycast--this-command-keys (this-single-command-keys)
+          keycast--this-command cmd))
+  (defun force-keycast-update (&rest _)
+    (force-mode-line-update t))
   :config
-  ;; (advice-add 'embark-keymap-prompter :filter-return #'store-action-key+cmd)
-  ;; (dolist (cmd '(embark-act embark-act-noexit embark-become))
-  ;;   (advice-add cmd :before #'force-keycast-update))
-  ;; (add-hook 'embark-pre-action-hook #'refresh-selectrum)
+  (advice-add 'embark-keymap-prompter :filter-return #'store-action-key+cmd)
+  (dolist (cmd '(embark-act embark-act-noexit embark-become))
+    (advice-add cmd :before #'force-keycast-update))
   (general-define-key
     "C-s-a" 'embark-act
   )
@@ -998,7 +706,6 @@ Just for org-mode config.
 
 #+BEGIN_SRC emacs-lisp
 (use-package org
-  ;; :ensure nil
   :straight nil
   :custom
   (org-src-tab-acts-natively nil)
@@ -1093,33 +800,12 @@ Pretty bullets.
   ;;                                   :test "npm test"
   ;;                                   :run "npm run start_dev"
   ;;                                   :test-suffix ".spec")
-  ;; (counsel-projectile-mode)
   (general-define-key
     :states 'normal
     :keymaps 'projectile-mode-map
     :prefix leader
     "p" 'projectile-command-map
     "ff" 'projectile-find-file))
-#+END_SRC
-
-Counsel for projectile.
-Meh, decided not to. Breaks projectile hooks.
-
-#+BEGIN_SRC emacs-lisp
-;; (use-package counsel-projectile
-;;   :defer t)
-#+END_SRC
-
-[[https://github.com/leoliu/ggtags][ggtags]] for code navigation.
-
-#+BEGIN_SRC emacs-lisp
-;; (use-package ggtags
-;;   :defer t
-;;   :diminish 'ggtags-mode
-;;   :general
-;;   (:states 'normal
-;;     "C-]" 'ggtags-find-tag-dwim)
-;; )
 #+END_SRC
 
 ** Magit
@@ -1205,25 +891,6 @@ Icons for dired and ranger.
 
 ** Cursors
 
-[[https://github.com/magnars/multiple-cursors.el][Multiple cursors]].
-
-#+BEGIN_SRC emacs-lisp
-;; (use-package multiple-cursors
-;;   :config
-;;   (setq mc/always-run-for-all t)
-;;   :general
-;;   (:states 'normal
-;;     "C-S-n" 'mc/unmark-next-like-this
-;;     "C-S-p" 'mc/unmark-previous-like-this
-;;     "C-p" 'mc/mark-previous-like-this-word
-;;     "C-n" 'mc/mark-next-like-this-word)
-;;   (:states 'visual
-;;     "C-S-n" 'mc/unmark-next-like-this
-;;     "C-S-p" 'mc/unmark-previous-like-this
-;;     "C-p" 'mc/mark-previous-like-this
-;;     "C-n" 'mc/mark-next-like-this))
-#+END_SRC
-
 Evil [[https://github.com/gabesoft/evil-mc][multicursor]].
 
 #+BEGIN_SRC emacs-lisp
@@ -1253,6 +920,8 @@ Evil [[https://github.com/gabesoft/evil-mc][multicursor]].
     "grp" 'evil-mc-skip-and-goto-prev-match))
 #+END_SRC
 
+Cursor highlighting.
+
 #+BEGIN_SRC emacs-lisp
 (use-package beacon
   :config
@@ -1266,110 +935,39 @@ Evil [[https://github.com/gabesoft/evil-mc][multicursor]].
 
 ** Autocomplete
 
-I'm not sure yet if i need it. We'll see.
-
-There are no alternatives to [[http://company-mode.github.io/][company-mode]].
-
 [[https://github.com/minad/corfu][Corfu]] seems like one.
 
 #+BEGIN_SRC emacs-lisp
-  (use-package corfu-prescient
-  )
-  (use-package corfu
-    :init
-    (defun corfu-enable-always-in-minibuffer ()
-    "Enable Corfu in the minibuffer if Vertico is not active."
-    (unless (bound-and-true-p vertico--input)
-      (corfu-mode 1)))
-    :custom
-    (corfu-auto t)
-    (corfu-auto-prefix 0)
-    (corfu-auto-delay 0.1)
-    (corfu-echo-documentation 0.25)
-    (corfu-cycle t)
-    :init
-    (global-corfu-mode)
-    (corfu-prescient-mode 1)
-    :config
-    (add-hook 'minibuffer-setup-hook #'corfu-enable-always-in-minibuffer 1)
-    (general-define-key
-      :keymaps 'corfu-map
-      "C-j" 'corfu-next
-      "C-k" 'corfu-previous
-      "<return>" 'newline
-      "C-l" 'corfu-complete)
-  )
-
-  ;; (use-package company
-  ;;   :defer t
-  ;;   :init
-  ;;   (global-company-mode)
-  ;;   (setq company-idle-delay 0.1
-  ;;         company-show-numbers t
-  ;;         company-tooltip-align-annotations t
-  ;;         company-selection-wrap-around t)
-  ;;   :config
-  ;;   ;; (add-to-list 'company-backends 'company-yasnippet)
-  ;;   ;; (add-to-list 'company-backends '(company-tabnine :separate company-capf))
-  ;;   ;; (setq company-backends '(company-bbdb))
-  ;;   (general-define-key
-  ;;     :keymaps 'company-active-map
-  ;;     "C-j" 'company-select-next
-  ;;     "C-k" 'company-select-previous
-  ;;     "C-p" 'company-other-backend
-  ;;     "<return>" 'newline
-  ;;     "C-l" 'company-complete-selection)
-  ;;   (general-define-key
-  ;;     :states '(normal insert)
-  ;;     :keymaps 'company-mode-map
-  ;;     "C-p" 'company-complete)
-  ;; )
-
-  ;; (use-package company-tabnine
-  ;; )
-#+END_SRC
-
-#+BEGIN_SRC emacs-lisp
-;; (use-package company-box
-;;   :hook (company-mode . company-box-mode))
-#+END_SRC
-
-Quickhelp too.
-(not working properly with evil bindings)
-
-#+BEGIN_SRC emacs-lisp
-;; (use-package company-quickhelp
-;;   :defer t
-;;   :init
-;;   (company-quickhelp-mode))
-#+END_SRC
-
-Why not irony.
-
-#+BEGIN_SRC emacs-lisp
-;; (use-package company-irony
-;;   :defer t)
+(use-package corfu-prescient
+  :after (corfu prescient)
+)
+(use-package corfu
+  :init
+  (defun corfu-enable-always-in-minibuffer ()
+  "Enable Corfu in the minibuffer if Vertico is not active."
+  (unless (bound-and-true-p vertico--input)
+    (corfu-mode 1)))
+  :custom
+  (corfu-auto t)
+  (corfu-auto-prefix 0)
+  (corfu-auto-delay 0.1)
+  (corfu-echo-documentation 0.25)
+  (corfu-cycle t)
+  :init
+  (global-corfu-mode)
+  (corfu-prescient-mode 1)
+  :config
+  (add-hook 'minibuffer-setup-hook #'corfu-enable-always-in-minibuffer 1)
+  (general-define-key
+    :keymaps 'corfu-map
+    "C-j" 'corfu-next
+    "C-k" 'corfu-previous
+    "<return>" 'newline
+    "C-l" 'corfu-complete)
+)
 #+END_SRC
 
 ** Parentheses
-
-Oh where would we be without them. Maybe coding on Haskell.
-
-I love my [[https://github.com/Fuco1/smartparens][parenths]] smart.
-
-#+BEGIN_SRC emacs-lisp
-;; (use-package smartparens
-;;   :defer t
-;;   :init
-;;   (show-smartparens-global-mode t)
-;;   (smartparens-global-mode 1)
-;;   (sp-local-pair 'emacs-lisp-mode "'" nil :actions '(:rem insert))
-;;   :custom-face
-;;   (sp-show-pair-match-face ((t :foreground "#00ffff"
-;;                                :background "#6700D4")))
-;;   (sp-show-pair-match-content-face ((t :foreground "#00ffff"
-;;                                        :background "#6700D4"))))
-#+END_SRC
 
 [[https://github.com/tsdh/highlight-parentheses.el][Highlight]] matching parentheses.
 
@@ -1410,16 +1008,6 @@ Author doesn't like melpa, so I have to git clone that stuff and update by pulli
   (awesome-tab-selected ((t :background "#bd93f9")))
   :config
   (awesome-tab-mode t)
-  ;; (general-define-key
-  ;;   :states 'normal
-  ;;   :prefix leader
-  ;;   "bg" 'awesome-tab-switch-group
-  ;;   "bn" 'awesome-tab-forward
-  ;;   "bp" 'awesome-tab-backward
-  ;;   "bl" 'awesome-tab-select-end-tab
-  ;;   "bf" 'awesome-tab-select-beg-tab
-  ;;   "bd" 'kill-this-buffer
-  ;;   "bx" 'awesome-tab-kill-other-buffers-in-current-group)
   )
 #+END_SRC
 
@@ -1483,20 +1071,6 @@ Eshell config.
   :hook (eshell-mode . esh-autosuggest-mode))
 #+END_SRC
 
-# Completion for fish.
-
-#+BEGIN_SRC emacs-lisp
-;; (use-package fish-completion
-;;   :if (executable-find "fish")
-;;   :config
-;;   (global-fish-completion-mode))
-#+END_SRC
-
-#+BEGIN_SRC emacs-lisp
-;; (use-package readline-complete
-;;   :commands 'eshell)
-#+END_SRC
-
 Term extra info.
 
 #+BEGIN_SRC emacs-lisp
@@ -1533,37 +1107,37 @@ Term extra info.
 Experimenting with [[https://github.com/emacs-lsp/lsp-mode][lsp-mode]].
 
 #+BEGIN_SRC emacs-lisp
-  (use-package lsp-mode
-    :hook
-    (
-      (typescript-mode . lsp)
-      (rust-mode . lsp)
-      (ruby-mode . lsp)
-      (lsp-mode . lsp-enable-which-key-integration)
-      (lsp-completion-mode . my/lsp-mode-setup-completion)
-    )
-    :init
-    (defun my/lsp-mode-setup-completion ()
-      (setf (alist-get 'styles (alist-get 'lsp-capf completion-category-defaults))
-        '(flex)))
-    :custom
-    (lsp-enable-snippet nil)
-    (lsp-auto-guess-root t)
-    (lsp-completion-provider :none)
-    (lsp-modeline-diagnostics-enable t)
-    (lsp-dired-mode t)
-    (lsp-before-save-edits t)
-    (lsp-disabled-clients '(eslint))
-    (lsp-modeline-diagnostics-scope :project)
-    (lsp-rust-analyzer-cargo-watch-command "clippy")
-    (lsp-rust-analyzer-display-chaining-hints t)
-    (lsp-rust-analyzer-display-closure-return-type-hints t)
-    (lsp-rust-analyzer-display-reborrow-hints t)
-    (lsp-rust-analyzer-display-lifetime-elision-hints-enable "skip_trivial")
-    (lsp-rust-analyzer-server-display-inlay-hints t)
-          ;; lsp-auto-configure nil
-
+(use-package lsp-mode
+  :hook
+  (
+    (typescript-mode . lsp)
+    (rust-mode . lsp)
+    (ruby-mode . lsp)
+    (lsp-mode . lsp-enable-which-key-integration)
+    (lsp-completion-mode . my/lsp-mode-setup-completion)
   )
+  :init
+  (defun my/lsp-mode-setup-completion ()
+    (setf (alist-get 'styles (alist-get 'lsp-capf completion-category-defaults))
+      '(flex)))
+  :custom
+  (lsp-enable-snippet nil)
+  (lsp-auto-guess-root t)
+  (lsp-completion-provider :none)
+  (lsp-modeline-diagnostics-enable t)
+  (lsp-dired-mode t)
+  (lsp-before-save-edits t)
+  (lsp-disabled-clients '(eslint))
+  (lsp-modeline-diagnostics-scope :project)
+  (lsp-rust-analyzer-cargo-watch-command "clippy")
+  (lsp-rust-analyzer-display-chaining-hints t)
+  (lsp-rust-analyzer-display-closure-return-type-hints t)
+  (lsp-rust-analyzer-display-reborrow-hints t)
+  (lsp-rust-analyzer-display-lifetime-elision-hints-enable "skip_trivial")
+  (lsp-rust-analyzer-server-display-inlay-hints t)
+        ;; lsp-auto-configure nil
+
+)
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp
@@ -1589,12 +1163,6 @@ Comes with [[https://github.com/emacs-lsp/lsp-ui][lsp-ui]].
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp
-;; (use-package lsp-ivy
-;;   :commands lsp-ivy-workspace-symbol
-;; )
-#+END_SRC
-
-#+BEGIN_SRC emacs-lisp
   (use-package consult-lsp
     :config
     (general-define-key
@@ -1607,74 +1175,10 @@ Comes with [[https://github.com/emacs-lsp/lsp-ui][lsp-ui]].
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp
-;; (use-package lsp-treemacs
-;;   :config
-;;   (lsp-treemacs-sync-mode 1)
-;; )
-#+END_SRC
-
-#+BEGIN_SRC emacs-lisp
 (use-package lsp-haskell
   :custom
   (lsp-haskell-process-path-hie "hie-wrapper")
 )
-#+END_SRC
-
-#+BEGIN_SRC emacs-lisp
-;; (use-package company-lsp
-;;   :init
-;;   (push 'company-lsp company-backends)
-;;   (setq company-lsp-cache-candidates 'auto
-;;         company-lsp-async t
-;;         company-lsp-enable-recompletion t)
-;; )
-#+END_SRC
-
-#+BEGIN_SRC emacs-lisp
-;; (use-package treemacs
-;;   :defer t
-;;   :config
-;;   (setq
-;;     treemacs-file-event-delay 2000
-;;   )
-;;   (general-define-key
-;;     :keymaps 'treemacs-mode-map
-;;     "C-l" 'evil-window-right)
-;; )
-
-;; (use-package treemacs-evil
-;;   :after treemacs evil
-;;   :config
-;;   (general-define-key
-;;     :states '(normal visual)
-;;     :prefix leader
-;;     "t" 'treemacs
-;;   )
-;; )
-
-;; (use-package treemacs-projectile
-;;   :after treemacs projectile
-;; )
-#+END_SRC
-
-Try [[https://github.com/joaotavora/eglot][eglot]].
-
-#+BEGIN_SRC emacs-lisp
-;; (use-package eglot
-;;   :config
-;;   (add-to-list 'eglot-server-programs '(ruby-mode . ("solargraph" "stdio")))
-;;   (add-to-list 'eglot-server-programs '(caml-mode . ("ocaml-language-server" "--stdio")))
-;;   (add-to-list 'eglot-server-programs '(js-mode . ("javascript-typescript-stdio")))
-;;   (add-to-list 'eglot-server-programs '(rjsx-mode . ("javascript-typescript-stdio")))
-;;   (add-to-list 'eglot-server-programs '(reason-mode . ("ocaml-language-server" "--stdio")))
-;;   (add-to-list 'eglot-server-programs '(haskell-mode . ("hie-wrapper")))
-
-;;   ;; (add-hook 'ruby-mode-hook 'eglot-ensure)
-;;   ;; (add-hook 'caml-mode-hook 'eglot-ensure)
-;;   ;; (add-hook 'js-mode-hook 'eglot-ensure)
-;;   ;; (add-hook 'rjsx-mode 'eglot-ensure)
-;;   ;; (add-hook 'reason-mode-hook 'eglot-ensure)
-;;   (add-hook 'haskell-mode-hook 'eglot-ensure))
 #+END_SRC
 
 ** Lint
@@ -1750,18 +1254,6 @@ Try [[https://github.com/joaotavora/eglot][eglot]].
 
 ** Programming
 
-[[https://github.com/joaotavora/yasnippet][Snippets]].
-
-#+BEGIN_SRC emacs-lisp
-;; (use-package yasnippet
-;;   :config
-;;   (yas-global-mode 1)
-;; )
-
-;; (use-package yasnippet-snippets
-;; )
-#+END_SRC
-
 #+BEGIN_SRC emacs-lisp
 (use-package protobuf-mode)
 #+END_SRC
@@ -1776,6 +1268,7 @@ MD mode
   (markdown-command "pandoc")
 )
 #+END_SRC
+
 [[https://github.com/yoshiki/yaml-mode][Yaml]] mode.
 
 #+BEGIN_SRC emacs-lisp
@@ -1790,23 +1283,14 @@ MD mode
   )
 #+END_SRC
 
-[[https://github.com/Malabarba/aggressive-indent-mode][Aggressive indent]] keeps your code indented always.
-
-#+BEGIN_SRC emacs-lisp
-;; (use-package aggressive-indent
-;;   :hook ((ruby-mode
-;;           emacs-lisp-mode ;;           lisp-mode) . aggressive-indent-mode)
-;;   :defer t)
-#+END_SRC
-
 Rust.
 
 #+BEGIN_SRC emacs-lisp
-  (use-package rust-mode
-    :custom
-    (rust-format-on-save t)
-    (rust-indent-offset 4)
-  )
+(use-package rust-mode
+  :custom
+  (rust-format-on-save t)
+  (rust-indent-offset 4)
+)
 #+END_SRC
 
 
@@ -1916,20 +1400,6 @@ Pry.
     "rx" 'inf-ruby-switch-from-compilation))
 #+END_SRC
 
-Run specs from emacs.
-
-#+BEGIN_SRC emacs-lisp
-;; (use-package rspec-simple
-;;   :config
-;;   (general-define-key
-;;     :keymaps 'ruby-mode-map
-;;     :states 'normal
-;;     :prefix leader
-;;     "tt" 'rspec-find-related-file
-;;     "rtn" 'rspec-compile-on-line
-;;     "rtf" 'rspec-compile-file))
-#+END_SRC
-
 #+BEGIN_SRC emacs-lisp
 (use-package rspec-mode
   :custom
@@ -1950,30 +1420,7 @@ Clojure cider
 
 #+BEGIN_SRC emacs-lisp
 (use-package cider
-
 )
-#+END_SRC
-
-Prettierjs
-
-#+BEGIN_SRC emacs-lisp
-(use-package prettier-js
-  :hook ((typescript-mode
-          rjsx-mode
-          js2-mode) . prettier-js-mode)
-  :defer t
-)
-#+END_SRC
-
-#+BEGIN_SRC emacs-lisp
-;; (use-package ruby-test-mode
-;;   :config
-;;   (general-define-key
-;;     :keymaps 'ruby-test-mode-map
-;;     :states 'normal
-;;     :prefix leader
-;;     "rtn" 'ruby-test-run-at-point
-;;     "rtf" 'ruby-test-run))
 #+END_SRC
 
 ** Writing
@@ -2004,11 +1451,6 @@ Prettierjs
   :config
   (add-hook 'fountain-mode-hook 'olivetti-mode)
 )
-
-;; (use-package flyspell
-;;   :config
-;;   (add-hook 'org-mode-hook 'flyspell-mode)
-;; )
 #+END_SRC
 
 ** Keybindings
