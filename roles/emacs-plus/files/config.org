@@ -49,7 +49,7 @@ Leader key for evil mode.
 
 #+BEGIN_SRC emacs-lisp
 (setq leader "SPC")
-(setq alt-leader "C-SPC")
+(setq alt-leader "M-SPC")
 #+END_SRC
 
 Font.
@@ -204,7 +204,6 @@ Themes block.
   (modus-themes-subtle-line-numbers t)
   :config
   (load-theme 'modus-operandi)
-  :bind ("<f5>" . modus-themes-toggle)
 )
 #+END_SRC
 
@@ -217,16 +216,7 @@ Themes block.
 (use-package general
   :config
   (general-evil-setup t)
-  (general-define-key
-    :states '(normal insert emacs)
-    :prefix leader
-    :non-normal-prefix alt-leader
-    "wd" 'delete-window
-    "wc" 'delete-other-windows
-    "fed" (lambda () (interactive) (find-file user-init-file))
-    "feR" 'eval-buffer
-    "fs" 'save-buffer
-    "qq" 'save-buffers-kill-terminal))
+ )
 #+END_SRC
 
 ** EVIL mode
@@ -241,11 +231,7 @@ Very cool stuff for undoing things.
   (undo-tree-visualizer-diff t)
   (undo-tree-history-directory-alist '(("." . "~/.emacs.d/undo")))
   :config
-  (general-define-key
-    :states 'normal
-    :prefix leader
-    "u" 'undo-tree-visualize)
-  (global-undo-tree-mode 1)
+  (global-undo-tree-mode)
 )
 #+END_SRC
 
@@ -296,35 +282,7 @@ Just functionality to go to last chages. Nothing fancy here.
   (evil-shift-width 2)
   (evil-undo-system 'undo-tree)
   :config
-  (evil-mode 1)
-  (general-define-key
-    :states '(normal)
-    "C-k" 'evil-window-up
-    "C-j" 'evil-window-down
-    "C-h" 'evil-window-left
-    "C-l" 'evil-window-right)
-
-  (general-define-key
-    :states 'normal
-    "Q" 'quit-window
-    "[e" 'my/move-line-down
-    "]e" 'my/move-line-up)
-
-  (general-define-key
-    :states '(normal visual)
-    "[e" 'my/move-line-down
-    "]e" 'my/move-line-up)
-
-  (general-define-key
-    :states 'visual
-    "y" 'my/copy-to-clipboard
-    "gs" 'sort-lines)
-
-  (general-define-key
-    :states 'normal
-    :prefix leader
-    "wn" 'evil-window-split
-    "w/" 'evil-window-vsplit)
+  (evil-mode)
   (add-hook 'view-mode-hook 'evil-motion-state)
   (add-hook 'ruby-mode-hook 'my/tab2)
   (add-hook 'css-mode-hook 'my/tab2)
@@ -382,11 +340,7 @@ Adds [[https://github.com/wcsmith/evil-arg][args]] motions and text object.
 #+BEGIN_SRC emacs-lisp
 (use-package evil-args
   :after evil
-  :general
-  (:keymaps 'evil-inner-text-objects-map
-    "a" 'evil-inner-arg)
-  (:keymaps 'evil-outer-text-objects-map
-    "a" 'evil-outer-arg))
+ )
 #+END_SRC
 
 Code [[https://github.com/redguardtoo/evil-nerd-commenter][commentary]].
@@ -394,10 +348,7 @@ Code [[https://github.com/redguardtoo/evil-nerd-commenter][commentary]].
 #+BEGIN_SRC emacs-lisp
 (use-package evil-nerd-commenter
   :defer t
-  :general
-  (:states '(normal visual)
-    "gy" 'evilnc-comment-or-uncomment-lines)
-  )
+ )
 #+END_SRC
 
 *** Evil-daemon problem.
@@ -438,11 +389,7 @@ Code [[https://github.com/redguardtoo/evil-nerd-commenter][commentary]].
 (use-package expand-region
   :custom
   (expand-region-contract-fast-key "z")
-  :config
-  (general-define-key
-    :states 'normal
-    :prefix leader
-    "x" 'er/expand-region))
+)
 #+END_SRC
 
 ** Jumping
@@ -451,15 +398,6 @@ Code [[https://github.com/redguardtoo/evil-nerd-commenter][commentary]].
 
 #+BEGIN_SRC emacs-lisp
 (use-package avy
-  :config
-  (general-define-key
-    :states 'normal
-    "gw" 'avy-goto-word-1
-    "gc" 'avy-goto-char
-    "gl" 'avy-goto-line)
-  (general-define-key
-    :states 'insert
-    "C-;" 'avy-goto-char)
 )
 
 #+END_SRC
@@ -479,7 +417,6 @@ Code [[https://github.com/redguardtoo/evil-nerd-commenter][commentary]].
 
 #+BEGIN_SRC emacs-lisp
 (use-package which-key
-  :defer t
   :config
   (which-key-mode)
   :custom
@@ -501,16 +438,6 @@ Code [[https://github.com/redguardtoo/evil-nerd-commenter][commentary]].
 )
 
 (use-package imenu-list
-  :config
-  (general-define-key
-    :states 'normal
-    :keymaps 'imenu-list-major-mode-map
-    "k" 'previous-line
-    "j" 'next-line
-    "TAB" 'hs-toggle-hiding
-    "RET" 'imenu-list-ret-dwim
-    "q" 'imenu-list-quit-window
-  )
 )
 #+END_SRC
 
@@ -582,12 +509,6 @@ Try [[https://github.com/minad/vertico][vertico]] & [[https://github.com/minad/c
   (vertico-cycle t)
   :config
   (vertico-mode)
-  (general-define-key
-    :keymaps 'vertico-map
-    "C-j" '(vertico-next :which-key "next line")
-    "C-k" '(vertico-previous :which-key "prev line")
-    ;; "C-l" '(vertico-submit-exact-input :which-key "submit exact input")
-  )
 )
 (use-package consult
   :preface
@@ -612,28 +533,6 @@ Try [[https://github.com/minad/vertico][vertico]] & [[https://github.com/minad/c
   :init
   (advice-add #'register-preview :override #'consult-register-window)
   :config
-  ;;(general-define-key
-  ;;  :keymaps 'isearch-mode-map
-  ;;)
-  (general-define-key
-    :states 'normal
-    "M-g g" 'consult-goto-line
-    "/" 'consult-line
-    "*" 'consult-ripgrep
-  )
-  (general-define-key
-    :states 'normal
-    :prefix leader
-    "/" 'my/consult-word
-    "bs" 'consult-buffer
-    "*" 'my/grep-word
-    "M-y" 'consult-yank-pop
-  )
-  (general-define-key
-    :states 'visual
-    :prefix leader
-    "*" 'my/grep-word-visual
-  )
   (autoload 'projectile-project-root "projectile")
 )
 
@@ -669,9 +568,6 @@ Try [[https://github.com/minad/vertico][vertico]] & [[https://github.com/minad/c
 )
 
 (use-package consult-flycheck
-  :general
-  (:keymaps 'flycheck-command-map
-    "!" 'consult-flycheck)
 )
 
 (use-package marginalia
@@ -694,9 +590,6 @@ Try [[https://github.com/minad/vertico][vertico]] & [[https://github.com/minad/c
   (advice-add 'embark-keymap-prompter :filter-return #'store-action-key+cmd)
   (dolist (cmd '(embark-act embark-act-noexit embark-become))
     (advice-add cmd :before #'force-keycast-update))
-  (general-define-key
-    "C-s-a" 'embark-act
-  )
 )
 #+END_SRC
 
@@ -709,11 +602,6 @@ Just for org-mode config.
   :straight nil
   :custom
   (org-src-tab-acts-natively nil)
-  :config
-  (general-define-key
-    :states '(normal)
-    :keymaps 'org-mode-map
-    "TAB" 'org-cycle)
 )
 
 (use-package org-appear
@@ -800,12 +688,7 @@ Pretty bullets.
   ;;                                   :test "npm test"
   ;;                                   :run "npm run start_dev"
   ;;                                   :test-suffix ".spec")
-  (general-define-key
-    :states 'normal
-    :keymaps 'projectile-mode-map
-    :prefix leader
-    "p" 'projectile-command-map
-    "ff" 'projectile-find-file))
+ )
 #+END_SRC
 
 ** Magit
@@ -814,32 +697,11 @@ I heard [[https://github.com/magit/magit][magit]] to be best git client. Let's s
 
 #+BEGIN_SRC emacs-lisp
 (use-package magit
-  :config
-  (general-define-key
-    :states 'normal
-    :prefix leader
-    "g" 'magit-status)
-  (general-define-key
-    :prefix leader
-    :states 'normal
-    "C-b" 'magit-blame-addition))
+ )
 
 (use-package git-timemachine
   :straight (:host github :repo "emacsmirror/git-timemachine")
-  :config
-  (general-define-key
-    :states 'normal
-    :prefix leader
-    "h" 'git-timemachine-toggle)
-  (general-define-key
-    :keymaps 'git-timemachine-mode-map
-    :states 'normal
-    "q" 'git-timemachine-quit
-    "p" 'git-timemachine-show-previous-revision
-    "n" 'git-timemachine-show-next-revision
-    "c" 'git-timemachine-show-current-revision
-    )
-  )
+ )
 
 #+END_SRC
 
@@ -865,19 +727,7 @@ Gitgutter
     (add-to-list 'ranger-prefer-regexp "^\\.")
     (ranger-override-dired-mode 'ranger)
     (add-hook 'ranger-mode-hook 'all-the-icons-dired-mode)
-
-    (general-define-key
-     :states '(normal visual)
-     "TAB" 'ranger)
-
-    (general-define-key
-      :keymaps 'ranger-normal-mode-map
-      "c" 'find-file
-      "f" 'projectile-find-file)
-    (general-define-key
-     :states 'normal
-     :prefix leader
-     "d" 'ranger))
+ )
 #+END_SRC
 
 Icons for dired and ranger.
@@ -896,7 +746,7 @@ Evil [[https://github.com/gabesoft/evil-mc][multicursor]].
 #+BEGIN_SRC emacs-lisp
 (use-package evil-mc
   :config
-  (global-evil-mc-mode  1)
+  (global-evil-mc-mode)
   (general-define-key
     :states 'normal
     "grm" 'evil-mc-make-all-cursors
@@ -917,7 +767,8 @@ Evil [[https://github.com/gabesoft/evil-mc][multicursor]].
     "grn" 'evil-mc-skip-and-goto-next-match
     "C-t" 'evil-mc-skip-and-goto-next-match
     "C-p" 'evil-mc-make-and-goto-prev-match
-    "grp" 'evil-mc-skip-and-goto-prev-match))
+    "grp" 'evil-mc-skip-and-goto-prev-match)
+  )
 #+END_SRC
 
 Cursor highlighting.
@@ -1007,8 +858,8 @@ Author doesn't like melpa, so I have to git clone that stuff and update by pulli
   (awesome-tab-unselected ((t :background "#8BE9FD")))
   (awesome-tab-selected ((t :background "#bd93f9")))
   :config
-  (awesome-tab-mode t)
-  )
+  (awesome-tab-mode)
+)
 #+END_SRC
 
 He also created [[https://github.com/manateelazycat/awesome-pair][awesome pair]].
@@ -1035,7 +886,6 @@ He also created [[https://github.com/manateelazycat/awesome-pair][awesome pair]]
     "C-'" 'awesome-pair-unwrap
   )
 )
-
 #+END_SRC
 
 ** Term
@@ -1098,8 +948,8 @@ Term extra info.
     "RET" 'browse-kill-ring-insert-and-quit)
   (general-define-key
     :states '(normal insert)
-    "M-y" 'browse-kill-ring))
-
+    "M-y" 'browse-kill-ring)
+)
 #+END_SRC
 
 ** LSP
@@ -1136,14 +986,13 @@ Experimenting with [[https://github.com/emacs-lsp/lsp-mode][lsp-mode]].
   (lsp-rust-analyzer-display-lifetime-elision-hints-enable "skip_trivial")
   (lsp-rust-analyzer-server-display-inlay-hints t)
         ;; lsp-auto-configure nil
-
 )
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp
 (use-package dap-mode
   :config
-  (dap-auto-configure-mode 1)
+  (dap-auto-configure-mode)
 )
 #+END_SRC
 
@@ -1163,15 +1012,15 @@ Comes with [[https://github.com/emacs-lsp/lsp-ui][lsp-ui]].
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp
-  (use-package consult-lsp
-    :config
-    (general-define-key
-      :states 'normal
-      :prefix leader
-      "ss" 'consult-lsp-symbols
-      "sf" 'consult-lsp-file-symbols
-      )
-  )
+(use-package consult-lsp
+  :config
+  (general-define-key
+    :states 'normal
+    :prefix leader
+    "ss" 'consult-lsp-symbols
+    "sf" 'consult-lsp-file-symbols
+    )
+)
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp
@@ -1375,7 +1224,6 @@ Oh, and this chages apply to ruby-mode.
 
 #+BEGIN_SRC emacs-lisp
 (use-package ruby-mode
-  ;; :ensure nil
   :straight nil
   :custom
   (ruby-insert-encoding-magic-comment nil)
@@ -1397,7 +1245,8 @@ Pry.
     :keymaps 'rspec-compilation-mode-map
     :states 'normal
     :prefix leader
-    "rx" 'inf-ruby-switch-from-compilation))
+    "rx" 'inf-ruby-switch-from-compilation)
+)
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp
@@ -1413,7 +1262,8 @@ Pry.
     "rtt" 'rspec-toggle-spec-and-target
     "rtf" 'rspec-verify
     "rtm" 'rspec-verify-matching
-    "rtn" 'rspec-verify-single))
+    "rtn" 'rspec-verify-single)
+)
 #+END_SRC
 
 Clojure cider
@@ -1458,42 +1308,175 @@ Clojure cider
 Hydra.
 
 #+BEGIN_SRC emacs-lisp
-    (use-package hydra
-      :config
-      (defhydra hydra-tabs-select (:timeout 4)
-        "Select tabs"
-        ("n" awesome-tab-forward "next")
-        ("p" awesome-tab-backward "previous")
-        ("l" awesome-tab-select-end-tab "last")
-        ("f" awesome-tab-select-beg-tab "first")
-        ("q" nil "quit" :exit t)
-      )
-    )
+(use-package hydra
+  :config
+  (defhydra hydra-tabs-select (:timeout 4)
+    "Select tabs"
+    ("n" awesome-tab-forward "next")
+    ("p" awesome-tab-backward "previous")
+    ("l" awesome-tab-select-end-tab "last")
+    ("f" awesome-tab-select-beg-tab "first")
+    ("q" nil "quit" :exit t)
+  )
+)
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp
-  (general-create-definer my/global-leader
-     :states '(normal insert emacs)
-     :prefix leader
-    )
+(general-create-definer my/global-leader
+  :states '(normal insert emacs)
+  :prefix leader
+  :non-normal-prefix alt-leader
+ )
 
-   (general-create-definer my/normal-leader
-     :states '(normal)
-     :prefix leader
-    )
+(general-create-definer my/normal-leader
+  :states '(normal)
+  :prefix leader
+)
 
-   (my/normal-leader
-     "b" '(:ignore t :which-key "buffers/tabs")
-     "bg" '(awesome-tab-switch-group :which-key "Show groups")
-     "bn" '(awesome-tab-forward :which-key "Select next tab")
-     "bp" '(awesome-tab-backward :which-key "Select previous tab")
-     "bl" '(awesome-tab-select-end-tab :which-key "Select last tab")
-     "bf" '(awesome-tab-select-beg-tab :which-key "Select first tab")
-     "bd" '(kill-this-buffer :which-key "Close current tab")
-     "bx" '(awesome-tab-kill-other-buffers-in-current-group :which-key "Close other tabs")
-     "C-h" '(helpful-at-point :which-key "Show help at point")
-     "st" '(hydra-tabs-select/body :which-key "Select tabs")
-   )
+(general-create-definer my/visual-leader
+  :states '(visual)
+  :prefix leader
+)
+
+(general-create-definer my/map
+)
+
+(general-create-definer my/normal-map
+  :states '(normal)
+)
+
+(general-create-definer my/visual-map
+  :states '(visual)
+)
+
+(general-create-definer my/insert-map
+  :states '(insert)
+)
+
+(general-create-definer my/normal-visual-map
+  :states '(normal visual)
+)
+
+(my/visual-map
+  "gs" '(sort-lines :wk "sort lines")
+  "y" '(my/copy-to-clipboard :wk "copy to clipboard(yank)")
+  "[e" '(my/move-line-down :wk "move line up")
+  "]e" '(my/move-line-up :wk "move line down")
+)
+
+(my/normal-map
+  "gc" '(avy-goto-char :wk "go to char")
+  "gl" '(avy-goto-line :wk "go to line")
+  "gw" '(avy-goto-word-1 :wk "go to word")
+  "Q" '(quit-window :wk "quit window")
+  "<f5>" '(modus-themes-toggle :wk "toggle modus theme")
+  "C-k" '(evil-window-up :wk "select up window")
+  "C-j" '(evil-window-down :wk "select down window")
+  "C-h" '(evil-window-left :wk "select left window")
+  "C-l" '(evil-window-right :wk "select right window")
+  "[e" '(my/move-line-down :wk "move line up")
+  "]e" '(my/move-line-up :wk "move line down")
+  "M-g g" '(consult-goto-line :wk "consult go to line")
+  "/" '(consult-line :wk "search buffer")
+  "*" '(consult-ripgrep :wk "grep in project")
+)
+
+(my/insert-map
+  "C-;" '(avy-goto-char :wk "go to char")
+ )
+
+(my/normal-leader
+  "b" '(:ignore t :wk "buffers/tabs")
+  "bd" '(kill-this-buffer :wk "Close current tab")
+  "bf" '(awesome-tab-select-beg-tab :wk "Select first tab")
+  "bg" '(awesome-tab-switch-group :wk "Show groups")
+  "bn" '(awesome-tab-forward :wk "Select next tab")
+  "bl" '(awesome-tab-select-end-tab :wk "Select last tab")
+  "bp" '(awesome-tab-backward :wk "Select previous tab")
+  "bs" '(consult-buffer :wk "select buffer")
+  "bx" '(awesome-tab-kill-other-buffers-in-current-group :wk "Close other tabs")
+  "d" '(ranger :wk "open ranger")
+  "f" '(:ignore t :wk "files")
+  "fed" '((lambda () (interactive) (find-file user-init-file)) :wk "open config")
+  "feR" '(eval-buffer :wk "eval elisp file")
+  "fs" '(save-buffer :wk "save file")
+  "g" '(magit-status :wk "magit status")
+  "h" '(git-timemachine-toggle :wk "toggle time machine")
+  "qq" '(save-buffers-kill-terminal :wk "quit emacs")
+  "u" '(undo-tree-visualize :wk "visualize undo")
+  "st" '(hydra-tabs-select/body :wk "Select tabs")
+  "w" '(:ignore t :wk "windows")
+  "wc" '(delete-other-windows :wk "close other windows")
+  "wd" '(delete-window :wk "close window")
+  "wn" '(evil-window-split :wk "split window")
+  "w/" '(evil-window-vsplit :wk "vsplit window")
+  "x" '(er/expand-region :wk "expand region")
+  "C-h" '(helpful-at-point :wk "Show help at point")
+  "C-b" '(magit-blame-addition :wk "git blame")
+  "M-y" '(consult-yank-pop :wk "yank pop")
+  "/" '(my/consult-word :wk "search word")
+  "*" '(my/grep-word :wk "grep word in project")
+)
+
+(my/visual-leader
+  "*" '(my/grep-word-visual :wk "grep word in project")
+)
+
+(my/normal-leader projectile-mode-map
+  "p" '(projectile-command-map :wk "")
+  "ff" '(projectile-find-file :wk "find file")
+)
+
+(my/normal-map git-timemachine-mode-map
+  "c" '(git-timemachine-show-current-revision :wk "current commit")
+  "n" '(git-timemachine-show-next-revision :wk "next commit")
+  "p" '(git-timemachine-show-previous-revision :wk "previous commit")
+  "q" '(git-timemachine-quit :wk "quit timemachine")
+)
+
+(my/normal-map org-mode-map
+  "TAB" '(org-cycle :wk "cycle org elements")
+)
+
+(my/map
+  "C-s-a" '(embark-act :wk "embark act")
+)
+
+
+(my/map ranger-normal-mode-map
+  "c" '(find-file :wk "find/create file")
+  "f" '(projectile-find-file :wk "find/create file")
+)
+
+(my/map flycheck-command-map
+  "!" '(consult-flycheck :wk "consult flycheck")
+)
+
+(my/map vertico-map
+  "C-j" '(vertico-next :wk "next line")
+  "C-k" '(vertico-previous :wk "prev line")
+  ;; "C-l" '(vertico-submit-exact-input :wk "submit exact input")
+)
+
+(my/normal-map imenu-list-major-mode-map
+  "j" '(next-line :wk "next line")
+  "k" '(previous-line :wk "previous line")
+  "q" '(imenu-list-quit-window :wk "quit window"))
+  "TAB" '(hs-toggle-hiding :wk "toggle hiding"))
+  "RET" '(imenu-list-ret-dwim :wk "dwim select"))
+)
+
+(my/normal-visual-map
+  "gy" '(evilnc-comment-or-uncomment-lines :wk "toggle comment")
+)
+
+(my/map evil-inner-text-objects-map
+  "a" '(evil-inner-arg :wk "select inner arg")
+)
+
+(my/map evil-outer-text-objects-map
+  "a" '(evil-outer-arg :wk "select outer arg")
+)
 #+END_SRC
 
 * Fun
