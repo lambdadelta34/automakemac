@@ -308,6 +308,7 @@ Just functionality to go to last chages. Nothing fancy here.
     eshell
     evil-mc
     flycheck
+    forge
     ibuffer
     info
     ;; imenu-list
@@ -602,6 +603,15 @@ Just for org-mode config.
   :straight nil
   :custom
   (org-src-tab-acts-natively nil)
+  (org-confirm-babel-evaluate nil)
+  :config
+  (org-babel-do-load-languages
+    'org-babel-load-languages
+    '(
+      (ruby . t)
+      (emacs-lisp . t)
+    )
+  )
 )
 
 (use-package org-appear
@@ -641,7 +651,7 @@ Just for org-mode config.
   ;; Org styling, hide markup etc.
   (org-hide-emphasis-markers t)
   (org-pretty-entities t)
-  (org-ellipsis "…")
+  (org-ellipsis " ▾")
 
   ;; Agenda styling
   (org-agenda-tags-column 0)
@@ -652,6 +662,21 @@ Just for org-mode config.
     " ┄┄┄┄┄ " "┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄"))
   (org-agenda-current-time-string "⭠ now ─────────────────────────────────────────────────")
 )
+
+(defun my/org-mode-visual-fill ()
+  (setq visual-fill-column-width 110
+        visual-fill-column-enable-sensible-window-split t
+        visual-fill-column-center-text t)
+  (visual-fill-column-mode)
+  (display-line-numbers-mode 0)
+  (org-indent-mode)
+  (visual-line-mode)
+)
+
+(use-package visual-fill-column
+  :straight (:host codeberg :repo "joostkremers/visual-fill-column")
+  :hook (org-mode . my/org-mode-visual-fill)
+ )
 #+END_SRC
 
 Pretty bullets.
@@ -695,6 +720,9 @@ Pretty bullets.
 
 I heard [[https://github.com/magit/magit][magit]] to be best git client. Let's see.
 
+[[https://magit.vc/manual/ghub/Storing-a-Token.html][Forge storing token doc]].
+[[https://magit.vc/manual/forge/Usage.html#Usage][Usage doc]].
+
 #+BEGIN_SRC emacs-lisp
 (use-package magit
  )
@@ -703,6 +731,17 @@ I heard [[https://github.com/magit/magit][magit]] to be best git client. Let's s
   :straight (:host github :repo "emacsmirror/git-timemachine")
  )
 
+(use-package forge
+  :after magit
+  :custom
+  (auth-sources '("~/.netrc"))
+  :config
+  (add-to-list 'forge-alist
+                '("gitlab.netology.ru"
+                  "gitlab.netology.ru/api/v4"
+                  "glneto"
+                  forge-gitlab-repository))
+)
 #+END_SRC
 
 Gitgutter
@@ -813,7 +852,7 @@ Cursor highlighting.
   (add-hook 'prog-mode-hook 'rainbow-delimiters-mode))
 #+END_SRC
 
-** Tabs
+** Awesome tabs and pairs
 
 [[https://github.com/manateelazycat/awesome-tab][Awesome tab]] for tabs.
 
@@ -1227,7 +1266,7 @@ Clojure cider
 )
 #+END_SRC
 
-** Keybindings
+** Hydra
 
 Hydra.
 
@@ -1242,8 +1281,16 @@ Hydra.
     ("f" awesome-tab-select-beg-tab "first")
     ("q" nil "quit" :exit t)
   )
+  (defhydra hydra-text-scale (:timeout 4)
+    "Scale text"
+    ("j" text-scale-increase "increse")
+    ("k" text-scale-decrease "decrease")
+    ("q" nil "quit" :exit t)
+  )
 )
 #+END_SRC
+
+** Keybindings
 
 #+BEGIN_SRC emacs-lisp
 (general-create-definer my/global-leader
@@ -1373,6 +1420,10 @@ Hydra.
   "TAB" '(org-cycle :wk "cycle org elements")
 )
 
+(my/normal-leader org-mode-map
+  "C-e" '(org-babel-execute-src-block :wk "execute block")
+)
+
 (my/normal-map imenu-list-major-mode-map
   "j" '(next-line :wk "next line")
   "k" '(previous-line :wk "previous line")
@@ -1417,6 +1468,7 @@ Hydra.
   "sf" '(consult-lsp-file-symbols :wk "consult lsp file symbol ??")
   "u" '(undo-tree-visualize :wk "visualize undo")
   "st" '(hydra-tabs-select/body :wk "Select tabs")
+  "ts" '(hydra-text-scale/body :wk "Scale text")
   "w" '(:ignore t :wk "windows")
   "wc" '(delete-other-windows :wk "close other windows")
   "wd" '(delete-window :wk "close window")
