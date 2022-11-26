@@ -1,0 +1,219 @@
+#+BEGIN_SRC emacs-lisp
+(general-create-definer my/global-leader
+  :states '(normal insert emacs)
+  :prefix leader
+  :non-normal-prefix alt-leader
+ )
+
+(general-create-definer my/normal-leader
+  :states '(normal)
+  :prefix leader
+)
+
+(general-create-definer my/visual-leader
+  :states '(visual)
+  :prefix leader
+)
+
+(general-create-definer my/map
+)
+
+(general-create-definer my/normal-map
+  :states '(normal)
+)
+
+(general-create-definer my/visual-map
+  :states '(visual)
+)
+
+(general-create-definer my/insert-map
+  :states '(insert)
+)
+
+(general-create-definer my/normal-visual-map
+  :states '(normal visual)
+)
+
+(general-create-definer my/normal-insert-map
+  :states '(normal insert)
+)
+
+(my/map
+  "C-s-a" '(embark-act :wk "embark act")
+  [remap describe-variable] '(helpful-variable :wk "helpful variable")
+  [remap describe-function] '(helpful-callable :wk "helpful function")
+  [remap describe-key] '(helpful-key :wk "helpful key")
+)
+
+(my/map ranger-normal-mode-map
+  "c" '(find-file :wk "find/create file")
+  "f" '(projectile-find-file :wk "find/create file")
+)
+
+(my/map flycheck-command-map
+  "!" '(consult-flycheck :wk "consult flycheck")
+)
+
+(my/map vertico-map
+  "C-j" '(vertico-next :wk "next line")
+  "C-k" '(vertico-previous :wk "prev line")
+  ;; "C-l" '(vertico-submit-exact-input :wk "submit exact input")
+)
+
+(my/map awesome-pair-mode-map
+  "(" '(awesome-pair-open-round :wk "round parentheses pair")
+  "[" '(awesome-pair-open-bracket :wk "bracket pair")
+  "{" '(awesome-pair-open-curly :wk "curly pair")
+  "C-'" '(awesome-pair-unwrap :wk "delete pair")
+)
+
+(my/map evil-inner-text-objects-map
+  "a" '(evil-inner-arg :wk "select inner arg")
+)
+
+(my/map evil-outer-text-objects-map
+  "a" '(evil-outer-arg :wk "select outer arg")
+)
+
+(my/map corfu-map
+  "C-j" '(corfu-next :wk "next candidate")
+  "C-k" '(corfu-previous :wk "previous candidate")
+  "<return>" '(newline :wk "insert new line")
+  "C-l" '(corfu-complete :wk "complete candidate")
+)
+
+(my/normal-map browse-kill-ring-mode-map
+  "q" '(browse-kill-ring-quit :wk "quit killring")
+  "RET" '(browse-kill-ring-insert-and-quit :wk "insert and quit killring")
+)
+
+(my/normal-map
+  "gc" '(avy-goto-char :wk "go to char")
+  "gl" '(avy-goto-line :wk "go to line")
+  "gw" '(avy-goto-word-1 :wk "go to word")
+  ;; cursors
+  "grm" '(evil-mc-make-all-cursors :wk "make all cursors")
+  "gru" '(evil-mc-undo-last-added-cursor :wk "undo last cursor")
+  "grq" '(evil-mc-undo-all-cursors :wk "undo all cursors")
+  "grs" '(evil-mc-pause-cursors :wk "pause cursors")
+  "grr" '(evil-mc-resume-cursors :wk "resume cursors")
+  "grf" '(evil-mc-make-and-goto-first-cursor :wk "make and goto f cursor")
+  "grl" '(evil-mc-make-and-goto-last-cursor :wk "make and goto l cursor")
+  "grh" '(evil-mc-make-cursor-here :wk "make cursor here")
+  "grN" '(evil-mc-skip-and-goto-next-cursor :wk "skip current and goto next cursor")
+  "grP" '(evil-mc-skip-and-goto-prev-cursor :wk "skip current and goto prev cursor")
+  "grn" '(evil-mc-skip-and-goto-next-match :wk "skip current and goto next match")
+  "grp" '(evil-mc-skip-and-goto-prev-match :wk "skip current and goto prev match")
+  "C-n" '(evil-mc-make-and-goto-next-match :wk "make cursor and go to next match")
+  "C-p" '(evil-mc-make-and-goto-prev-match :wk "make cursor and go to prev match")
+  ;;
+  "Q" '(quit-window :wk "quit window")
+  "<f5>" '(modus-themes-toggle :wk "toggle modus theme")
+  "C-k" '(evil-window-up :wk "select up window")
+  "C-j" '(evil-window-down :wk "select down window")
+  "C-h" '(evil-window-left :wk "select left window")
+  "C-l" '(evil-window-right :wk "select right window")
+  "[e" '(my/move-line-down :wk "move line up")
+  "]e" '(my/move-line-up :wk "move line down")
+  "M-g g" '(consult-goto-line :wk "consult go to line")
+  "/" '(consult-line :wk "search buffer")
+  "*" '(consult-ripgrep :wk "grep in project")
+)
+
+(my/normal-map git-timemachine-mode-map
+  "c" '(git-timemachine-show-current-revision :wk "current commit")
+  "n" '(git-timemachine-show-next-revision :wk "next commit")
+  "p" '(git-timemachine-show-previous-revision :wk "previous commit")
+  "q" '(git-timemachine-quit :wk "quit timemachine")
+)
+
+(my/normal-map org-mode-map
+  "TAB" '(org-cycle :wk "cycle org elements")
+)
+
+(my/normal-leader org-mode-map
+  "C-e" '(org-babel-execute-src-block :wk "execute block")
+)
+
+(my/normal-map imenu-list-major-mode-map
+  "j" '(next-line :wk "next line")
+  "k" '(previous-line :wk "previous line")
+  "q" '(imenu-list-quit-window :wk "quit window")
+  "TAB" '(hs-toggle-hiding :wk "toggle hiding")
+  "RET" '(imenu-list-ret-dwim :wk "dwim select")
+)
+
+(my/normal-insert-map
+  "C-," '(my/eshell :wk "eshell")
+  "M-y" '(browse-kill-ring :wk "show killring")
+)
+
+(my/insert-map
+  "C-;" '(avy-goto-char :wk "go to char")
+ )
+
+(my/normal-leader
+  "b" '(:ignore t :wk "buffers/tabs")
+  "bd" '(kill-this-buffer :wk "Close current tab")
+  "bf" '(awesome-tab-select-beg-tab :wk "Select first tab")
+  "bg" '(awesome-tab-switch-group :wk "Show groups")
+  "bn" '(awesome-tab-forward :wk "Select next tab")
+  "bl" '(awesome-tab-select-end-tab :wk "Select last tab")
+  "bp" '(awesome-tab-backward :wk "Select previous tab")
+  "bs" '(consult-buffer :wk "select buffer")
+  "bx" '(awesome-tab-kill-other-buffers-in-current-group :wk "Close other tabs")
+  "d" '(ranger :wk "open ranger")
+  "f" '(:ignore t :wk "files")
+  "fed" '((lambda () (interactive) (find-file user-init-file)) :wk "open config")
+  "feR" '(eval-buffer :wk "eval elisp file")
+  "fs" '(save-buffer :wk "save file")
+  "fx" '(my/fix-buffer :wk "fix buffer errors")
+  "g" '(magit-status :wk "magit status")
+  "h" '(git-timemachine-toggle :wk "toggle time machine")
+  "qq" '(save-buffers-kill-terminal :wk "quit emacs")
+  "rtf" '(rspec-verify :wk "rspec file")
+  "rtm" '(rspec-verify-matching :wk "rspec spec for file")
+  "rtt" '(rspec-toggle-spec-and-target :wk "toggle to spec")
+  "rtn" '(rspec-verify-single :wk "rspec nearest")
+  "ss" '(consult-lsp-symbols :wk "consult lsp symbol ??")
+  "sf" '(consult-lsp-file-symbols :wk "consult lsp file symbol ??")
+  "u" '(undo-tree-visualize :wk "visualize undo")
+  "st" '(hydra-tabs-select/body :wk "Select tabs")
+  "ts" '(hydra-text-scale/body :wk "Scale text")
+  "w" '(:ignore t :wk "windows")
+  "wc" '(delete-other-windows :wk "close other windows")
+  "wd" '(delete-window :wk "close window")
+  "wn" '(evil-window-split :wk "split window")
+  "w/" '(evil-window-vsplit :wk "vsplit window")
+  "x" '(er/expand-region :wk "expand region")
+  "C-h" '(helpful-at-point :wk "Show help at point")
+  "C-b" '(magit-blame-addition :wk "git blame")
+  "M-y" '(consult-yank-pop :wk "yank pop")
+  "/" '(my/consult-word :wk "search word")
+  "*" '(my/grep-word :wk "grep word in project")
+)
+
+(my/visual-map
+  "gs" '(sort-lines :wk "sort lines")
+  "y" '(my/copy-to-clipboard :wk "copy to clipboard(yank)")
+  "[e" '(my/move-line-down :wk "move line up")
+  "]e" '(my/move-line-up :wk "move line down")
+)
+
+(my/visual-leader
+  "*" '(my/grep-word-visual :wk "grep word in project")
+)
+
+(my/normal-leader rspec-compilation-mode-map
+  "rx" '(inf-ruby-switch-from-compilation :wk "switch compilation mode rspec")
+)
+
+(my/normal-leader projectile-mode-map
+  "p" '(projectile-command-map :wk "projectile map")
+  "ff" '(projectile-find-file :wk "find file")
+)
+
+(my/normal-visual-map
+  "gy" '(evilnc-comment-or-uncomment-lines :wk "toggle comment")
+)
+#+END_SRC
