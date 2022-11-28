@@ -1,3 +1,5 @@
+#+PROPERTY: header-args:emacs-lisp :noweb-ref keymaps
+
 #+BEGIN_SRC emacs-lisp
 (general-create-definer my/global-leader
   :states '(normal insert emacs)

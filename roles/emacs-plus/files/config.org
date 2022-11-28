@@ -1,11 +1,26 @@
 #+TITLE: emacs config
 #+OPTIONS: toc:nil
+#+PROPERTY: header-args:emacs-lisp :tangle ./init.el :mkdirp yes
+#+auto_tangle: t
 
 * Configuration
 I forgot everything i've done in my previous init.el file, so i decided to start another one from scratch in org-mode to be able to write a lot about stuff happening here.
 Also, i'd like to start using org-mode, finally.
 
+** Short yes/no prompt
+
+#+BEGIN_SRC emacs-lisp
+(fset 'yes-or-no-p 'y-or-n-p)
+#+END_SRC
+
 ** Startup time
+
+Garbage collection threshold to 20 mb.
+
+#+BEGIN_SRC emacs-lisp
+(setq gc-cons-threshold (* 20 1000 1000))
+(setq read-process-output-max (* 1024 1024 3))
+#+END_SRC
 
 #+BEGIN_SRC emacs-lisp
 (defun my/display-startup-time ()
@@ -100,13 +115,6 @@ Window frame size.
 ;; (add-hook )
 ;; (add-to-list 'default-frame-alist '(width . 200))
 ;; (add-to-list 'default-frame-alist '(height . 55))
-#+END_SRC
-
-Garbage collection threshold to 20 mb.
-
-#+BEGIN_SRC emacs-lisp
-(setq gc-cons-threshold (* 20 1000 1000))
-(setq read-process-output-max (* 1024 1024 3))
 #+END_SRC
 
 Force use of spaces instead of tabs, blahh. And tab width.
@@ -227,6 +235,7 @@ Themes block.
 #+END_SRC
 
 * Packages
+
 #+BEGIN_SRC emacs-lisp
 (org-babel-load-file "~/.emacs.d/packages.org")
 #+END_SRC

@@ -1,3 +1,5 @@
+#+PROPERTY: header-args:emacs-lisp :noweb-ref packages
+
 * General(general.el, not general config)
 
 [[https://github.com/noctuid/general.el][General]] is very convenient way to bind keys.
@@ -5,6 +7,7 @@
 #+BEGIN_SRC emacs-lisp
 (use-package general
   :config
+  (message "general loaded")
   (general-evil-setup t)
  )
 #+END_SRC
@@ -22,6 +25,7 @@ Very cool stuff for undoing things.
   (undo-tree-visualizer-diff t)
   (undo-tree-history-directory-alist '(("." . "~/.emacs.d/undo")))
   :config
+  (message "undo-tree loaded")
   (global-undo-tree-mode)
 )
 #+END_SRC
@@ -30,7 +34,10 @@ Just functionality to go to last chages. Nothing fancy here.
 
 #+BEGIN_SRC emacs-lisp
 (use-package goto-chg
-  :after evil)
+  :after evil
+  :config
+  (message "goto loaded")
+  )
 #+END_SRC
 
 *** Mode itself & stuff
@@ -55,7 +62,6 @@ Just functionality to go to last chages. Nothing fancy here.
           (progn
             (shell-command-on-region (region-beginning) (region-end) "pbcopy")
             (deactivate-mark)))))
-
   (defun my/move-line-up ()
     (interactive)
     (transpose-lines 1)
@@ -66,13 +72,13 @@ Just functionality to go to last chages. Nothing fancy here.
     (forward-line 1)
     (transpose-lines 1)
     (forward-line -1))
-  :init
-  (setq evil-want-keybinding nil)
   :custom
+  (evil-want-keybinding nil)
   (evil-motion-state-modes nil)
   (evil-shift-width 2)
   (evil-undo-system 'undo-tree)
   :config
+  (message "evil loaded")
   (evil-mode)
   (add-hook 'view-mode-hook 'evil-motion-state)
   (add-hook 'ruby-mode-hook 'my/tab2)
@@ -114,6 +120,7 @@ Just functionality to go to last chages. Nothing fancy here.
     ;; simple))
     ;; view))
   :config
+  (message "evil collection loaded")
   (evil-collection-init))
 #+END_SRC
 
@@ -123,6 +130,7 @@ Just functionality to go to last chages. Nothing fancy here.
 (use-package evil-surround
   :after evil
   :config
+  (message "evil sur loaded")
   (global-evil-surround-mode 1))
 #+END_SRC
 
@@ -138,7 +146,7 @@ Code [[https://github.com/redguardtoo/evil-nerd-commenter][commentary]].
 
 #+BEGIN_SRC emacs-lisp
 (use-package evil-nerd-commenter
-  :defer t
+  :after evil
  )
 #+END_SRC
 
@@ -179,6 +187,7 @@ Code [[https://github.com/redguardtoo/evil-nerd-commenter][commentary]].
 #+BEGIN_SRC emacs-lisp
 (use-package expand-region
   :custom
+  (message "expanr r loaded")
   (expand-region-contract-fast-key "z")
 )
 #+END_SRC
@@ -189,6 +198,8 @@ Code [[https://github.com/redguardtoo/evil-nerd-commenter][commentary]].
 
 #+BEGIN_SRC emacs-lisp
 (use-package avy
+  :custom
+  (message "avy loaded")
 )
 #+END_SRC
 
@@ -198,6 +209,8 @@ Code [[https://github.com/redguardtoo/evil-nerd-commenter][commentary]].
 
 #+BEGIN_SRC emacs-lisp
 (use-package emojify
+  :custom
+  (message "emoji loaded")
 )
 #+END_SRC
 
@@ -210,6 +223,7 @@ Code [[https://github.com/redguardtoo/evil-nerd-commenter][commentary]].
   :config
   (which-key-mode)
   :custom
+  (message "wk loaded")
   (which-key-sort-order 'which-key-key-order-alpha)
   (which-key-side-window-max-height 0.33)
   (which-key-idle-delay 0.5)
@@ -219,15 +233,22 @@ Code [[https://github.com/redguardtoo/evil-nerd-commenter][commentary]].
 [[https://github.com/emacsmirror/rainbow-mode][Rainbow-mode]] colors hexlike strings.
 
 #+BEGIN_SRC emacs-lisp
-(use-package rainbow-mode)
+(use-package rainbow-mode
+  :config
+  (message "rainbow mode loaded")
+  )
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp
 (use-package hl-todo
-  :config (global-hl-todo-mode)
+  :config
+  (message "hltodo loaded")
+  (global-hl-todo-mode)
 )
 
 (use-package imenu-list
+  :config
+  (message "imenu list loaded")
 )
 #+END_SRC
 
@@ -243,7 +264,8 @@ Modeline.
   ;; (doom-modeline-indent-info t)
   (doom-modeline-vcs-max-length 15)
   (doom-modeline-modal-icon nil)
-  :init
+  :config
+  (message "doom ml loaded")
   (doom-modeline-mode)
  )
 
@@ -251,6 +273,7 @@ Modeline.
   :after doom-modeline
   :commands keycast-mode
   :config
+  (message "keycast loaded")
   (define-minor-mode keycast-mode
     "Show current command and its key binding in the mode line."
     :global t
@@ -264,11 +287,13 @@ Modeline.
  )
 
 (use-package minions
+  :after doom-modeline
   :custom
   (minions-mode-line-lighter ">>>")
   (minions-prominent-modes '(flycheck-mode projectile-mode lsp-mode))
   (minions-available-modes nil)
   :config
+  (message "monions loaded")
   (minions-mode 1)
 )
 #+END_SRC
@@ -278,6 +303,7 @@ Modeline.
 #+BEGIN_SRC emacs-lisp
 (use-package goto-line-preview
   :config
+  (message "goto-line-preview loaded")
   (general-define-key
     [remap goto-line] 'goto-line-preview))
 #+END_SRC
@@ -298,6 +324,7 @@ Try [[https://github.com/minad/vertico][vertico]] & [[https://github.com/minad/c
   :custom
   (vertico-cycle t)
   :config
+  (message "vertico loaded")
   (vertico-mode)
 )
 (use-package consult
@@ -320,9 +347,9 @@ Try [[https://github.com/minad/vertico][vertico]] & [[https://github.com/minad/c
     --no-heading --line-number . -e ARG OPTS")
   (consult-project-root-function #'projectile-project-root)
   (consult-preview-key 'any)
-  :init
-  (advice-add #'register-preview :override #'consult-register-window)
   :config
+  (message "consult loaded")
+  (advice-add #'register-preview :override #'consult-register-window)
   (autoload 'projectile-project-root "projectile")
 )
 
@@ -338,11 +365,14 @@ Try [[https://github.com/minad/vertico][vertico]] & [[https://github.com/minad/c
 
 #+BEGIN_SRC emacs-lisp
 (use-package prescient
+  :config
+  (message "prescient loaded")
 )
 
 (use-package vertico-prescient
   :after (vertico prescient)
   :config
+  (message "vp loaded")
   (prescient-persist-mode)
   (vertico-prescient-mode)
 )
@@ -352,12 +382,14 @@ Try [[https://github.com/minad/vertico][vertico]] & [[https://github.com/minad/c
   (savehist-mode))
 
 (use-package embark-consult
-  :after (consult embark)
   :hook
   (embark-collect-mode . embark-consult-preview-minor-mode)
+  :config
+  (message "embark-consult loaded")
 )
 
 (use-package consult-flycheck
+  :after (consult flychek)
 )
 
 (use-package marginalia
@@ -371,12 +403,14 @@ Try [[https://github.com/minad/vertico][vertico]] & [[https://github.com/minad/c
       (which-key--show-keymap "Embark" map nil nil 'no-paging)
       #'which-key--hide-popup-ignore-command)
     embark-become-indicator embark-action-indicator)
+  :preface
   (defun store-action-key+cmd (cmd)
     (setq keycast--this-command-keys (this-single-command-keys)
           keycast--this-command cmd))
   (defun force-keycast-update (&rest _)
     (force-mode-line-update t))
   :config
+  (message "embark loaded")
   (advice-add 'embark-keymap-prompter :filter-return #'store-action-key+cmd)
   (dolist (cmd '(embark-act embark-act-noexit embark-become))
     (advice-add cmd :before #'force-keycast-update))
@@ -390,10 +424,12 @@ Just for org-mode config.
 #+BEGIN_SRC emacs-lisp
 (use-package org
   :straight nil
+  :demand t
   :custom
   (org-src-tab-acts-natively nil)
   (org-confirm-babel-evaluate nil)
   :config
+  (message "org loaded")
   (org-babel-do-load-languages
     'org-babel-load-languages
     '(
@@ -403,8 +439,11 @@ Just for org-mode config.
   )
 )
 
+(use-package org-auto-tangle
+  :hook (org-mode . org-auto-tangle-mode)
+)
+
 (use-package org-appear
-  :after org
   :custom
   (org-appear-autosubmarkers t)
   (org-appear-autoentities t)
@@ -415,6 +454,7 @@ Just for org-mode config.
   :hook
   (org-mode . org-appear-mode)
   :config
+  (message "org-app loaded")
   (add-hook 'org-mode-hook (lambda ()
                            (add-hook 'evil-insert-state-entry-hook
                                      #'org-appear-manual-start
@@ -451,6 +491,8 @@ Just for org-mode config.
     (800 1000 1200 1400 1600 1800 2000)
     " ┄┄┄┄┄ " "┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄"))
   (org-agenda-current-time-string "⭠ now ─────────────────────────────────────────────────")
+  :config
+  (message "org-m loaded")
 )
 
 (defun my/org-mode-visual-fill ()
@@ -496,6 +538,7 @@ Pretty bullets.
   (projectile-require-project-root nil)
   (projectile-switch-project-action 'my/projectile-ranger)
   :config
+  (message "projectile loaded")
   (projectile-mode)
   ;; (projectile-register-project-type 'npm '("package.json")
   ;;                                   :project-file "package.json"
@@ -515,7 +558,10 @@ I heard [[https://github.com/magit/magit][magit]] to be best git client. Let's s
 
 #+BEGIN_SRC emacs-lisp
 (use-package magit
- )
+  :commands magit-status
+  :config
+  (message "magit loaded")
+)
 
 (use-package git-timemachine
   :straight (:host github :repo "emacsmirror/git-timemachine")
@@ -529,6 +575,8 @@ I heard [[https://github.com/magit/magit][magit]] to be best git client. Let's s
                   "gitlab.netology.ru/api/v4"
                   "glneto"
                   forge-gitlab-repository))
+  :config
+  (message "forge loaded")
 )
 #+END_SRC
 
@@ -548,9 +596,11 @@ Gitgutter
 
 #+BEGIN_SRC emacs-lisp
 (use-package ranger
+  :commands ranger
   :custom
   (ranger-show-hidden 'prefer)
   :config
+  (message "ranger loaded")
   (add-to-list 'ranger-prefer-regexp "^\\.")
   (ranger-override-dired-mode 'ranger)
   (add-hook 'ranger-mode-hook 'all-the-icons-dired-mode)
@@ -561,9 +611,9 @@ Icons for dired and ranger.
 
 #+BEGIN_SRC emacs-lisp
 (use-package all-the-icons
-  :defer t)
+  )
 (use-package all-the-icons-dired
-  :defer t)
+  )
 #+END_SRC
 
 * Cursors
@@ -572,6 +622,7 @@ Evil [[https://github.com/gabesoft/evil-mc][multicursor]].
 
 #+BEGIN_SRC emacs-lisp
 (use-package evil-mc
+  :after evil
   :config
   (global-evil-mc-mode)
   )
@@ -581,13 +632,15 @@ Cursor highlighting.
 
 #+BEGIN_SRC emacs-lisp
 (use-package beacon
+  :custom
+  (beacon-blink-when-focused t)
+  (beacon-color "#ee6bff")
+  (beacon-blink-duration 0.5)
+  (beacon-size 70)
+  (beacon-blink-when-point-moves-vertically 15)
   :config
-  (beacon-mode 1)
-  (setq beacon-blink-when-focused t
-        beacon-color "#ee6bff"
-        beacon-blink-duration 0.5
-        beacon-size 70
-        beacon-blink-when-point-moves-vertically 15))
+  (beacon-mode)
+)
 #+END_SRC
 
 * Autocomplete
@@ -599,7 +652,7 @@ Cursor highlighting.
   :after (corfu prescient)
 )
 (use-package corfu
-  :init
+  :preface
   (defun corfu-enable-always-in-minibuffer ()
   "Enable Corfu in the minibuffer if Vertico is not active."
   (unless (bound-and-true-p vertico--input)
@@ -610,10 +663,10 @@ Cursor highlighting.
   (corfu-auto-delay 0.1)
   (corfu-echo-documentation 0.25)
   (corfu-cycle t)
-  :init
+  :config
+  (message "corfu loaded")
   (global-corfu-mode)
   (corfu-prescient-mode 1)
-  :config
   (add-hook 'minibuffer-setup-hook #'corfu-enable-always-in-minibuffer 1)
 )
 #+END_SRC
@@ -636,8 +689,9 @@ Cursor highlighting.
 
 #+BEGIN_SRC emacs-lisp
 (use-package rainbow-delimiters
-  :config
-  (add-hook 'prog-mode-hook 'rainbow-delimiters-mode))
+  :hook
+  (prog-mode-hook . rainbow-delimiters-mode)
+ )
 #+END_SRC
 
 * Awesome tabs and pairs
@@ -709,6 +763,7 @@ Term extra info.
 
 #+BEGIN_SRC emacs-lisp
 (use-package eshell-prompt-extras
+  :after eshell
   :custom
   (eshell-highlight-prompt nil)
   (eshell-prompt-function 'epe-theme-lambda)
@@ -742,7 +797,7 @@ Experimenting with [[https://github.com/emacs-lsp/lsp-mode][lsp-mode]].
     (lsp-mode . lsp-enable-which-key-integration)
     (lsp-completion-mode . my/lsp-mode-setup-completion)
   )
-  :init
+  :preface
   (defun my/lsp-mode-setup-completion ()
     (setf (alist-get 'styles (alist-get 'lsp-capf completion-category-defaults))
       '(flex)))
@@ -762,12 +817,16 @@ Experimenting with [[https://github.com/emacs-lsp/lsp-mode][lsp-mode]].
   (lsp-rust-analyzer-display-lifetime-elision-hints-enable "skip_trivial")
   (lsp-rust-analyzer-server-display-inlay-hints t)
         ;; lsp-auto-configure nil
+  :config
+  (message "lsp loaded")
 )
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp
 (use-package dap-mode
+  :after lsp-mode
   :config
+  (message "dap loaded")
   (dap-auto-configure-mode)
 )
 #+END_SRC
@@ -776,10 +835,12 @@ Comes with [[https://github.com/emacs-lsp/lsp-ui][lsp-ui]].
 
 #+BEGIN_SRC emacs-lisp
 (use-package lsp-ui
+  :after lsp-mode
   :custom
   (lsp-ui-doc-enable nil)
   (lsp-ui-sideline-show-hover t)
   :config
+  (message "lsp ui loaded")
   (add-hook 'lsp-mode-hook 'lsp-ui-mode)
   (add-hook 'haskell-mode-hook 'flycheck-mode)
   (add-hook 'ruby-mode-hook 'flycheck-mode)
@@ -789,12 +850,15 @@ Comes with [[https://github.com/emacs-lsp/lsp-ui][lsp-ui]].
 
 #+BEGIN_SRC emacs-lisp
 (use-package consult-lsp
+  :after (lsp-mode consult)
 )
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp
 (use-package lsp-haskell
+  :after lsp-mode
   :custom
+  (message "lsp haskell loaded")
   (lsp-haskell-process-path-hie "hie-wrapper")
 )
 #+END_SRC
@@ -805,7 +869,6 @@ Comes with [[https://github.com/emacs-lsp/lsp-ui][lsp-ui]].
 
 #+BEGIN_SRC emacs-lisp
 (use-package flycheck
-  :defer t
   :preface
   (defun my/inner-fix (executable refactor-command)
     (let* (
@@ -858,6 +921,7 @@ Comes with [[https://github.com/emacs-lsp/lsp-ui][lsp-ui]].
   (flycheck-ruby-rubocop-executable "rubocop")
   (flycheck-haskell-hlint-executable "hlint")
   :config
+  (message "flycheck loaded")
   (global-flycheck-mode)
   (add-hook 'flycheck-mode-hook 'my/eslint-from-node-modules)
   (add-hook 'flycheck-mode-hook 'my/tslint-from-node-modules)
@@ -868,14 +932,14 @@ Comes with [[https://github.com/emacs-lsp/lsp-ui][lsp-ui]].
 * Programming
 
 #+BEGIN_SRC emacs-lisp
-(use-package protobuf-mode)
+(use-package protobuf-mode
+)
 #+END_SRC
 
 MD mode
 
 #+BEGIN_SRC emacs-lisp
 (use-package markdown-mode
-  ;; :ensure t
   :mode ("\\.md\\'" . gfm-mode)
   :custom
   (markdown-command "pandoc")
@@ -936,7 +1000,6 @@ And sometimes need to work with js.
 
 #+BEGIN_SRC emacs-lisp
 (use-package js2-mode
-  :defer t
   :mode "\\.js\\'"
   :custom
   (js-indent-level 2)
@@ -949,7 +1012,6 @@ And ts
 
 #+BEGIN_SRC emacs-lisp
 (use-package typescript-mode
-  :defer t
   :mode "\\.tsx?\\'"
   :custom
   (typescript-indent-level 2)
@@ -960,7 +1022,7 @@ And rjsx.
 
 #+BEGIN_SRC emacs-lisp
 (use-package rjsx-mode
-  :defer t)
+  )
 #+END_SRC
 
 Ruby mode settings.
@@ -975,7 +1037,6 @@ Oh, and this chages apply to ruby-mode.
 
 #+BEGIN_SRC emacs-lisp
 (use-package ruby-mode
-  :defer t
   :straight nil
   :custom
   (ruby-insert-encoding-magic-comment nil)
@@ -986,7 +1047,6 @@ Oh, and this chages apply to ruby-mode.
 
 #+BEGIN_SRC emacs-lisp
 (use-package ruby-end
-  :defer t
 )
 #+END_SRC
 
@@ -994,13 +1054,11 @@ Pry.
 
 #+BEGIN_SRC emacs-lisp
 (use-package inf-ruby
-  :defer t
 )
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp
 (use-package rspec-mode
-  :defer t
   :custom
   (rspec-use-spring-when-possible nil)
   (rspec-use-zeus-when-possible nil)
@@ -1013,7 +1071,6 @@ Clojure cider
 
 #+BEGIN_SRC emacs-lisp
 (use-package cider
-  :defer t
 )
 #+END_SRC
 
@@ -1023,13 +1080,11 @@ Clojure cider
 
 #+BEGIN_SRC emacs-lisp
 (use-package writegood-mode
-  :defer t
   :config
   (add-hook 'org-mode-hook 'writegood-mode)
 )
 
 (use-package fountain-mode
-  :defer t
   :custom
   (fountain-mode-hook '(visual-line-mode
           which-function-mode
@@ -1042,7 +1097,6 @@ Clojure cider
 )
 
 (use-package olivetti
-  :defer t
   :custom
   (olivetti-style 'fancy)
   :config
@@ -1056,7 +1110,6 @@ Hydra.
 
 #+BEGIN_SRC emacs-lisp
 (use-package hydra
-  :defer t
   :config
   (defhydra hydra-tabs-select (:timeout 4)
     "Select tabs"
