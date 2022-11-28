@@ -16,6 +16,7 @@ Very cool stuff for undoing things.
 
 #+BEGIN_SRC emacs-lisp
 (use-package undo-tree
+  :after evil
   :custom
   (undo-tree-auto-save-history t)
   (undo-tree-visualizer-diff t)
@@ -28,7 +29,8 @@ Very cool stuff for undoing things.
 Just functionality to go to last chages. Nothing fancy here.
 
 #+BEGIN_SRC emacs-lisp
-(use-package goto-chg)
+(use-package goto-chg
+  :after evil)
 #+END_SRC
 
 *** Mode itself & stuff
@@ -37,7 +39,6 @@ Just functionality to go to last chages. Nothing fancy here.
 
 #+BEGIN_SRC emacs-lisp
 (use-package evil
-  :defer t
   :preface
   (defun my/_as-word ()
     (modify-syntax-entry ?_ "w"))
@@ -90,7 +91,6 @@ Just functionality to go to last chages. Nothing fancy here.
   (evil-collection-mode-list nil)
   (evil-collection-mode-list '(
     (buff-menu "buff-menu")
-    ;; company
     consult
     corfu
     debug
@@ -190,7 +190,6 @@ Code [[https://github.com/redguardtoo/evil-nerd-commenter][commentary]].
 #+BEGIN_SRC emacs-lisp
 (use-package avy
 )
-
 #+END_SRC
 
 * EMOJI!
@@ -405,6 +404,7 @@ Just for org-mode config.
 )
 
 (use-package org-appear
+  :after org
   :custom
   (org-appear-autosubmarkers t)
   (org-appear-autoentities t)
@@ -523,8 +523,6 @@ I heard [[https://github.com/magit/magit][magit]] to be best git client. Let's s
 
 (use-package forge
   :after magit
-  :custom
-  (auth-sources '("~/.netrc"))
   :config
   (add-to-list 'forge-alist
                 '("gitlab.netology.ru"
@@ -549,14 +547,14 @@ Gitgutter
 [[https://github.com/ralesi/ranger.el][Ranger]] is for dired.
 
 #+BEGIN_SRC emacs-lisp
-  (use-package ranger
-    :custom
-    (ranger-show-hidden 'prefer)
-    :config
-    (add-to-list 'ranger-prefer-regexp "^\\.")
-    (ranger-override-dired-mode 'ranger)
-    (add-hook 'ranger-mode-hook 'all-the-icons-dired-mode)
- )
+(use-package ranger
+  :custom
+  (ranger-show-hidden 'prefer)
+  :config
+  (add-to-list 'ranger-prefer-regexp "^\\.")
+  (ranger-override-dired-mode 'ranger)
+  (add-hook 'ranger-mode-hook 'all-the-icons-dired-mode)
+)
 #+END_SRC
 
 Icons for dired and ranger.
@@ -913,12 +911,8 @@ Becuse i'm interested in haskell.
 
 #+BEGIN_SRC emacs-lisp
 (use-package haskell-mode
-  :defer t
   :mode
     ("\\.l?hs\\'" . haskell-mode)
-  ;; :preface
-  ;; (defun my/autocomplete ()
-  ;;   (add-to-list 'company-backends 'company-ghc))
   :custom
   (haskell-tags-on-save t)
   (hout-query t)
@@ -926,13 +920,9 @@ Becuse i'm interested in haskell.
   (haskell-stylish-on-save t)
   (haskell-compile-cabal-build-command "stack build")
   :config
-  ;; (add-hook 'haskell-mode-hook 'my/autocomplete)
-  ;; (add-hook 'haskell-mode-hook 'turn-on-haskell-unicode-input-method) ;; nope
   (add-hook 'haskell-mode-hook 'haskell-auto-insert-module-template)
   (add-hook 'haskell-mode-hook 'interactive-haskell-mode)
 )
-
-;; (use-package company-ghc)
 #+END_SRC
 
 Irony for C.
@@ -985,6 +975,7 @@ Oh, and this chages apply to ruby-mode.
 
 #+BEGIN_SRC emacs-lisp
 (use-package ruby-mode
+  :defer t
   :straight nil
   :custom
   (ruby-insert-encoding-magic-comment nil)
@@ -994,18 +985,22 @@ Oh, and this chages apply to ruby-mode.
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp
-(use-package ruby-end)
+(use-package ruby-end
+  :defer t
+)
 #+END_SRC
 
 Pry.
 
 #+BEGIN_SRC emacs-lisp
 (use-package inf-ruby
+  :defer t
 )
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp
 (use-package rspec-mode
+  :defer t
   :custom
   (rspec-use-spring-when-possible nil)
   (rspec-use-zeus-when-possible nil)
@@ -1018,6 +1013,7 @@ Clojure cider
 
 #+BEGIN_SRC emacs-lisp
 (use-package cider
+  :defer t
 )
 #+END_SRC
 
@@ -1027,11 +1023,13 @@ Clojure cider
 
 #+BEGIN_SRC emacs-lisp
 (use-package writegood-mode
+  :defer t
   :config
   (add-hook 'org-mode-hook 'writegood-mode)
 )
 
 (use-package fountain-mode
+  :defer t
   :custom
   (fountain-mode-hook '(visual-line-mode
           which-function-mode
@@ -1044,6 +1042,7 @@ Clojure cider
 )
 
 (use-package olivetti
+  :defer t
   :custom
   (olivetti-style 'fancy)
   :config
@@ -1057,6 +1056,7 @@ Hydra.
 
 #+BEGIN_SRC emacs-lisp
 (use-package hydra
+  :defer t
   :config
   (defhydra hydra-tabs-select (:timeout 4)
     "Select tabs"
