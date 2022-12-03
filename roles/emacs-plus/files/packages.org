@@ -596,7 +596,6 @@ Gitgutter
 
 #+BEGIN_SRC emacs-lisp
 (use-package ranger
-  :commands ranger
   :custom
   (ranger-show-hidden 'prefer)
   :config
