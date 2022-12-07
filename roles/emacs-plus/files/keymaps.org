@@ -59,7 +59,7 @@
 (my/map vertico-map
   "C-j" '(vertico-next :wk "next line")
   "C-k" '(vertico-previous :wk "prev line")
-  "C-l" '(vertico-submit-exact-input :wk "submit exact input")
+  "C-l" '(vertico-exit-input :wk "submit exact input")
 )
 
 (my/map awesome-pair-mode-map
