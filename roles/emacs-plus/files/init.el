@@ -29,6 +29,7 @@
 
 (setq auth-sources '("~/.emacs.d/.authinfo.gpg"))
 
+(straight-use-package 'org)
 (straight-use-package 'use-package)
 (use-package straight
              :custom (straight-use-package-by-default t))

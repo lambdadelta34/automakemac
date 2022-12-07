@@ -64,13 +64,14 @@ Gitlab auth.
 (setq auth-sources '("~/.emacs.d/.authinfo.gpg"))
 #+END_SRC
 
-** use-package
+** use-package and org mode init
 
 This is where the fun begins. It is an elisp macro which goal is to simplify package configuration.
 [[https://github.com/jwiegley/use-package][github link]]
 Some elisp code to install it if it isn't yet. And ensure that all packages would be installed automatically if they are not.
 
 #+BEGIN_SRC emacs-lisp
+(straight-use-package 'org)
 (straight-use-package 'use-package)
 (use-package straight
              :custom (straight-use-package-by-default t))
